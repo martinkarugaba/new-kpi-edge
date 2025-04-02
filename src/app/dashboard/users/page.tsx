@@ -6,7 +6,7 @@ import { SectionCards } from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
 // import { chartData } from "../data/chart-data";
 
-export default async function ClustersPage() {
+export default async function UsersPage() {
   const { userId } = await auth();
 
   if (!userId) {
@@ -15,7 +15,7 @@ export default async function ClustersPage() {
 
   return (
     <>
-      <SiteHeader title="Clusters" />
+      <SiteHeader title="Users" />
       <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
