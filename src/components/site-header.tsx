@@ -3,8 +3,9 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ModeToggle } from "@/features/themes/components/mode-toggle";
+import { ThemeSelector } from "@/features/themes/components/theme-selector";
 
 interface SiteHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
@@ -28,21 +29,8 @@ export function SiteHeader({ title, className, ...props }: SiteHeaderProps) {
             {title && <h1 className="text-lg font-semibold">{title}</h1>}
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Button
-              variant="ghost"
-              asChild
-              size="sm"
-              className="hidden sm:flex"
-            >
-              <a
-                href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-                rel="noopener noreferrer"
-                target="_blank"
-                className="dark:text-foreground"
-              >
-                GitHub
-              </a>
-            </Button>
+            <ThemeSelector />
+            <ModeToggle />
           </div>
         </div>
       </div>

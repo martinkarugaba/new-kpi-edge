@@ -4,24 +4,16 @@ export const THEMES = [
       value: "default",
     },
     {
-      name: "Neutral",
-      value: "neutral",
+      name: "Blue",
+      value: "blue",
     },
     {
-      name: "Stone",
-      value: "stone",
+      name: "Green",
+      value: "green",
     },
     {
-      name: "Zinc",
-      value: "zinc",
-    },
-    {
-      name: "Gray",
-      value: "gray",
-    },
-    {
-      name: "Slate",
-      value: "slate",
+      name: "Amber",
+      value: "amber",
     },
     {
       name: "Scaled",
