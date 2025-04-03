@@ -20,6 +20,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   LayoutGrid,
+  Plus,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -240,7 +241,12 @@ export function ClustersTable({ data }: { data: Cluster[] }) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <CreateClusterDialog />
+          <CreateClusterDialog>
+            <Button variant="outline" size="sm">
+              <Plus className="mr-2 h-4 w-4" />
+              <span className="hidden lg:inline">Add Cluster</span>
+            </Button>
+          </CreateClusterDialog>
         </div>
       </div>
       <div className="rounded-md border">

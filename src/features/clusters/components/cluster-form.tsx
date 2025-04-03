@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,7 +17,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { createCluster, updateCluster } from "../actions/clusters";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import toast, { Toaster } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -36,9 +38,16 @@ type ClusterFormProps = {
     districts: string[];
   };
   onSuccess?: () => void;
+  isLoading?: boolean;
+  setIsLoading?: (loading: boolean) => void;
 };
 
-export function ClusterForm({ initialData, onSuccess }: ClusterFormProps) {
+export function ClusterForm({
+  initialData,
+  onSuccess,
+  isLoading = false,
+  setIsLoading,
+}: ClusterFormProps) {
   const router = useRouter();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -51,6 +60,8 @@ export function ClusterForm({ initialData, onSuccess }: ClusterFormProps) {
   });
 
   async function onSubmit(data: FormValues) {
+    if (setIsLoading) setIsLoading(true);
+
     try {
       const clusterData = {
         ...data,
@@ -72,77 +83,126 @@ export function ClusterForm({ initialData, onSuccess }: ClusterFormProps) {
 
       router.refresh();
       onSuccess?.();
-    } catch {
-      toast.error("Something went wrong");
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error(error);
+    } finally {
+      if (setIsLoading) setIsLoading(false);
     }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Cluster name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="about"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>About</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us about this cluster"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="country"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Country</FormLabel>
-              <FormControl>
-                <Input placeholder="Country" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="districts"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Districts</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="District 1, District 2, District 3"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full">
-          {initialData ? "Update Cluster" : "Create Cluster"}
-        </Button>
-      </form>
-    </Form>
+    <>
+      <Toaster position="top-right" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base font-medium">Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter cluster name"
+                      {...field}
+                      disabled={isLoading}
+                      className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-sm text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="about"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base font-medium">About</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe this cluster"
+                      className="resize-none min-h-[120px] text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-sm text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-medium">
+                      Country
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter country"
+                        {...field}
+                        disabled={isLoading}
+                        className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="districts"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-medium">
+                      Districts
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="District 1, District 2, District 3"
+                        {...field}
+                        disabled={isLoading}
+                        className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                      />
+                    </FormControl>
+                    <FormDescription className="text-sm text-gray-500">
+                      Separate districts with commas
+                    </FormDescription>
+                    <FormMessage className="text-sm text-red-500" />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 border-t border-gray-200">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="h-12 px-6 text-base font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {initialData ? "Updating..." : "Creating..."}
+                </>
+              ) : initialData ? (
+                "Update Cluster"
+              ) : (
+                "Create Cluster"
+              )}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 }

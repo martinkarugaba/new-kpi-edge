@@ -13,25 +13,42 @@ import {
 import { ClusterForm } from "./cluster-form";
 import { Plus } from "lucide-react";
 
-export function CreateClusterDialog() {
+type CreateClusterDialogProps = {
+  children?: React.ReactNode;
+};
+
+export function CreateClusterDialog({ children }: CreateClusterDialogProps) {
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSuccess = () => {
+    setOpen(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          New Cluster
-        </Button>
+        {children || (
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            New Cluster
+          </Button>
+        )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create Cluster</DialogTitle>
-          <DialogDescription>
-            Add a new cluster to your organization
+          <DialogTitle className="text-xl font-semibold">
+            Create Cluster
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            Add a new cluster to manage organizations and KPIs
           </DialogDescription>
         </DialogHeader>
-        <ClusterForm onSuccess={() => setOpen(false)} />
+        <ClusterForm
+          onSuccess={handleSuccess}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
       </DialogContent>
     </Dialog>
   );
