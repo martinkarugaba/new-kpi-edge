@@ -2,7 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getClusters } from "@/features/clusters/actions/clusters";
 import { SiteHeader } from "@/components/site-header";
-import { CreateClusterDialog } from "@/features/clusters/components/create-cluster-dialog";
 import {
   ClustersTable,
   Cluster,
@@ -20,16 +19,15 @@ export default async function ClustersPage() {
     <>
       <SiteHeader title="Clusters" />
       <div className="container py-6">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8">
             <h1 className="text-3xl font-bold">Clusters</h1>
             <p className="text-muted-foreground">
               Manage your clusters and their locations
             </p>
           </div>
-          <CreateClusterDialog />
+          <ClustersTable data={clusters} />
         </div>
-        <ClustersTable data={clusters} />
       </div>
     </>
   );
