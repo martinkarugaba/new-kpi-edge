@@ -193,45 +193,8 @@ export function OrganizationsTable({
   ];
 
   return (
-    <Tabs defaultValue="all" className="w-full flex-col justify-start gap-6">
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
-        <Select defaultValue="all">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Organizations</SelectItem>
-            <SelectItem value="active">Active Organizations</SelectItem>
-            <SelectItem value="by-cluster">By Cluster</SelectItem>
-          </SelectContent>
-        </Select>
-        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="all">All Organizations</TabsTrigger>
-          <TabsTrigger value="active">Active Organizations</TabsTrigger>
-          <TabsTrigger value="by-cluster">By Cluster</TabsTrigger>
-        </TabsList>
-        <div className="flex items-center gap-2">
-          <CreateOrganizationDialog clusters={clusters}>
-            <Button size="sm">
-              <Plus className="mr-2 h-4 w-4" />
-              <span className="hidden lg:inline">Add Organization</span>
-              <span className="lg:hidden">Add</span>
-            </Button>
-          </CreateOrganizationDialog>
-        </div>
-      </div>
-
-      <TabsContent
-        value="all"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-      >
+    <div className="w-full flex-col justify-start gap-6">
+      <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
         <ReusableDataTable
           columns={columns}
           data={organizations}
@@ -241,26 +204,29 @@ export function OrganizationsTable({
           showPagination={true}
           showRowSelection={true}
           pageSize={10}
+          customActions={
+            <CreateOrganizationDialog clusters={clusters}>
+              <Button size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                <span className="hidden lg:inline">Add Organization</span>
+                <span className="lg:hidden">Add</span>
+              </Button>
+            </CreateOrganizationDialog>
+          }
+          customFilters={
+            <Select defaultValue="all">
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select view" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Organizations</SelectItem>
+                <SelectItem value="active">Active Organizations</SelectItem>
+                <SelectItem value="by-cluster">By Cluster</SelectItem>
+              </SelectContent>
+            </Select>
+          }
         />
-      </TabsContent>
-
-      <TabsContent
-        value="active"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-      >
-        <div className="text-center py-8 text-muted-foreground">
-          Active organizations view coming soon
-        </div>
-      </TabsContent>
-
-      <TabsContent
-        value="by-cluster"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-      >
-        <div className="text-center py-8 text-muted-foreground">
-          Organizations by cluster view coming soon
-        </div>
-      </TabsContent>
-    </Tabs>
+      </div>
+    </div>
   );
 }

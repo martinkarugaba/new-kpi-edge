@@ -45,6 +45,8 @@ interface ReusableDataTableProps<TData, TValue> {
   showRowSelection?: boolean;
   pageSize?: number;
   onRowSelectionChange?: (selectedRows: TData[]) => void;
+  customActions?: React.ReactNode;
+  customFilters?: React.ReactNode;
 }
 
 export function ReusableDataTable<TData, TValue>({
@@ -57,6 +59,8 @@ export function ReusableDataTable<TData, TValue>({
   showRowSelection = false,
   pageSize = 10,
   onRowSelectionChange,
+  customActions,
+  customFilters,
 }: ReusableDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -116,10 +120,10 @@ export function ReusableDataTable<TData, TValue>({
   }, [table]);
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between py-4">
-        {filterColumn && (
-          <div className="flex items-center gap-2">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {filterColumn && (
             <Input
               placeholder={filterPlaceholder}
               value={
@@ -133,38 +137,45 @@ export function ReusableDataTable<TData, TValue>({
               }
               className="max-w-sm"
             />
-          </div>
-        )}
-        {showColumnToggle && columnsToToggle.length > 0 && (
-          <div className="flex items-center gap-2">
+          )}
+          {customFilters}
+          {showColumnToggle && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <LayoutGrid className="mr-2 h-4 w-4" />
-                  <span className="hidden lg:inline">Customize Columns</span>
-                  <span className="lg:hidden">Columns</span>
-                  <ChevronDown className="ml-2 h-4 w-4" />
+                  Columns
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {columnsToToggle.map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
+              <DropdownMenuContent align="end">
+                {table &&
+                  table.getAllColumns &&
+                  table
+                    .getAllColumns()
+                    .filter(
+                      (column) =>
+                        typeof column.accessorFn !== "undefined" &&
+                        column.getCanHide(),
+                    )
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        )}
+          )}
+        </div>
+        {customActions}
       </div>
       <div className="rounded-md border">
         <Table>
