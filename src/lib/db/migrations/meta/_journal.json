@@ -8,6 +8,13 @@
       "when": 1743676886066,
       "tag": "0000_clear_lifeguard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1743679030890,
+      "tag": "0001_loud_sauron",
+      "breakpoints": true
     }
   ]
 }
