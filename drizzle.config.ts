@@ -1,12 +1,24 @@
-import type { Config } from "drizzle-kit";
-import * as dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
+import { defineConfig } from "drizzle-kit";
 
-export default {
-  schema: "./src/lib/db/schema.ts",
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set");
+}
+
+const url = new URL(process.env.DATABASE_URL);
+
+export default defineConfig({
   out: "./drizzle",
-  driver: "pg",
+  schema: "./src/lib/db/schema.ts",
+  dialect: "postgresql",
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL!,
+    host: url.hostname,
+    port: parseInt(url.port),
+    user: url.username,
+    password: url.password,
+    database: url.pathname.slice(1),
+    ssl: true,
   },
-} satisfies Config;
+  verbose: true,
+  strict: true,
+});
