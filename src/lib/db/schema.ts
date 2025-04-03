@@ -4,9 +4,15 @@ import { pgTable, uuid, text, timestamp, integer } from "drizzle-orm/pg-core";
 export const organizations = pgTable("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
-  description: text("description"),
-  clerkId: text("clerk_id").notNull().unique(),
+  acronym: text("acronym").notNull(),
   clusterId: uuid("cluster_id").references(() => clusters.id),
+  project: text("project"),
+  country: text("country").notNull(),
+  district: text("district").notNull(),
+  subCounty: text("sub_county").notNull(),
+  parish: text("parish").notNull(),
+  village: text("village").notNull(),
+  address: text("address").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

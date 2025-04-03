@@ -11,7 +11,6 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
@@ -28,9 +27,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 const data = {
@@ -52,7 +48,7 @@ const data = {
     },
     {
       title: "Organisations",
-      url: "/dashboard/organisations",
+      url: "/dashboard/organizations",
       icon: IconChartBar,
     },
     {
@@ -153,8 +149,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-      </SidebarHeader>
+      <SidebarHeader></SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />

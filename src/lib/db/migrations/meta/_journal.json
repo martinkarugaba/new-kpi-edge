@@ -15,6 +15,13 @@
       "when": 1743679030890,
       "tag": "0001_loud_sauron",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743685807935,
+      "tag": "0002_faulty_jack_flag",
+      "breakpoints": true
     }
   ]
 }

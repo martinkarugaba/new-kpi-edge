@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 // import { ChartAreaInteractive } from "@/components/chart-area-interactive";
-import { DataTable } from "@/components/ui/data-table";
-import { SectionCards } from "@/components/section-cards";
+// import { DataTable } from "@/components/ui/data-table";
+import { SectionCards } from "@/components/ui/section-cards";
 import { SiteHeader } from "@/components/site-header";
 // import { chartData } from "../data/chart-data";
 
@@ -23,7 +23,7 @@ export default async function UsersPage() {
             {/* <div className="px-4 lg:px-6">
               <ChartAreaInteractive data={chartData} />
             </div> */}
-            <DataTable data={[]} />
+            {/* <DataTable data={[]} /> */}
           </div>
         </div>
       </div>
