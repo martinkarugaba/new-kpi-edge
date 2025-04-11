@@ -1,19 +1,19 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { organizations } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { organizations, clusters, projects } from "@/lib/db/schema";
+import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const createOrganizationSchema = z.object({
   name: z.string().min(1, "Name is required"),
   acronym: z.string().min(1, "Acronym is required"),
-  clusterId: z.string().nullable(),
-  project: z.string().nullable(),
+  cluster_id: z.string().nullable(),
+  project_id: z.string().nullable(),
   country: z.string().min(1, "Country is required"),
   district: z.string().min(1, "District is required"),
-  subCounty: z.string().min(1, "Sub-county is required"),
+  sub_county: z.string().min(1, "Sub-county is required"),
   parish: z.string().min(1, "Parish is required"),
   village: z.string().min(1, "Village is required"),
   address: z.string().min(1, "Address is required"),
@@ -38,12 +38,36 @@ export async function createOrganization(data: CreateOrganizationInput) {
   }
 }
 
-export async function getOrganizations(clusterId?: string) {
+export async function getOrganizations(cluster_id?: string) {
   try {
     const orgs = await db
-      .select()
+      .select({
+        id: organizations.id,
+        name: organizations.name,
+        acronym: organizations.acronym,
+        cluster_id: organizations.cluster_id,
+        project_id: organizations.project_id,
+        country: organizations.country,
+        district: organizations.district,
+        sub_county: organizations.sub_county,
+        parish: organizations.parish,
+        village: organizations.village,
+        address: organizations.address,
+        created_at: organizations.created_at,
+        updated_at: organizations.updated_at,
+        cluster: {
+          id: clusters.id,
+          name: clusters.name,
+        },
+        project: {
+          id: projects.id,
+          name: projects.name,
+        },
+      })
       .from(organizations)
-      .where(clusterId ? eq(organizations.clusterId, clusterId) : undefined);
+      .leftJoin(clusters, eq(organizations.cluster_id, clusters.id))
+      .leftJoin(projects, eq(organizations.project_id, projects.id))
+      .where(cluster_id ? eq(organizations.cluster_id, cluster_id) : undefined);
 
     return { success: true, data: orgs };
   } catch (error) {
@@ -79,7 +103,7 @@ export async function updateOrganization(
       .update(organizations)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updated_at: new Date(),
       })
       .where(eq(organizations.id, id))
       .returning();
@@ -101,5 +125,17 @@ export async function deleteOrganization(id: string) {
   } catch (error) {
     console.error("Error deleting organization:", error);
     return { success: false, error: "Failed to delete organization" };
+  }
+}
+
+export async function deleteOrganizations(ids: string[]) {
+  try {
+    await db.delete(organizations).where(inArray(organizations.id, ids));
+
+    revalidatePath("/dashboard/organizations");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting organizations:", error);
+    return { success: false, error: "Failed to delete organizations" };
   }
 }

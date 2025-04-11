@@ -187,7 +187,7 @@ export function ClusterForm({
             <Button
               type="submit"
               disabled={isLoading}
-              className="h-12 px-6 text-base font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
+              className="h-12 px-6 text-base cursor-pointer w-full font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
             >
               {isLoading ? (
                 <>

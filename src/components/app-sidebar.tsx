@@ -129,18 +129,23 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
+      name: "Participants",
+      url: "dashboard/participants",
       icon: IconDatabase,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "dashboard/reports",
       icon: IconReport,
     },
     {
-      name: "Word Assistant",
-      url: "#",
+      name: "Activities",
+      url: "dashboard/activities",
+      icon: IconFileWord,
+    },
+    {
+      name: "Concept notes",
+      url: "dashboard/concept-notes",
       icon: IconFileWord,
     },
   ],

@@ -1,18 +1,23 @@
-import { Cluster } from "../clusters/components/clusters-table";
-
 export interface Organization {
   id: string;
   name: string;
   acronym: string;
-  clusterId: string | null;
-  cluster?: Cluster;
-  project: string | null;
+  cluster_id: string | null;
+  project_id: string | null;
   country: string;
   district: string;
-  subCounty: string;
+  sub_county: string;
   parish: string;
   village: string;
   address: string;
-  createdAt: Date | null;
-  updatedAt: Date | null;
+  created_at: Date | null;
+  updated_at: Date | null;
+  cluster?: {
+    id: string;
+    name: string;
+  } | null;
+  project?: {
+    id: string;
+    name: string;
+  } | null;
 }

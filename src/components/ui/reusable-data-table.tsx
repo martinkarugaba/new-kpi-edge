@@ -177,14 +177,17 @@ export function ReusableDataTable<TData, TValue>({
         </div>
         {customActions}
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md overflow-hidden border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted text-muted-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      className="text-muted-foreground"
+                      key={header.id}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

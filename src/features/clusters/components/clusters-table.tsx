@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import * as React from "react";
@@ -74,6 +76,7 @@ const columns: ColumnDef<Cluster>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const cluster = row.original;
       return <ClusterActions cluster={cluster} />;
@@ -104,25 +107,18 @@ function ClusterActions({ cluster }: { cluster: Cluster }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(cluster.id)}
-        >
-          Copy cluster ID
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => router.push(`/dashboard/clusters/${cluster.id}`)}
         >
-          View details
+          Details
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => router.push(`/dashboard/clusters/${cluster.id}`)}
         >
-          Edit cluster
+          Edit
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDelete} className="text-red-600">
-          Delete cluster
+          Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -143,7 +139,7 @@ export function ClustersTable({ data }: { data: Cluster[] }) {
         pageSize={10}
         customActions={
           <CreateClusterDialog>
-            <Button size="sm">
+            <Button size="sm" className="bg-black text-white hover:bg-gray-800">
               <Plus className="mr-2 h-4 w-4" />
               <span className="hidden lg:inline">Add Cluster</span>
               <span className="lg:hidden">Add</span>

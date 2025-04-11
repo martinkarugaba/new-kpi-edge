@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -27,18 +28,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Cluster } from "@/features/clusters/components/clusters-table";
+import { Project } from "@/features/projects/types";
+import { getProjects } from "@/features/projects/actions/projects";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   acronym: z.string().min(1, "Acronym is required"),
-  clusterId: z.string().nullable(),
-  project: z.string().nullable(),
+  cluster_id: z.string().nullable(),
+  project_id: z.string().nullable(),
   country: z.string().min(1, "Country is required"),
   district: z.string().min(1, "District is required"),
-  subCounty: z.string().min(1, "Sub-county is required"),
+  sub_county: z.string().min(1, "Sub-county is required"),
   parish: z.string().min(1, "Parish is required"),
   village: z.string().min(1, "Village is required"),
   address: z.string().min(1, "Address is required"),
@@ -51,11 +54,11 @@ type OrganizationFormProps = {
     id: string;
     name: string;
     acronym: string;
-    clusterId: string | null;
-    project: string | null;
+    cluster_id: string | null;
+    project_id: string | null;
     country: string;
     district: string;
-    subCounty: string;
+    sub_county: string;
     parish: string;
     village: string;
     address: string;
@@ -78,17 +81,31 @@ export function OrganizationForm({
   const router = useRouter();
   const [step, setStep] = useState(1);
   const totalSteps = 3;
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  // Fetch projects when the component mounts
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const result = await getProjects();
+      if (result.success && result.data) {
+        setProjects(result.data || []);
+      } else {
+        setProjects([]);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name || "",
       acronym: initialData?.acronym || "",
-      clusterId: initialData?.clusterId || defaultClusterId || null,
-      project: initialData?.project || null,
+      cluster_id: initialData?.cluster_id || defaultClusterId || null,
+      project_id: initialData?.project_id || null,
       country: initialData?.country || "",
       district: initialData?.district || "",
-      subCounty: initialData?.subCounty || "",
+      sub_county: initialData?.sub_county || "",
       parish: initialData?.parish || "",
       village: initialData?.village || "",
       address: initialData?.address || "",
@@ -144,9 +161,9 @@ export function OrganizationForm({
   const getStepFields = (step: number): (keyof FormValues)[] => {
     switch (step) {
       case 1:
-        return ["name", "acronym", "clusterId", "project"];
+        return ["name", "acronym", "cluster_id", "project_id"];
       case 2:
-        return ["country", "district", "subCounty", "parish", "village"];
+        return ["country", "district", "sub_county", "parish", "village"];
       case 3:
         return ["address"];
       default:
@@ -237,7 +254,7 @@ export function OrganizationForm({
 
               <FormField
                 control={form.control}
-                name="clusterId"
+                name="cluster_id"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-base font-medium">
@@ -245,7 +262,7 @@ export function OrganizationForm({
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value || undefined}
+                      value={field.value || undefined}
                       disabled={isLoading}
                     >
                       <FormControl>
@@ -268,22 +285,30 @@ export function OrganizationForm({
 
               <FormField
                 control={form.control}
-                name="project"
+                name="project_id"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-base font-medium">
                       Project
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter project name (optional)"
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e.target.value || null)}
-                        disabled={isLoading}
-                        className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || undefined}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black">
+                          <SelectValue placeholder="Select a project" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage className="text-sm text-red-500" />
                   </FormItem>
                 )}
@@ -342,7 +367,7 @@ export function OrganizationForm({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="subCounty"
+                  name="sub_county"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-base font-medium">
@@ -419,11 +444,11 @@ export function OrganizationForm({
                       Address
                     </FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
                         placeholder="Enter address"
                         {...field}
                         disabled={isLoading}
-                        className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                        className="min-h-[100px] text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500" />
@@ -433,49 +458,43 @@ export function OrganizationForm({
             </div>
           )}
 
-          <div className="flex justify-between pt-4 border-t border-gray-200">
-            {step > 1 && (
+          <div className="flex justify-between gap-4 pt-4 border-t border-gray-200">
+            {step > 1 ? (
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={isLoading}
-                className="h-12 px-6 text-base font-medium rounded-lg"
+                className="h-12 flex-1 text-base font-medium rounded-lg"
               >
                 <ArrowLeft className="mr-2 h-5 w-5" />
                 Back
               </Button>
+            ) : (
+              <div className="flex-1" />
             )}
-            <div className="ml-auto">
-              {step < totalSteps ? (
-                <Button
-                  type="button"
-                  onClick={nextStep}
-                  disabled={isLoading}
-                  className="h-12 px-6 text-base font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
-                >
+            <Button
+              type={step < totalSteps ? "button" : "submit"}
+              onClick={step < totalSteps ? nextStep : undefined}
+              disabled={isLoading}
+              className="h-12 flex-1 text-base font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {initialData ? "Updating..." : "Creating..."}
+                </>
+              ) : step < totalSteps ? (
+                <>
                   Next
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                </>
+              ) : initialData ? (
+                "Update Organization"
               ) : (
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="h-12 px-6 text-base font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      {initialData ? "Updating..." : "Creating..."}
-                    </>
-                  ) : initialData ? (
-                    "Update Organization"
-                  ) : (
-                    "Create Organization"
-                  )}
-                </Button>
+                "Create Organization"
               )}
-            </div>
+            </Button>
           </div>
         </form>
       </Form>
