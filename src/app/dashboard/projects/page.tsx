@@ -1,61 +1,54 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
-import { getProjects } from "@/features/projects/actions/projects";
 import { ProjectsTable } from "@/features/projects/components/projects-table";
+import { Card, CardContent } from "@/components/ui/card";
+import { getProjects } from "@/features/projects/actions/projects";
+import { getClusters } from "@/features/clusters/actions/clusters";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-export default async function ProjectsPage() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  const projectsResult = await getProjects();
-
-  if (!projectsResult.success) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">Failed to load data</p>
-      </div>
-    );
-  }
-
-  const projects = projectsResult.data || [];
-
-  return (
-    <>
-      <SiteHeader title="Projects" />
-      <Suspense fallback={<ProjectsTableSkeleton />}>
-        <div className="container py-6 space-y-6">
-          <div className="mx-auto max-w-7xl">
-            <ProjectsTable projects={projects} />
-          </div>
-        </div>
-      </Suspense>
-    </>
-  );
-}
 
 function ProjectsTableSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <Skeleton className="h-6 w-32" />
-        <Skeleton className="h-10 w-40" />
-      </div>
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-[400px] w-full" />
+    </div>
+  );
+}
 
-      <div className="border rounded-lg">
-        <div className="p-4">
-          <div className="space-y-3">
-            <Skeleton className="h-8 w-full" />
-            <Skeleton className="h-8 w-full" />
-            <Skeleton className="h-8 w-full" />
+export default async function Page() {
+  const clustersResult = await getClusters();
+  const projectsResult = await getProjects();
+
+  return (
+    <>
+      <SiteHeader title="Projects" />
+      <div className="flex flex-1 flex-col">
+        <div className="@container/main flex flex-1 flex-col gap-2">
+          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            {!clustersResult.success || !projectsResult.success ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-destructive">
+                    {!clustersResult.success && clustersResult.error && (
+                      <div>Error loading clusters: {clustersResult.error}</div>
+                    )}
+                    {!projectsResult.success && projectsResult.error && (
+                      <div>Error loading projects: {projectsResult.error}</div>
+                    )}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <Suspense fallback={<ProjectsTableSkeleton />}>
+                <ProjectsTable
+                  projects={projectsResult.data || []}
+                  clusters={clustersResult.data}
+                />
+              </Suspense>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

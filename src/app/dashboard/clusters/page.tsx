@@ -1,59 +1,55 @@
-import { Suspense } from "react";
-import { ClustersTable } from "@/features/clusters/components/clusters-table";
-import { ClusterMetrics } from "@/features/clusters/components/cluster-metrics";
-import { getClusters } from "@/features/clusters/actions/clusters";
-import { getOrganizations } from "@/features/organizations/actions/organizations";
-import { getProjects } from "@/features/projects/actions/projects";
-import { Skeleton } from "@/components/ui/skeleton";
 import { SiteHeader } from "@/components/site-header";
+import { ClustersTable } from "@/features/clusters/components/clusters-table";
+import { Card, CardContent } from "@/components/ui/card";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { getClusters } from "@/features/clusters/actions/clusters";
 
-export default async function ClustersPage() {
-  const [clustersResult, organizationsResult, projectsResult] =
-    await Promise.all([getClusters(), getOrganizations(), getProjects()]);
+export default async function Page() {
+  const session = await auth();
 
-  // Ensure we have valid data arrays, defaulting to empty arrays if the result is not successful
-  const clusters = clustersResult.success ? clustersResult.data : [];
-  const organizations = organizationsResult.success
-    ? (organizationsResult.data ?? [])
-    : [];
-  const projects = projectsResult.success ? (projectsResult.data ?? []) : [];
+  if (!session) {
+    redirect("/auth/signin");
+  }
 
-  return (
-    <div className="flex flex-1 flex-col">
-      <div className="@container/main flex flex-1 flex-col gap-2">
-        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <SiteHeader title="Clusters" />
+  try {
+    const clustersResult = await getClusters();
 
-          <Suspense
-            fallback={
-              <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[120px] w-full" />
-                ))}
-              </div>
-            }
-          >
-            <ClusterMetrics
-              clusters={clusters}
-              organizations={organizations}
-              projects={projects}
-            />
-          </Suspense>
+    if (!clustersResult.success) {
+      throw new Error(clustersResult.error || "Failed to fetch clusters");
+    }
 
-          <div className="px-4 lg:px-6">
-            <Suspense
-              fallback={
-                <div className="space-y-4">
-                  <Skeleton className="h-10 w-full" />
-                  <Skeleton className="h-[400px] w-full" />
-                </div>
-              }
-            >
-              <ClustersTable data={clusters} />
-            </Suspense>
+    return (
+      <>
+        <SiteHeader title="Clusters" />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <ClustersTable data={clustersResult.data} />
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
+      </>
+    );
+  } catch (error) {
+    return (
+      <>
+        <SiteHeader title="Clusters" />
+        <div className="container py-6 space-y-6">
+          <div className="mx-auto max-w-7xl">
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-destructive">
+                  Error loading clusters data:{" "}
+                  {error instanceof Error
+                    ? error.message
+                    : "Unknown error occurred"}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </>
+    );
+  }
 }

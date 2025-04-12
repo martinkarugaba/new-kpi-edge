@@ -26,6 +26,7 @@ export const authConfig: NextAuthConfig = {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.accessToken = token.accessToken as string;
       }
       return session;
     },
@@ -33,6 +34,7 @@ export const authConfig: NextAuthConfig = {
       if (user && "id" in user && "role" in user) {
         token.id = user.id;
         token.role = user.role;
+        token.accessToken = user.accessToken;
       }
       return token;
     },
@@ -79,6 +81,8 @@ export const authConfig: NextAuthConfig = {
             name: user.name || "",
             email: user.email,
             role: user.role,
+            // Generate an access token or remove if not needed
+            accessToken: `token_${user.id}`, // Simple token generation, replace with actual token if needed
           };
         } catch (error) {
           console.error("Error during authentication:", error);

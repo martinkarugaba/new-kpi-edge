@@ -1,7 +1,7 @@
 import { auth } from "@/features/auth/auth";
 import { redirect } from "next/navigation";
-import { DashboardNav } from "@/features/dashboard/components/DashboardNav";
-import { UserNav } from "@/features/dashboard/components/UserNav";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function DashboardLayout({
   children,
@@ -15,16 +15,13 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <DashboardNav />
-          <div className="ml-auto flex items-center space-x-4">
-            <UserNav user={session.user} />
-          </div>
+    <SidebarProvider>
+      <div className="flex w-full min-h-screen">
+        <AppSidebar variant="sidebar" collapsible="offcanvas" />
+        <div className="flex-1">
+          <main className="container flex-1 p-4">{children}</main>
         </div>
-      </header>
-      <div className="container flex-1">{children}</div>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 }

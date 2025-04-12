@@ -32,6 +32,15 @@ import { DeleteProjectDialog } from "./delete-project-dialog";
 
 interface ProjectsTableProps {
   projects: Project[];
+  clusters: {
+    id: string;
+    name: string;
+    about: string | null;
+    country: string;
+    districts: string[];
+    createdAt: Date | null;
+    updatedAt: Date | null;
+  }[];
 }
 
 // Create a separate component for the actions cell
