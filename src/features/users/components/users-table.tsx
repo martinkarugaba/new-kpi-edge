@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
 import { User } from "../types";
@@ -13,12 +14,58 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
+import { toast } from "sonner";
+import { updateUser } from "../actions/users";
 
 interface UsersTableProps {
   users: User[];
+}
+
+// Component for handling role selection
+function RoleSelect({ user }: { user: User }) {
+  const [isPending, startTransition] = React.useTransition();
+
+  const handleRoleChange = async (newRole: string) => {
+    startTransition(async () => {
+      try {
+        const result = await updateUser(user.id, { role: newRole });
+        if (!result) {
+          toast.error("Failed to update user role");
+        } else {
+          toast.success("Role updated successfully");
+        }
+      } catch {
+        toast.error("Error updating user role");
+      }
+    });
+  };
+
+  return (
+    <Select
+      value={user.role}
+      onValueChange={handleRoleChange}
+      disabled={isPending}
+    >
+      <SelectTrigger className="w-32">
+        <SelectValue placeholder="Select role" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="user">User</SelectItem>
+        <SelectItem value="admin">Admin</SelectItem>
+        <SelectItem value="manager">Manager</SelectItem>
+      </SelectContent>
+    </Select>
+  );
 }
 
 const columns: ColumnDef<User>[] = [
@@ -53,16 +100,20 @@ const columns: ColumnDef<User>[] = [
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => {
-      const role = row.getValue("role") as string;
-      return <div className="capitalize">{role}</div>;
+      const user = row.original;
+      return <RoleSelect user={user} />;
     },
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "createdAt",
     header: "Created At",
     cell: ({ row }) => {
-      const date = row.getValue("created_at") as string;
-      return format(new Date(date), "MMM d, yyyy");
+      const date = row.getValue("createdAt") as string;
+      // Handle both ISO string and timestamp formats
+      const parsedDate = date ? new Date(date) : null;
+      return parsedDate && !isNaN(parsedDate.getTime())
+        ? format(parsedDate, "MMM d, yyyy")
+        : "Invalid date";
     },
   },
   {

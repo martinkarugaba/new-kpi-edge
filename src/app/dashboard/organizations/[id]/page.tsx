@@ -2,8 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { getOrganization } from "@/features/organizations/actions/organizations";
 import { getOrganizationMembers } from "@/features/organizations/actions/organization-members";
 import { OrganizationMembers } from "@/features/organizations/components/OrganizationMembers";
-import { auth } from "@clerk/nextjs/server";
-import { SiteHeader } from "@/components/site-header";
+import { auth } from "@/auth";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
 
 interface OrganizationDetailsPageProps {
   params: {
@@ -24,8 +24,8 @@ export default async function OrganizationDetailsPage({
   params,
 }: OrganizationDetailsPageProps) {
   // Check authentication
-  const { userId } = await auth();
-  if (!userId) {
+  const session = await auth();
+  if (!session?.user) {
     redirect("/sign-in");
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -27,7 +27,7 @@ import {
 } from "../actions/organization-members";
 import { getUsers } from "@/features/users/actions/users";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 import {
   Dialog,
   DialogContent,
@@ -62,7 +62,7 @@ export function OrganizationMembers({
   members,
 }: OrganizationMembersProps) {
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { data: session } = useSession();
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,97 +71,7 @@ export function OrganizationMembers({
   );
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Load available users when dialog opens
-  useEffect(() => {
-    if (dialogOpen) {
-      loadAvailableUsers();
-    }
-  }, [dialogOpen]);
-
-  const handleAddMember = async () => {
-    if (!selectedUserId) {
-      toast.error("Please select a user");
-      return;
-    }
-
-    if (!isSignedIn) {
-      toast.error("You need to be logged in to add members");
-      router.push("/sign-in");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await addOrganizationMember(
-        organizationId,
-        selectedUserId,
-      );
-      if (result.success) {
-        toast.success("Member added successfully");
-        setDialogOpen(false);
-        setSelectedUserId("");
-        router.refresh();
-      } else {
-        toast.error(result.error || "Failed to add member");
-      }
-    } catch {
-      toast.error("Failed to add member");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRemoveMember = async (userId: string) => {
-    if (!isSignedIn) {
-      toast.error("You need to be logged in to remove members");
-      router.push("/sign-in");
-      return;
-    }
-
-    setLoadingStates((prev) => ({ ...prev, [userId]: true }));
-    try {
-      const result = await removeOrganizationMember(organizationId, userId);
-      if (result.success) {
-        toast.success("Member removed successfully");
-        router.refresh();
-      } else {
-        toast.error(result.error || "Failed to remove member");
-      }
-    } catch {
-      toast.error("Failed to remove member");
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
-    }
-  };
-
-  const handleUpdateRole = async (userId: string, role: string) => {
-    if (!isSignedIn) {
-      toast.error("You need to be logged in to update member roles");
-      router.push("/sign-in");
-      return;
-    }
-
-    setLoadingStates((prev) => ({ ...prev, [userId]: true }));
-    try {
-      const result = await updateOrganizationMemberRole(
-        organizationId,
-        userId,
-        role,
-      );
-      if (result.success) {
-        toast.success("Role updated successfully");
-        router.refresh();
-      } else {
-        toast.error(result.error || "Failed to update role");
-      }
-    } catch {
-      toast.error("Failed to update role");
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
-    }
-  };
-
-  const loadAvailableUsers = async () => {
+  const loadAvailableUsers = useCallback(async () => {
     try {
       console.log("Loading available users..."); // Debug log
       setIsLoading(true);
@@ -195,6 +105,96 @@ export function OrganizationMembers({
       setAvailableUsers([]);
     } finally {
       setIsLoading(false);
+    }
+  }, [members]);
+
+  // Load available users when dialog opens
+  useEffect(() => {
+    if (dialogOpen) {
+      loadAvailableUsers();
+    }
+  }, [dialogOpen, loadAvailableUsers]);
+
+  const handleAddMember = async () => {
+    if (!selectedUserId) {
+      toast.error("Please select a user");
+      return;
+    }
+
+    if (!session) {
+      toast.error("You need to be logged in to add members");
+      router.push("/sign-in");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await addOrganizationMember(
+        organizationId,
+        selectedUserId,
+      );
+      if (result.success) {
+        toast.success("Member added successfully");
+        setDialogOpen(false);
+        setSelectedUserId("");
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to add member");
+      }
+    } catch {
+      toast.error("Failed to add member");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveMember = async (userId: string) => {
+    if (!session) {
+      toast.error("You need to be logged in to remove members");
+      router.push("/sign-in");
+      return;
+    }
+
+    setLoadingStates((prev) => ({ ...prev, [userId]: true }));
+    try {
+      const result = await removeOrganizationMember(organizationId, userId);
+      if (result.success) {
+        toast.success("Member removed successfully");
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to remove member");
+      }
+    } catch {
+      toast.error("Failed to remove member");
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
+    }
+  };
+
+  const handleUpdateRole = async (userId: string, role: string) => {
+    if (!session) {
+      toast.error("You need to be logged in to update member roles");
+      router.push("/sign-in");
+      return;
+    }
+
+    setLoadingStates((prev) => ({ ...prev, [userId]: true }));
+    try {
+      const result = await updateOrganizationMemberRole(
+        organizationId,
+        userId,
+        role,
+      );
+      if (result.success) {
+        toast.success("Role updated successfully");
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to update role");
+      }
+    } catch {
+      toast.error("Failed to update role");
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
     }
   };
 

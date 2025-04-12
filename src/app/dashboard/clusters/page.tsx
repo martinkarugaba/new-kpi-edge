@@ -1,9 +1,9 @@
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { getClusters } from "@/features/clusters/actions/clusters";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { ClustersTable } from "@/features/clusters/components/clusters-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { getClusters } from "@/features/clusters/actions/clusters";
 
 export default async function Page() {
   const session = await auth();

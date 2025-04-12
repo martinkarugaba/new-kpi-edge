@@ -1,4 +1,4 @@
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
 import { OrganizationsTable } from "@/features/organizations/components/organizations-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { getOrganizations } from "@/features/organizations/actions/organizations";

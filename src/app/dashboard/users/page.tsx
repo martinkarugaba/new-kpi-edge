@@ -1,4 +1,4 @@
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
 import { UsersTable } from "@/features/users/components/users-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "@/auth";

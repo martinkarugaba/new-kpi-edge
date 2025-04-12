@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/features/themes/components/mode-toggle";
 import { ThemeSelector } from "@/features/themes/components/theme-selector";
@@ -15,12 +14,12 @@ export function SiteHeader({ title, className, ...props }: SiteHeaderProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-t-2xl px-2",
-        className
+        "sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-t-2xl px-2 w-full",
+        className,
       )}
       {...props}
     >
-      <div className="container flex h-14 items-center">
+      <div className="container flex h-12 items-center">
         <div className="mr-4 hidden md:flex">
           <SidebarTrigger />
         </div>

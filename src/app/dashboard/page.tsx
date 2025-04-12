@@ -1,11 +1,11 @@
-import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { ChartAreaInteractive } from "@/features/dashboard/components/chart-area-interactive";
 import { MetricCards } from "@/components/ui/metric-cards";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+
 import { DashboardTable } from "./dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 
 import data from "./data.json";
-
 export default function Page() {
   try {
     return (
@@ -15,7 +15,7 @@ export default function Page() {
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <MetricCards />
-              <div className="px-4 lg:px-6">
+              <div className="px-4 lg:px-0">
                 <ChartAreaInteractive />
               </div>
               <DashboardTable data={data} />
