@@ -1,8 +1,10 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/features/auth/auth";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { clerkClient } from "@clerk/nextjs/server";
 
 // Define types for Clerk user data
 // interface ClerkUser {
@@ -16,30 +18,24 @@ import { clerkClient } from "@clerk/nextjs/server";
 
 export async function getUsers() {
   try {
-    // Get all users from Clerk with proper parameters
-    console.log("Fetching users from Clerk..."); // Debug log
+    console.log("Fetching users from database..."); // Debug log
 
-    // Use the correct method to get users - clerkClient is a function that returns a promise
-    const clerk = await clerkClient();
-    const users = await clerk.users.getUserList();
+    const dbUsers = await db.query.users.findMany();
 
-    console.log("Raw users data:", users); // Debug log
+    console.log("Raw users data:", dbUsers); // Debug log
 
-    if (!users || !users.data || users.data.length === 0) {
-      console.log("No users found in Clerk"); // Debug log
+    if (!dbUsers || dbUsers.length === 0) {
+      console.log("No users found in database"); // Debug log
       return { success: true, data: [] };
     }
 
     // Transform the data to match our User type
-    const transformedUsers = users.data.map((user) => ({
+    const transformedUsers = dbUsers.map((user) => ({
       id: user.id,
-      name:
-        `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-        user.username ||
-        "Unknown",
-      email: user.emailAddresses[0]?.emailAddress || "",
-      role: "user", // Default role
-      createdAt: user.createdAt.toString(), // Convert to string to match User type
+      name: user.name || "Unknown",
+      email: user.email || "",
+      role: user.role || "user",
+      createdAt: user.created_at.toISOString(),
     }));
 
     console.log("Transformed users:", transformedUsers); // Debug log
@@ -63,21 +59,28 @@ export async function getUsers() {
 
 export async function getUser(id: string) {
   try {
-    const authResult = await auth();
+    const session = await auth();
 
     // Return null if user is not authenticated
-    if (!authResult.userId) {
+    if (!session?.user) {
       return null;
     }
 
-    // For now, return a mock user
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, id),
+    });
+
+    if (!user) {
+      return null;
+    }
+
     return {
-      id,
-      name: "User",
-      email: "user@example.com",
-      role: "user",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      id: user.id,
+      name: user.name || "Unknown",
+      email: user.email,
+      role: user.role,
+      createdAt: user.created_at.toISOString(),
+      updatedAt: user.updated_at.toISOString(),
     };
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -89,19 +92,33 @@ export async function createUser(data: {
   name: string;
   email: string;
   role: string;
+  password: string;
 }) {
   try {
-    const clerk = await clerkClient();
-    const result = await clerk.users.createUser({
-      firstName: data.name.split(" ")[0],
-      lastName: data.name.split(" ").slice(1).join(" "),
-      emailAddress: [data.email],
-      publicMetadata: {
+    const session = await auth();
+
+    // Return null if user is not authenticated
+    if (!session?.user) {
+      return null;
+    }
+
+    // Hash password
+    const bcrypt = await import("bcryptjs");
+    const hashedPassword = await bcrypt.default.hash(data.password, 10);
+
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: crypto.randomUUID(),
+        name: data.name,
+        email: data.email,
         role: data.role,
-      },
-    });
-    revalidatePath("/users");
-    return result;
+        password: hashedPassword,
+      })
+      .returning();
+
+    revalidatePath("/dashboard/users");
+    return user;
   } catch (error) {
     console.error("Error creating user:", error);
     throw new Error("Failed to create user");
@@ -117,40 +134,44 @@ export async function updateUser(
   },
 ) {
   try {
-    const authResult = await auth();
+    const session = await auth();
 
     // Return null if user is not authenticated
-    if (!authResult.userId) {
+    if (!session?.user) {
       return null;
     }
 
-    // In a real implementation, you would update the user's metadata in Clerk
-    // For now, just return the updated data
-    return {
-      id,
-      name: data.name || "User",
-      email: data.email || "user@example.com",
-      role: data.role || "user",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    const [user] = await db
+      .update(users)
+      .set({
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        updated_at: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+
+    revalidatePath("/dashboard/users");
+    return user;
   } catch (error) {
     console.error("Error updating user:", error);
     return null; // Return null on error
   }
 }
 
-export async function deleteUser() {
+export async function deleteUser(id: string) {
   try {
-    const authResult = await auth();
+    const session = await auth();
 
     // Return false if user is not authenticated
-    if (!authResult.userId) {
+    if (!session?.user) {
       return false;
     }
 
-    // In a real implementation, you would delete the user in Clerk
-    revalidatePath("/users");
+    await db.delete(users).where(eq(users.id, id));
+
+    revalidatePath("/dashboard/users");
     return true;
   } catch (error) {
     console.error("Error deleting user:", error);

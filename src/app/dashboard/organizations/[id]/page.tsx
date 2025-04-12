@@ -11,6 +11,15 @@ interface OrganizationDetailsPageProps {
   };
 }
 
+interface Member {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default async function OrganizationDetailsPage({
   params,
 }: OrganizationDetailsPageProps) {
@@ -120,10 +129,10 @@ export default async function OrganizationDetailsPage({
                   membersResult.success && membersResult.data
                     ? membersResult.data
                         .filter(
-                          (member): member is NonNullable<typeof member> =>
+                          (member: Member | null): member is Member =>
                             member !== null,
                         )
-                        .map((member) => ({
+                        .map((member: Member) => ({
                           id: member.id,
                           name: member.name,
                           email: member.email,

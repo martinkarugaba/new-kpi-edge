@@ -1,105 +1,72 @@
- 
-
 "use server";
 
 import { db } from "@/lib/db";
-import { organizationMembers } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { organizationMembers, users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@/features/auth/auth";
 
 export async function getOrganizationMembers(organizationId: string) {
   try {
-    const members = await db
-      .select()
-      .from(organizationMembers)
-      .where(eq(organizationMembers.organization_id, organizationId));
+    console.log("Fetching members for organization:", organizationId);
 
-    // Fetch user details from Clerk
-    const users = await Promise.all(
+    const members = await db.query.organizationMembers.findMany({
+      where: eq(organizationMembers.organization_id, organizationId),
+    });
+
+    console.log("Raw members data:", members);
+
+    if (!members || members.length === 0) {
+      console.log("No members found for organization");
+      return { success: true, data: [] };
+    }
+
+    // Get user details for each member
+    const membersWithUserDetails = await Promise.all(
       members.map(async (member) => {
         try {
-          // Try to initialize Clerk client - wrap in try/catch
-          let clerk;
-          try {
-            clerk = await clerkClient();
-          } catch (clerkError) {
-            console.error("Failed to initialize Clerk client:", clerkError);
-            // Return a minimal user object if Clerk initialization fails
-            return {
-              id: member.user_id,
-              name: "Unknown User",
-              email: "No email available",
-              role: member.role,
-              createdAt: member.created_at
-                ? member.created_at.toISOString()
-                : new Date().toISOString(),
-              updatedAt: member.updated_at
-                ? member.updated_at.toISOString()
-                : new Date().toISOString(),
-            };
-          }
+          const user = await db.query.users.findFirst({
+            where: eq(users.id, member.user_id),
+          });
 
-          // Try to get user from Clerk - wrap in another try/catch
-          let user;
-          try {
-            user = await clerk.users.getUser(member.user_id);
-          } catch (userError) {
-            console.error(`Failed to fetch user ${member.user_id}:`, userError);
-            // Return a minimal user object if user fetch fails
-            return {
-              id: member.user_id,
-              name: "Unknown User",
-              email: "No email available",
-              role: member.role,
-              createdAt: member.created_at
-                ? member.created_at.toISOString()
-                : new Date().toISOString(),
-              updatedAt: member.updated_at
-                ? member.updated_at.toISOString()
-                : new Date().toISOString(),
-            };
-          }
-
-          // If we got this far, we have a valid user
           return {
             id: member.user_id,
-            name:
-              user.firstName && user.lastName
-                ? `${user.firstName} ${user.lastName}`
-                : user.username || "Unknown",
-            email: user.emailAddresses[0]?.emailAddress || "No email",
+            name: user?.name || "Unknown User",
+            email: user?.email || "",
             role: member.role,
-            createdAt: member.created_at
-              ? member.created_at.toISOString()
-              : new Date().toISOString(),
-            updatedAt: member.updated_at
-              ? member.updated_at.toISOString()
-              : new Date().toISOString(),
+            createdAt:
+              member.created_at?.toISOString() || new Date().toISOString(),
+            updatedAt:
+              member.updated_at?.toISOString() || new Date().toISOString(),
           };
         } catch (error) {
-          console.error(`Error processing member ${member.user_id}:`, error);
-          // Return a minimal user object if anything else fails
+          console.error(
+            `Error fetching user details for member ${member.user_id}:`,
+            error,
+          );
           return {
             id: member.user_id,
-            name: "Error fetching user",
-            email: "Error",
+            name: "Unknown User",
+            email: "",
             role: member.role,
-            createdAt: member.created_at
-              ? member.created_at.toISOString()
-              : new Date().toISOString(),
-            updatedAt: member.updated_at
-              ? member.updated_at.toISOString()
-              : new Date().toISOString(),
+            createdAt:
+              member.created_at?.toISOString() || new Date().toISOString(),
+            updatedAt:
+              member.updated_at?.toISOString() || new Date().toISOString(),
           };
         }
       }),
     );
 
-    return { success: true, data: users };
+    console.log("Members with user details:", membersWithUserDetails);
+    return { success: true, data: membersWithUserDetails };
   } catch (error) {
-    console.error("Error fetching organization members:", error);
-    return { success: false, error: "Failed to fetch organization members" };
+    console.error("Error in getOrganizationMembers:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to fetch members",
+      data: [],
+    };
   }
 }
 
@@ -109,44 +76,41 @@ export async function addOrganizationMember(
   role: string = "member",
 ) {
   try {
-    // Check if user is already a member
-    const existingMember = await db
-      .select()
-      .from(organizationMembers)
-      .where(
-        and(
-          eq(organizationMembers.organization_id, organizationId),
-          eq(organizationMembers.user_id, userId),
-        ),
-      )
-      .limit(1);
+    const session = await auth();
 
-    if (existingMember.length > 0) {
+    if (!session?.user) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    // Check if user is already a member
+    const existingMember = await db.query.organizationMembers.findFirst({
+      where:
+        eq(organizationMembers.organization_id, organizationId) &&
+        eq(organizationMembers.user_id, userId),
+    });
+
+    if (existingMember) {
       return {
         success: false,
         error: "User is already a member of this organization",
       };
     }
 
-    // Validate role
-    if (!["admin", "member"].includes(role)) {
-      return { success: false, error: "Invalid role specified" };
-    }
+    // Add the member
+    await db.insert(organizationMembers).values({
+      organization_id: organizationId,
+      user_id: userId,
+      role: role,
+    });
 
-    const [member] = await db
-      .insert(organizationMembers)
-      .values({
-        organization_id: organizationId,
-        user_id: userId,
-        role,
-      })
-      .returning();
-
-    revalidatePath("/dashboard/organizations");
-    return { success: true, data: member };
+    revalidatePath("/dashboard/organizations/[id]", "page");
+    return { success: true };
   } catch (error) {
     console.error("Error adding organization member:", error);
-    return { success: false, error: "Failed to add organization member" };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to add member",
+    };
   }
 }
 
@@ -156,33 +120,28 @@ export async function updateOrganizationMemberRole(
   role: string,
 ) {
   try {
-    // Validate role
-    if (!["admin", "member"].includes(role)) {
-      return { success: false, error: "Invalid role specified" };
+    const session = await auth();
+
+    if (!session?.user) {
+      return { success: false, error: "Not authenticated" };
     }
 
-    const [member] = await db
+    await db
       .update(organizationMembers)
-      .set({ role })
+      .set({ role: role })
       .where(
-        and(
-          eq(organizationMembers.organization_id, organizationId),
+        eq(organizationMembers.organization_id, organizationId) &&
           eq(organizationMembers.user_id, userId),
-        ),
-      )
-      .returning();
+      );
 
-    if (!member) {
-      return { success: false, error: "Member not found" };
-    }
-
-    revalidatePath("/dashboard/organizations");
-    return { success: true, data: member };
+    revalidatePath("/dashboard/organizations/[id]", "page");
+    return { success: true };
   } catch (error) {
     console.error("Error updating organization member role:", error);
     return {
       success: false,
-      error: "Failed to update organization member role",
+      error:
+        error instanceof Error ? error.message : "Failed to update member role",
     };
   }
 }
@@ -192,24 +151,26 @@ export async function removeOrganizationMember(
   userId: string,
 ) {
   try {
-    const result = await db
-      .delete(organizationMembers)
-      .where(
-        and(
-          eq(organizationMembers.organization_id, organizationId),
-          eq(organizationMembers.user_id, userId),
-        ),
-      )
-      .returning();
+    const session = await auth();
 
-    if (result.length === 0) {
-      return { success: false, error: "Member not found" };
+    if (!session?.user) {
+      return { success: false, error: "Not authenticated" };
     }
 
-    revalidatePath("/dashboard/organizations");
+    await db
+      .delete(organizationMembers)
+      .where(
+        eq(organizationMembers.organization_id, organizationId) &&
+          eq(organizationMembers.user_id, userId),
+      );
+
+    revalidatePath("/dashboard/organizations/[id]", "page");
     return { success: true };
   } catch (error) {
     console.error("Error removing organization member:", error);
-    return { success: false, error: "Failed to remove organization member" };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to remove member",
+    };
   }
 }

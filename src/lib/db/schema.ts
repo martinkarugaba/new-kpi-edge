@@ -53,6 +53,16 @@ export const projects = pgTable("projects", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const users = pgTable("users", {
+  id: text("id").primaryKey().notNull(),
+  name: text("name"),
+  email: text("email").notNull().unique(),
+  password: text("password"),
+  role: text("role").default("user").notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const organizationMembers = pgTable("organization_members", {
   id: uuid("id").primaryKey().defaultRandom(),
   organization_id: uuid("organization_id")

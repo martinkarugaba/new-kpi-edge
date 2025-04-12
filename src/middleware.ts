@@ -1,7 +1,9 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { auth } from "./features/auth/auth";
 
-export default clerkMiddleware();
+// Export the Next.js middleware
+export default auth;
 
+// Specify which routes to apply middleware to
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
