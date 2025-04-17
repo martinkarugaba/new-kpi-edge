@@ -11,17 +11,30 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { LogOutIcon } from "lucide-react";
 import { ModeToggle } from "@/features/themes/components/mode-toggle";
+import { useSession, signOut } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const isLoading = status === "loading";
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/login");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
       <Container>
@@ -117,32 +130,83 @@ export function Header() {
             </NavigationMenu>
           </div>
           <div className="flex items-center gap-4">
-            <SignedOut>
-              <Button
-                variant="outline"
-                asChild
-                className="hidden sm:inline-flex"
-              >
-                <SignInButton mode="modal">
-                  <span>Log In</span>
-                </SignInButton>
-              </Button>
-              <Button asChild>
-                <SignUpButton mode="modal">
-                  <span>Get Started</span>
-                </SignUpButton>
-              </Button>
-            </SignedOut>
-            <SignedIn>
-              <Button
-                variant="outline"
-                asChild
-                className="hidden sm:inline-flex"
-              >
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            {!isLoading && !session && (
+              <>
+                <Button
+                  variant="outline"
+                  asChild
+                  className="hidden sm:inline-flex"
+                >
+                  <Link href="/auth/login">Log In</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/auth/register">Get Started</Link>
+                </Button>
+              </>
+            )}
+            {session && (
+              <>
+                <Button
+                  variant="outline"
+                  asChild
+                  className="hidden sm:inline-flex"
+                >
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={session.user?.image || ""}
+                          alt={session.user?.name || ""}
+                        />
+                        <AvatarFallback>
+                          {session.user?.name
+                            ? session.user.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                            : "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {session.user?.name}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {session.user?.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/dashboard/profile")}
+                      >
+                        Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/dashboard/settings")}
+                      >
+                        Settings
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      Log out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
             <ModeToggle />
           </div>
         </div>

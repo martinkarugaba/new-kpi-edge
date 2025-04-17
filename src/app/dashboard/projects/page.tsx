@@ -1,17 +1,24 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-// import { ChartAreaInteractive } from "@/components/chart-area-interactive";
-import { DataTable } from "@/components/ui/data-table";
-import { SectionCards } from "@/components/section-cards";
-import { SiteHeader } from "@/components/site-header";
-// import { chartData } from "../data/chart-data"
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { ProjectsTable } from "@/features/projects/components/projects-table";
+import { Card, CardContent } from "@/components/ui/card";
+import { getProjects } from "@/features/projects/actions/projects";
+import { getClusters } from "@/features/clusters/actions/clusters";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function ProjectsPage() {
-  const { userId } = await auth();
+function ProjectsTableSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-[400px] w-full" />
+    </div>
+  );
+}
 
-  if (!userId) {
-    redirect("/sign-in");
-  }
+export default async function Page() {
+  const organizationId = "default-organization-id"; // Replace with actual logic to fetch organizationId
+  const clustersResult = await getClusters();
+  const projectsResult = await getProjects(organizationId);
 
   return (
     <>
@@ -19,11 +26,31 @@ export default async function ProjectsPage() {
       <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-            <SectionCards />
-            {/* <div className="px-4 lg:px-6">
-              <ChartAreaInteractive data={chartData} />
-            </div> */}
-            <DataTable data={[]} />
+            {!clustersResult.success || !projectsResult.success ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-destructive">
+                    {!clustersResult.success && clustersResult.error && (
+                      <span>
+                        Error loading clusters: {clustersResult.error}
+                      </span>
+                    )}
+                    {!projectsResult.success && projectsResult.error && (
+                      <span>
+                        Error loading projects: {projectsResult.error}
+                      </span>
+                    )}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <Suspense fallback={<ProjectsTableSkeleton />}>
+                <ProjectsTable
+                  clusters={clustersResult.data || []}
+                  projects={projectsResult.data || []}
+                />
+              </Suspense>
+            )}
           </div>
         </div>
       </div>
