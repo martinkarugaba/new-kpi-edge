@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { projects } from "@/lib/db/schema";
+import { projects, organizations } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -79,12 +79,40 @@ export async function deleteProject(id: string) {
   }
 }
 
-export async function getProjects() {
+export async function getProjects(organizationId?: string) {
   try {
+    if (organizationId) {
+      // First find the organization's project
+      const [org] = await db
+        .select({
+          project_id: organizations.project_id,
+        })
+        .from(organizations)
+        .where(eq(organizations.id, organizationId));
+
+      if (org?.project_id) {
+        // If organization has a project, fetch that specific project
+        const projectsList = await db
+          .select()
+          .from(projects)
+          .where(eq(projects.id, org.project_id));
+
+        const typedProjects = projectsList.map((project) => ({
+          ...project,
+          status: project.status as "active" | "completed" | "on-hold",
+        }));
+
+        return { success: true, data: typedProjects };
+      }
+
+      // If organization has no project, return empty array
+      return { success: true, data: [] };
+    }
+
+    // If no organizationId provided, fetch all projects
     const projectsList = await db.select().from(projects);
 
-    // Cast the status field to the expected type
-    const typedProjects: Project[] = projectsList.map((project) => ({
+    const typedProjects = projectsList.map((project) => ({
       ...project,
       status: project.status as "active" | "completed" | "on-hold",
     }));

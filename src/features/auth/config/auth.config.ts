@@ -9,7 +9,7 @@ import bcrypt from "bcryptjs";
 
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: "/sign-in",
+    signIn: "/auth/login",
     error: "/auth/error",
   },
   callbacks: {
@@ -23,12 +23,35 @@ export const authConfig: NextAuthConfig = {
       return baseUrl;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.accessToken = token.accessToken as string;
+      if (!token || !session.user) {
+        return session;
       }
-      return session;
+
+      session.user.id = token.id as string;
+      session.user.role = token.role as string;
+      session.accessToken = token.accessToken as string;
+
+      // Check if user exists in database
+      try {
+        const user = await db.query.users.findFirst({
+          where: eq(users.id, session.user.id),
+        });
+
+        // If user doesn't exist, return the session without modifications
+        if (!user) {
+          console.log(
+            `User ${session.user.id} not found in database during session creation`,
+          );
+          return session;
+        }
+
+        // Update session with latest user data
+        session.user.role = user.role;
+        return session;
+      } catch (error) {
+        console.error("Error checking user existence in database:", error);
+        return session;
+      }
     },
     async jwt({ token, user }) {
       if (user && "id" in user && "role" in user) {

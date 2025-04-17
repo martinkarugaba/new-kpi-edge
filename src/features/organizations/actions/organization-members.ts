@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { organizationMembers, users } from "@/lib/db/schema";
+import { organizationMembers, users, userRole } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/features/auth/auth";
@@ -29,14 +29,19 @@ export async function getOrganizationMembers(organizationId: string) {
             where: eq(users.id, member.user_id),
           });
 
+          if (!user) {
+            console.error(`User not found for member ${member.user_id}`);
+            return null;
+          }
+
           return {
             id: member.user_id,
-            name: user?.name || "Unknown User",
-            email: user?.email || "",
+            name: user.name || "Unknown User",
+            email: user.email,
             role: member.role,
-            createdAt:
+            created_at:
               member.created_at?.toISOString() || new Date().toISOString(),
-            updatedAt:
+            updated_at:
               member.updated_at?.toISOString() || new Date().toISOString(),
           };
         } catch (error) {
@@ -44,22 +49,18 @@ export async function getOrganizationMembers(organizationId: string) {
             `Error fetching user details for member ${member.user_id}:`,
             error,
           );
-          return {
-            id: member.user_id,
-            name: "Unknown User",
-            email: "",
-            role: member.role,
-            createdAt:
-              member.created_at?.toISOString() || new Date().toISOString(),
-            updatedAt:
-              member.updated_at?.toISOString() || new Date().toISOString(),
-          };
+          return null;
         }
       }),
     );
 
-    console.log("Members with user details:", membersWithUserDetails);
-    return { success: true, data: membersWithUserDetails };
+    // Filter out any null values from failed user lookups
+    const validMembers = membersWithUserDetails.filter(
+      (member): member is NonNullable<typeof member> => member !== null,
+    );
+
+    console.log("Members with user details:", validMembers);
+    return { success: true, data: validMembers };
   } catch (error) {
     console.error("Error in getOrganizationMembers:", error);
     return {
@@ -73,7 +74,7 @@ export async function getOrganizationMembers(organizationId: string) {
 export async function addOrganizationMember(
   organizationId: string,
   userId: string,
-  role: string = "member",
+  role: (typeof userRole.enumValues)[number] = "organization_member",
 ) {
   try {
     const session = await auth();
@@ -117,7 +118,7 @@ export async function addOrganizationMember(
 export async function updateOrganizationMemberRole(
   organizationId: string,
   userId: string,
-  role: string,
+  role: (typeof userRole.enumValues)[number],
 ) {
   try {
     const session = await auth();
@@ -172,5 +173,24 @@ export async function removeOrganizationMember(
       success: false,
       error: error instanceof Error ? error.message : "Failed to remove member",
     };
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    console.log("Fetching all users from database");
+    const allUsers = await db.query.users.findMany({
+      columns: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+    console.log("Users fetched:", allUsers);
+
+    return { success: true, data: allUsers };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { success: false, error: "Failed to fetch users" };
   }
 }

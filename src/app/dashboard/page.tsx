@@ -2,10 +2,10 @@ import { ChartAreaInteractive } from "@/features/dashboard/components/chart-area
 import { MetricCards } from "@/components/ui/metric-cards";
 import { SiteHeader } from "@/features/dashboard/components/site-header";
 
-import { DashboardTable } from "./dashboard-table";
+// import { DashboardTable } from "./dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 
-import data from "./data.json";
+// import data from "./data.json";
 export default function Page() {
   try {
     return (
@@ -18,7 +18,7 @@ export default function Page() {
               <div className="px-4 lg:px-0">
                 <ChartAreaInteractive />
               </div>
-              <DashboardTable data={data} />
+              {/* <DashboardTable data={data} /> */}
             </div>
           </div>
         </div>

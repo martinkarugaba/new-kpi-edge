@@ -19,5 +19,15 @@ export interface Organization {
   project?: {
     id: string;
     name: string;
+    acronym: string;
   } | null;
+}
+
+export interface OrganizationMember {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
 }

@@ -1,7 +1,10 @@
+import { userRole } from "@/lib/db/schema";
+
 export type User = {
   id: string;
-  name: string;
+  name: string | null;
   email: string;
-  role: string;
-  createdAt: string;
+  role: (typeof userRole.enumValues)[number];
+  created_at: Date;
+  updated_at: Date;
 };

@@ -44,7 +44,7 @@ export function UsersTable({ users }: UsersTableProps) {
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
-                {format(new Date(user.createdAt), "MMM d, yyyy")}
+                {format(new Date(user.created_at), "MMM d, yyyy")}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

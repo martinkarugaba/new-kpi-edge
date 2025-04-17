@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import Link from "next/link";
 
 export const LoginFormSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -58,7 +60,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 w-full max-w-md">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
           <FormField
@@ -75,6 +77,7 @@ export function LoginForm() {
                     autoComplete="email"
                     autoCorrect="off"
                     disabled={isLoading}
+                    className="h-12 px-4 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -87,13 +90,21 @@ export function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel>Password</FormLabel>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-sm text-primary hover:text-primary/90"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <FormControl>
-                  <Input
+                  <PasswordInput
                     placeholder="Enter your password"
-                    type="password"
                     autoComplete="current-password"
                     disabled={isLoading}
+                    className="h-12 px-4 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -101,7 +112,11 @@ export function LoginForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="h-12 text-base cursor-pointer"
+          >
             {isLoading && (
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
             )}

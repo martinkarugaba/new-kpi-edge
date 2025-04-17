@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ActiveThemeProvider } from "@/features/themes/components/active-theme";
+import { QueryProvider } from "@/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,21 +22,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className}`}>
         <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ActiveThemeProvider>
-              <SidebarProvider defaultOpen={true}>
-                {children}
-                <Toaster />
-              </SidebarProvider>
-            </ActiveThemeProvider>
-          </ThemeProvider>
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <ActiveThemeProvider>
+                <SidebarProvider defaultOpen={true}>
+                  <div className="w-full">{children}</div>
+                  <Toaster />
+                </SidebarProvider>
+              </ActiveThemeProvider>
+            </ThemeProvider>
+          </QueryProvider>
         </SessionProvider>
       </body>
     </html>

@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/features/dashboard/components/site-header";
 import { UsersTable } from "@/features/users/components/users-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { auth } from "@/auth";
+import { auth } from "@/features/auth/auth";
 import { redirect } from "next/navigation";
 import { getUsers } from "@/features/users/actions/users";
 
@@ -13,7 +13,9 @@ export default async function Page() {
   }
 
   try {
+    console.log("Fetching users for dashboard..."); // Debug log
     const usersResult = await getUsers();
+    console.log("Users result:", usersResult); // Debug log
 
     if (!usersResult.success) {
       throw new Error(usersResult.error || "Failed to fetch users");
@@ -32,6 +34,7 @@ export default async function Page() {
       </>
     );
   } catch (error) {
+    console.error("Error in users page:", error); // Debug log
     return (
       <>
         <SiteHeader title="Users" />

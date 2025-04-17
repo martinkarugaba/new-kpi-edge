@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { pgTable, uuid, text, timestamp, integer } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  integer,
+  pgEnum,
+} from "drizzle-orm/pg-core";
 
 export const organizations = pgTable("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -53,12 +60,20 @@ export const projects = pgTable("projects", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const userRole = pgEnum("user_role", [
+  "super_admin",
+  "cluster_manager",
+  "organization_admin",
+  "organization_member",
+  "user",
+]);
+
 export const users = pgTable("users", {
   id: text("id").primaryKey().notNull(),
   name: text("name"),
   email: text("email").notNull().unique(),
   password: text("password"),
-  role: text("role").default("user").notNull(),
+  role: userRole("role").default("user").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -69,9 +84,45 @@ export const organizationMembers = pgTable("organization_members", {
     .references(() => organizations.id)
     .notNull(),
   user_id: text("user_id").notNull(), // Clerk user ID
-  role: text("role").notNull().default("member"), // member, admin, etc.
+  role: userRole("role").notNull().default("organization_member"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const participants = pgTable("participants", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  country: text("country").notNull(),
+  district: text("district").notNull(),
+  subCounty: text("sub_county").notNull(),
+  parish: text("parish").notNull(),
+  village: text("village").notNull(),
+  sex: text("sex").notNull(),
+  age: integer("age").notNull(),
+  isPWD: text("is_pwd").notNull().default("no"),
+  isMother: text("is_mother").notNull().default("no"),
+  isRefugee: text("is_refugee").notNull().default("no"),
+  designation: text("designation").notNull(),
+  enterprise: text("enterprise").notNull(),
+  contact: text("contact").notNull(),
+  organization_id: uuid("organization_id")
+    .references(() => organizations.id)
+    .notNull(),
+  project_id: uuid("project_id")
+    .references(() => projects.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  token: text("token").primaryKey(),
+  user_id: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires").notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Relations
@@ -87,6 +138,7 @@ export const organizationsRelations = relations(
       references: [projects.id],
     }),
     members: many(organizationMembers),
+    participants: many(participants),
   }),
 );
 
@@ -105,6 +157,10 @@ export const projectsRelations = relations(projects, ({ many }) => ({
   organizations: many(organizations),
 }));
 
+export const usersRelations = relations(users, ({ many }) => ({
+  organizations: many(organizationMembers),
+}));
+
 export const organizationMembersRelations = relations(
   organizationMembers,
   ({ one }) => ({
@@ -112,5 +168,20 @@ export const organizationMembersRelations = relations(
       fields: [organizationMembers.organization_id],
       references: [organizations.id],
     }),
+    user: one(users, {
+      fields: [organizationMembers.user_id],
+      references: [users.id],
+    }),
   }),
 );
+
+export const participantsRelations = relations(participants, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [participants.organization_id],
+    references: [organizations.id],
+  }),
+  project: one(projects, {
+    fields: [participants.project_id],
+    references: [projects.id],
+  }),
+}));

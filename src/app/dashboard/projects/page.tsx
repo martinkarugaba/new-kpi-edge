@@ -16,8 +16,9 @@ function ProjectsTableSkeleton() {
 }
 
 export default async function Page() {
+  const organizationId = "default-organization-id"; // Replace with actual logic to fetch organizationId
   const clustersResult = await getClusters();
-  const projectsResult = await getProjects();
+  const projectsResult = await getProjects(organizationId);
 
   return (
     <>
@@ -30,10 +31,14 @@ export default async function Page() {
                 <CardContent className="pt-6">
                   <p className="text-destructive">
                     {!clustersResult.success && clustersResult.error && (
-                      <div>Error loading clusters: {clustersResult.error}</div>
+                      <span>
+                        Error loading clusters: {clustersResult.error}
+                      </span>
                     )}
                     {!projectsResult.success && projectsResult.error && (
-                      <div>Error loading projects: {projectsResult.error}</div>
+                      <span>
+                        Error loading projects: {projectsResult.error}
+                      </span>
                     )}
                   </p>
                 </CardContent>
@@ -41,8 +46,8 @@ export default async function Page() {
             ) : (
               <Suspense fallback={<ProjectsTableSkeleton />}>
                 <ProjectsTable
+                  clusters={clustersResult.data || []}
                   projects={projectsResult.data || []}
-                  clusters={clustersResult.data}
                 />
               </Suspense>
             )}

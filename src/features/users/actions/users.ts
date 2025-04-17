@@ -2,7 +2,7 @@
 
 import { auth } from "@/features/auth/auth";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { users, userRole } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -18,10 +18,16 @@ import { revalidatePath } from "next/cache";
 
 export async function getUsers() {
   try {
+    const session = await auth();
+    console.log("Session in getUsers:", session); // Debug log
+
+    if (!session?.user) {
+      console.log("No authenticated session found"); // Debug log
+      return { success: false, error: "Not authenticated", data: [] };
+    }
+
     console.log("Fetching users from database..."); // Debug log
-
     const dbUsers = await db.query.users.findMany();
-
     console.log("Raw users data:", dbUsers); // Debug log
 
     if (!dbUsers || dbUsers.length === 0) {
@@ -32,10 +38,11 @@ export async function getUsers() {
     // Transform the data to match our User type
     const transformedUsers = dbUsers.map((user) => ({
       id: user.id,
-      name: user.name || "Unknown",
-      email: user.email || "",
-      role: user.role || "user",
-      createdAt: user.created_at.toISOString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
     }));
 
     console.log("Transformed users:", transformedUsers); // Debug log
@@ -76,11 +83,11 @@ export async function getUser(id: string) {
 
     return {
       id: user.id,
-      name: user.name || "Unknown",
+      name: user.name,
       email: user.email,
       role: user.role,
-      createdAt: user.created_at.toISOString(),
-      updatedAt: user.updated_at.toISOString(),
+      created_at: user.created_at,
+      updated_at: user.updated_at,
     };
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -91,7 +98,7 @@ export async function getUser(id: string) {
 export async function createUser(data: {
   name: string;
   email: string;
-  role: string;
+  role: (typeof userRole.enumValues)[number];
   password: string;
 }) {
   try {
@@ -130,7 +137,7 @@ export async function updateUser(
   data: {
     name?: string;
     email?: string;
-    role?: string;
+    role?: (typeof userRole.enumValues)[number];
   },
 ) {
   try {
@@ -156,7 +163,7 @@ export async function updateUser(
     return user;
   } catch (error) {
     console.error("Error updating user:", error);
-    return null; // Return null on error
+    return null;
   }
 }
 

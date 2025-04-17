@@ -5,12 +5,14 @@ import { cn } from "@/lib/utils";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/features/themes/components/mode-toggle";
 import { ThemeSelector } from "@/features/themes/components/theme-selector";
+import { DashboardBreadcrumbs } from "./dashboard-breadcrumbs";
 
 interface SiteHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
+  children?: React.ReactNode;
 }
 
-export function SiteHeader({ title, className, ...props }: SiteHeaderProps) {
+export function SiteHeader({ children, className, ...props }: SiteHeaderProps) {
   return (
     <header
       className={cn(
@@ -23,9 +25,11 @@ export function SiteHeader({ title, className, ...props }: SiteHeaderProps) {
         <div className="mr-4 hidden md:flex">
           <SidebarTrigger />
         </div>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {title && <h1 className="text-lg font-semibold">{title}</h1>}
+
+        <div className="flex flex-1 flex-col justify-center md:flex-row md:items-center md:justify-between">
+          <div className="container py-2 md:py-4">
+            <DashboardBreadcrumbs />
+            {children}
           </div>
           <div className="ml-auto flex items-center gap-2">
             <ThemeSelector />

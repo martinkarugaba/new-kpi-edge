@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/features/dashboard/components/site-header";
 import { getClusters } from "@/features/clusters/actions/clusters";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { auth } from "@/features/auth/auth";
 import { ClustersTable } from "@/features/clusters/components/clusters-table";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -25,7 +25,7 @@ export default async function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <ClustersTable data={clustersResult.data} />
+              <ClustersTable data={clustersResult.data ?? []} />
             </div>
           </div>
         </div>

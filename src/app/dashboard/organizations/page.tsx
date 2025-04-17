@@ -30,14 +30,16 @@ export default async function Page() {
                 <CardContent className="pt-6">
                   <p className="text-destructive">
                     {!clustersResult.success && clustersResult.error && (
-                      <div>Error loading clusters: {clustersResult.error}</div>
+                      <span>
+                        Error loading clusters: {clustersResult.error}
+                      </span>
                     )}
                     {!organizationsResult.success &&
                       organizationsResult.error && (
-                        <div>
+                        <span>
                           Error loading organizations:{" "}
                           {organizationsResult.error}
-                        </div>
+                        </span>
                       )}
                   </p>
                 </CardContent>
@@ -46,7 +48,7 @@ export default async function Page() {
               <Suspense fallback={<OrganizationsTableSkeleton />}>
                 <OrganizationsTable
                   organizations={organizationsResult.data || []}
-                  clusters={clustersResult.data}
+                  clusters={clustersResult.data || []}
                 />
               </Suspense>
             )}

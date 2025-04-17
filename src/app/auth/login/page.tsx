@@ -9,25 +9,29 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-        <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Enter your email to sign in to your account
+    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/50">
+      {/* Background gradient */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,var(--primary)_0,transparent_100%)] opacity-10" />
+
+      {/* Content */}
+      <div className="container relative mx-auto flex w-full max-w-[480px] flex-col items-center justify-center p-4">
+        <div className="w-full rounded-xl border bg-card p-8 shadow-lg">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Sign in to your account to continue
+            </p>
+          </div>
+          <LoginForm />
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            <Link
+              href="/auth/register"
+              className="text-primary hover:text-primary/90 font-medium"
+            >
+              Don&apos;t have an account? Sign Up
+            </Link>
           </p>
         </div>
-        <LoginForm />
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
-            href="/auth/register"
-            className="hover:text-brand underline underline-offset-4"
-          >
-            Don&apos;t have an account? Sign Up
-          </Link>
-        </p>
       </div>
     </div>
   );

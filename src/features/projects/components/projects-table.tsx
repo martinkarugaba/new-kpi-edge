@@ -133,13 +133,13 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: "acronym",
+      header: "Acronym",
       enableHiding: true,
     },
     {
-      accessorKey: "acronym",
-      header: "Acronym",
+      accessorKey: "name",
+      header: "Name",
       enableHiding: true,
     },
     {

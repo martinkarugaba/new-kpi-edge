@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { register } from "@/features/auth/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,17 +19,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const RegisterFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-    ),
-});
+const RegisterFormSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type FormValues = z.infer<typeof RegisterFormSchema>;
 
@@ -42,6 +49,7 @@ export function RegisterForm() {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -53,7 +61,7 @@ export function RegisterForm() {
 
       if (result.success) {
         toast.success("Your account has been created successfully.");
-        router.push("/login");
+        router.push("/auth/login");
       } else {
         toast.error(
           result.error || "Failed to create account. Please try again.",
@@ -67,7 +75,7 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 w-full max-w-md">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
           <FormField
@@ -84,6 +92,7 @@ export function RegisterForm() {
                     autoComplete="name"
                     autoCorrect="off"
                     disabled={isLoading}
+                    className="h-12 px-4 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -105,6 +114,7 @@ export function RegisterForm() {
                     autoComplete="email"
                     autoCorrect="off"
                     disabled={isLoading}
+                    className="h-12 px-4 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -119,11 +129,11 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
+                  <PasswordInput
                     placeholder="Create a password"
-                    type="password"
                     autoComplete="new-password"
                     disabled={isLoading}
+                    className="h-12 px-4 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -131,7 +141,30 @@ export function RegisterForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isLoading}>
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    placeholder="Confirm your password"
+                    autoComplete="new-password"
+                    disabled={isLoading}
+                    className="h-12 px-4 text-base"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="h-12 text-base cursor-pointer"
+          >
             {isLoading && (
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
             )}

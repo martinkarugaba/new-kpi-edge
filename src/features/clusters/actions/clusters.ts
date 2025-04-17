@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { clusters } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { sql } from "drizzle-orm";
 
 export type CreateClusterInput = {
   name: string;
@@ -67,30 +68,43 @@ export async function getCluster(id: string) {
   }
 }
 
-type ClustersResponse =
-  | {
-      success: true;
-      data: Array<{
-        id: string;
-        name: string;
-        about: string | null;
-        country: string;
-        districts: string[];
-        createdAt: Date | null;
-        updatedAt: Date | null;
-      }>;
-    }
-  | {
-      success: false;
-      error: string;
-    };
+import { Cluster } from "../types";
+
+export type ClustersResponse = {
+  success: boolean;
+  data?: Cluster[];
+  error?: string;
+};
 
 export async function getClusters(): Promise<ClustersResponse> {
   try {
+    console.log("Attempting to connect to database...");
+
+    // Test the connection first
+    await db.execute(sql`SELECT 1`);
+    console.log("Database connection successful");
+
     const clustersList = await db.select().from(clusters);
+    console.log("Clusters fetched successfully:", clustersList.length);
+
     return { success: true, data: clustersList };
   } catch (error) {
     console.error("Error fetching clusters:", error);
-    return { success: false, error: "Failed to fetch clusters" };
+
+    // Log more detailed error information
+    if (error instanceof Error) {
+      console.error("Error details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
+    }
+
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to fetch clusters",
+      data: [],
+    };
   }
 }

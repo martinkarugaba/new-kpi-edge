@@ -73,7 +73,7 @@ export function getOrganizationTableColumns({
       cell: ({ row }) => {
         const organization = row.original;
         return organization.project ? (
-          <Badge variant="outline">{organization.project.name}</Badge>
+          <Badge variant="outline">{organization.project.acronym}</Badge>
         ) : (
           <span className="text-muted-foreground">No project</span>
         );
