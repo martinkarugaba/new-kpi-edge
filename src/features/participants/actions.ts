@@ -1,21 +1,69 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { participants } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { participants, organizations } from "@/lib/db/schema";
+import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { type NewParticipant } from "./types";
 
-export async function getParticipants(organizationId: string) {
+export async function getParticipants(
+  clusterId?: string,
+  organizationId?: string,
+) {
   try {
-    console.log("Fetching participants for organization:", organizationId);
-    const data = await db
-      .select()
-      .from(participants)
-      .where(eq(participants.organization_id, organizationId));
+    console.log("Fetching participants:", { clusterId, organizationId });
 
-    console.log("Fetched participants:", data);
-    return { success: true, data, error: null };
+    // If both are undefined, return empty result
+    if (!clusterId && !organizationId) {
+      return { success: true, data: [], error: null };
+    }
+
+    // Join with organizations table to filter by cluster_id
+    if (clusterId) {
+      // If we have a cluster ID, get all organizations in that cluster
+      const orgsInCluster = await db
+        .select({
+          id: organizations.id,
+        })
+        .from(organizations)
+        .where(eq(organizations.cluster_id, clusterId));
+
+      // Extract organization IDs
+      const orgIds = orgsInCluster.map((org) => org.id);
+
+      // If we also have an organization ID filter, check if it belongs to the cluster
+      if (organizationId && !orgIds.includes(organizationId)) {
+        return {
+          success: false,
+          data: null,
+          error: "Organization does not belong to the specified cluster",
+        };
+      }
+
+      // Filter by specific organization if provided, otherwise get all from the cluster
+      const data = await db
+        .select()
+        .from(participants)
+        .where(
+          organizationId
+            ? eq(participants.organization_id, organizationId)
+            : inArray(participants.organization_id, orgIds),
+        );
+
+      console.log(`Fetched ${data.length} participants`);
+      return { success: true, data, error: null };
+    } else if (organizationId) {
+      // Just filter by organization ID
+      const data = await db
+        .select()
+        .from(participants)
+        .where(eq(participants.organization_id, organizationId));
+
+      console.log(`Fetched ${data.length} participants for organization`);
+      return { success: true, data, error: null };
+    }
+
+    return { success: true, data: [], error: null };
   } catch (error) {
     console.error("Error fetching participants:", error);
     return {

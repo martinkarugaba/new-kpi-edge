@@ -3,7 +3,8 @@ import { ParticipantsClient } from "@/features/participants/components/participa
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getProjects } from "@/features/projects/actions/projects";
-import { getOrganizationId } from "@/features/auth/actions";
+import { getClusters } from "@/features/clusters/actions/clusters";
+import { getOrganizationId, getUserClusterId } from "@/features/auth/actions";
 
 function ParticipantsTableSkeleton() {
   return (
@@ -22,21 +23,27 @@ function ParticipantsTableSkeleton() {
 }
 
 export default async function Page() {
+  const clusterId = await getUserClusterId();
   const organizationId = await getOrganizationId();
-  const projectsResult = await getProjects(organizationId ?? undefined);
+  const projectsResult = await getProjects();
+  const clustersResult = await getClusters();
 
-  if (!organizationId) {
+  if (!clusterId) {
     return (
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-        <p className="text-muted-foreground">No organization selected</p>
+        <p className="text-muted-foreground">No cluster assigned to user</p>
       </div>
     );
   }
 
-  if (!projectsResult.success) {
+  if (!projectsResult.success || !clustersResult.success) {
     return (
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-        <p className="text-destructive">{projectsResult.error}</p>
+        <p className="text-destructive">
+          {!projectsResult.success
+            ? projectsResult.error
+            : clustersResult.error}
+        </p>
       </div>
     );
   }
@@ -49,8 +56,10 @@ export default async function Page() {
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <Suspense fallback={<ParticipantsTableSkeleton />}>
               <ParticipantsClient
-                organizationId={organizationId}
+                clusterId={clusterId}
+                organizationId={organizationId ?? undefined}
                 projects={projectsResult.data ?? []}
+                clusters={clustersResult.data ?? []}
               />
             </Suspense>
           </div>

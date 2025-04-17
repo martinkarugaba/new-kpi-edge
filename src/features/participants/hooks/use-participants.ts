@@ -9,10 +9,10 @@ import {
 } from "../actions";
 import { type NewParticipant } from "../types";
 
-export function useParticipants(organizationId: string) {
+export function useParticipants(clusterId: string, organizationId?: string) {
   return useQuery({
-    queryKey: ["participants", organizationId],
-    queryFn: () => getParticipants(organizationId),
+    queryKey: ["participants", clusterId, organizationId],
+    queryFn: () => getParticipants(clusterId, organizationId),
   });
 }
 
@@ -21,9 +21,10 @@ export function useCreateParticipant() {
 
   return useMutation({
     mutationFn: (data: NewParticipant) => createParticipant(data),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
+      // Invalidate all participant queries to ensure UI refreshes
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.organization_id],
+        queryKey: ["participants"],
       });
     },
   });
@@ -35,9 +36,10 @@ export function useUpdateParticipant() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: NewParticipant }) =>
       updateParticipant(id, data),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
+      // Invalidate all participant queries to ensure UI refreshes
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.data.organization_id],
+        queryKey: ["participants"],
       });
     },
   });
@@ -54,9 +56,10 @@ export function useDeleteParticipant() {
       id: string;
       organizationId: string;
     }) => deleteParticipant(id, organizationId),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
+      // Invalidate all participant queries to ensure UI refreshes
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.organizationId],
+        queryKey: ["participants"],
       });
     },
   });
