@@ -367,12 +367,16 @@ export function ParticipantForm({
             )}
           />
         </div>
-        <Button type="submit" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full text-center"
+          disabled={isLoading}
+        >
           {isLoading
             ? "Loading..."
             : initialData
               ? "Update Participant"
-              : "Create Participant"}
+              : "Add Participant"}
         </Button>
       </form>
     </Form>
