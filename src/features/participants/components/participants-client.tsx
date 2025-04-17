@@ -1,17 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ParticipantForm } from "./participant-form";
 import { ParticipantsTable } from "./participants-table";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { type Project } from "@/features/projects/types";
 import { type Participant } from "../types";
@@ -154,50 +144,17 @@ export function ParticipantsClient({
 
   return (
     <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Participants</h1>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Participant
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingParticipant ? "Edit Participant" : "Add Participant"}
-              </DialogTitle>
-            </DialogHeader>
-            <ParticipantForm
-              initialData={
-                editingParticipant
-                  ? {
-                      ...editingParticipant,
-                      age: editingParticipant.age.toString(),
-                      sex: editingParticipant.sex as
-                        | "male"
-                        | "female"
-                        | "other",
-                      isPWD: editingParticipant.isPWD as "yes" | "no",
-                      isMother: editingParticipant.isMother as "yes" | "no",
-                      isRefugee: editingParticipant.isRefugee as "yes" | "no",
-                    }
-                  : undefined
-              }
-              onSubmit={handleSubmit}
-              isLoading={
-                createParticipant.isPending || updateParticipant.isPending
-              }
-              projects={projects}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
       <ParticipantsTable
         data={participantsResult.data || []}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onAdd={() => setIsOpen(true)}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        editingParticipant={editingParticipant}
+        handleSubmit={handleSubmit}
+        isLoading={createParticipant.isPending || updateParticipant.isPending}
+        projects={projects}
       />
     </div>
   );

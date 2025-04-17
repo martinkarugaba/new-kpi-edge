@@ -1,5 +1,5 @@
 import { getProjects } from "@/features/projects/actions/projects";
-import { ParticipantsClient } from "../components/participants-client";
+import { ParticipantsClient } from "./participants-client";
 import { getOrganizationId } from "@/features/auth/actions";
 
 export default async function ParticipantsPage() {

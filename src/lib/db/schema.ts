@@ -85,6 +85,7 @@ export const organizationMembers = pgTable("organization_members", {
     .notNull(),
   user_id: text("user_id").notNull(), // Clerk user ID
   role: userRole("role").notNull().default("organization_member"),
+  last_accessed: timestamp("last_accessed"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });

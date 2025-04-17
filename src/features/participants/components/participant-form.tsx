@@ -42,7 +42,7 @@ const formSchema = z.object({
   project_id: z.string().min(1, "Project is required"),
 });
 
-type ParticipantFormValues = z.infer<typeof formSchema>;
+export type ParticipantFormValues = z.infer<typeof formSchema>;
 
 interface ParticipantFormProps {
   initialData?: ParticipantFormValues;
@@ -117,7 +117,7 @@ export function ParticipantForm({
                   <SelectContent>
                     {projects.map((project) => (
                       <SelectItem key={project.id} value={project.id}>
-                        {project.name}
+                        {project.acronym}
                       </SelectItem>
                     ))}
                   </SelectContent>

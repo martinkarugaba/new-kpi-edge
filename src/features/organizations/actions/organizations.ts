@@ -253,8 +253,30 @@ export async function getOrganizationsByCluster(clusterId: string) {
       .select({
         id: organizations.id,
         name: organizations.name,
+        acronym: organizations.acronym,
+        cluster_id: organizations.cluster_id,
+        project_id: organizations.project_id,
+        country: organizations.country,
+        district: organizations.district,
+        sub_county: organizations.sub_county,
+        parish: organizations.parish,
+        village: organizations.village,
+        address: organizations.address,
+        created_at: organizations.created_at,
+        updated_at: organizations.updated_at,
+        cluster: {
+          id: clusters.id,
+          name: clusters.name,
+        },
+        project: {
+          id: projects.id,
+          name: projects.name,
+          acronym: projects.acronym,
+        },
       })
       .from(organizations)
+      .leftJoin(clusters, eq(organizations.cluster_id, clusters.id))
+      .leftJoin(projects, eq(organizations.project_id, projects.id))
       .where(eq(organizations.cluster_id, clusterId));
 
     return { success: true, data: orgs };
