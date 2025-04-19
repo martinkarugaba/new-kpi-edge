@@ -7,6 +7,7 @@ import {
   uuid,
   integer,
   pgEnum,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", [
@@ -167,6 +168,8 @@ export const participants = pgTable(
     designation: text().notNull(),
     enterprise: text().notNull(),
     contact: text().notNull(),
+    noOfTrainings: integer("no_of_trainings").default(0).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
     organizationId: uuid("organization_id").notNull(),
     projectId: uuid("project_id").notNull(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),

@@ -107,8 +107,8 @@ export const participants = pgTable("participants", {
   designation: text("designation").notNull(),
   enterprise: text("enterprise").notNull(),
   contact: text("contact").notNull(),
-  organization_id: uuid("organization_id")
-    .references(() => organizations.id)
+  cluster_id: uuid("cluster_id")
+    .references(() => clusters.id)
     .notNull(),
   project_id: uuid("project_id")
     .references(() => projects.id)
@@ -139,12 +139,12 @@ export const organizationsRelations = relations(
       references: [projects.id],
     }),
     members: many(organizationMembers),
-    participants: many(participants),
   }),
 );
 
 export const clustersRelations = relations(clusters, ({ many }) => ({
   organizations: many(organizations),
+  participants: many(participants),
 }));
 
 export const kpisRelations = relations(kpis, ({ one }) => ({
@@ -156,6 +156,7 @@ export const kpisRelations = relations(kpis, ({ one }) => ({
 
 export const projectsRelations = relations(projects, ({ many }) => ({
   organizations: many(organizations),
+  participants: many(participants),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -177,9 +178,9 @@ export const organizationMembersRelations = relations(
 );
 
 export const participantsRelations = relations(participants, ({ one }) => ({
-  organization: one(organizations, {
-    fields: [participants.organization_id],
-    references: [organizations.id],
+  cluster: one(clusters, {
+    fields: [participants.cluster_id],
+    references: [clusters.id],
   }),
   project: one(projects, {
     fields: [participants.project_id],

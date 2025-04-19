@@ -138,6 +138,9 @@ export function TeamSwitcher() {
                   {currentOrg.acronym}
                 </span>
                 <span className="truncate text-xs text-muted-foreground">
+                  {currentOrg.cluster?.name
+                    ? `${currentOrg.cluster.name} | `
+                    : ""}
                   {currentOrg.district}, {currentOrg.country}
                 </span>
               </div>

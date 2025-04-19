@@ -36,19 +36,23 @@ const formSchema = z.object({
   isPWD: z.enum(["yes", "no"]),
   isMother: z.enum(["yes", "no"]),
   isRefugee: z.enum(["yes", "no"]),
+  noOfTrainings: z.string().min(1, "Number of trainings is required"),
+  isActive: z.enum(["yes", "no"]),
   designation: z.string().min(2, "Designation is required"),
   enterprise: z.string().min(2, "Enterprise is required"),
   contact: z.string().min(10, "Contact must be at least 10 characters"),
   project_id: z.string().min(1, "Project is required"),
+  cluster_id: z.string().min(1, "Cluster is required"),
 });
 
 export type ParticipantFormValues = z.infer<typeof formSchema>;
 
 interface ParticipantFormProps {
   initialData?: ParticipantFormValues;
-  onSubmit: (data: ParticipantFormValues) => void;
+  onSubmit: (data: ParticipantFormValues) => Promise<void>;
   isLoading?: boolean;
   projects: Project[];
+  clusters: { id: string; name: string }[];
 }
 
 export function ParticipantForm({
@@ -56,6 +60,7 @@ export function ParticipantForm({
   onSubmit,
   isLoading,
   projects,
+  clusters,
 }: ParticipantFormProps) {
   const form = useForm<ParticipantFormValues>({
     resolver: zodResolver(formSchema),
@@ -72,10 +77,13 @@ export function ParticipantForm({
       isPWD: "no",
       isMother: "no",
       isRefugee: "no",
+      noOfTrainings: "0",
+      isActive: "yes",
       designation: "",
       enterprise: "",
       contact: "",
       project_id: "",
+      cluster_id: "",
     },
   });
 
@@ -99,6 +107,33 @@ export function ParticipantForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="cluster_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cluster</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select cluster" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {clusters.map((cluster) => (
+                      <SelectItem key={cluster.id} value={cluster.id}>
+                        {cluster.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="project_id"
@@ -329,6 +364,47 @@ export function ParticipantForm({
           />
           <FormField
             control={form.control}
+            name="noOfTrainings"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>No. of Trainings</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Number of trainings"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Active Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="yes">Active</SelectItem>
+                    <SelectItem value="no">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="designation"
             render={({ field }) => (
               <FormItem>
@@ -369,7 +445,7 @@ export function ParticipantForm({
         </div>
         <Button
           type="submit"
-          className="w-full text-center"
+          className="w-full text-center cursor-pointer"
           disabled={isLoading}
         >
           {isLoading

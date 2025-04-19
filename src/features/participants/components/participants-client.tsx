@@ -14,23 +14,44 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ParticipantsClientProps {
-  organizationId: string;
+  clusterId: string;
   projects: Project[];
+  clusters: {
+    id: string;
+    name: string;
+    organizations?: { id: string; name: string }[];
+  }[];
 }
 
 export function ParticipantsClient({
-  organizationId,
+  clusterId,
   projects,
+  clusters,
 }: ParticipantsClientProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingParticipant, setEditingParticipant] =
     useState<Participant | null>(null);
+  const [filters, setFilters] = useState({
+    cluster: "",
+    project: "",
+    district: "",
+    sex: "",
+    isPWD: "",
+  });
 
   const { data: participantsResult, isLoading: isLoadingParticipants } =
-    useParticipants(organizationId);
+    useParticipants(clusterId);
   const createParticipant = useCreateParticipant();
   const updateParticipant = useUpdateParticipant();
   const deleteParticipant = useDeleteParticipant();
+
+  // Get the current cluster's organizations
+  const currentCluster = clusters.find((c) => c.id === clusterId);
+  const clusterOrganizations =
+    currentCluster?.organizations?.map((org) => ({
+      ...org,
+      cluster_id: clusterId,
+    })) || [];
 
   const handleSubmit = async (formData: {
     firstName: string;
@@ -58,11 +79,17 @@ export function ParticipantsClient({
       };
 
       if (editingParticipant) {
+        // Make sure we have a cluster ID
+        if (!clusterId) {
+          toast.error("Cluster ID is required");
+          return;
+        }
+
         const result = await updateParticipant.mutateAsync({
           id: editingParticipant.id,
           data: {
             ...data,
-            organization_id: organizationId,
+            cluster_id: clusterId,
           },
         });
         if (!result.success) {
@@ -70,9 +97,15 @@ export function ParticipantsClient({
         }
         toast.success("Participant updated successfully");
       } else {
+        // Make sure we have a cluster ID
+        if (!clusterId) {
+          toast.error("Cluster ID is required");
+          return;
+        }
+
         const result = await createParticipant.mutateAsync({
           ...data,
-          organization_id: organizationId,
+          cluster_id: clusterId,
           project_id: data.project_id,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -113,7 +146,7 @@ export function ParticipantsClient({
     try {
       const result = await deleteParticipant.mutateAsync({
         id: participant.id,
-        organizationId,
+        clusterId: clusterId,
       });
       if (!result.success) {
         throw new Error(result.error || "Failed to delete participant");
@@ -142,10 +175,36 @@ export function ParticipantsClient({
     );
   }
 
+  // Extract unique values for filters from participants data
+  const districts = Array.from(
+    new Set((participantsResult?.data || []).map((p) => p.district)),
+  )
+    .filter(Boolean)
+    .sort();
+
+  const sexOptions = Array.from(
+    new Set((participantsResult?.data || []).map((p) => p.sex)),
+  ).filter(Boolean);
+
+  // Apply filters to the data
+  const filteredData = (participantsResult?.data || []).filter(
+    (participant) => {
+      if (filters.cluster && participant.cluster_id !== filters.cluster)
+        return false;
+      if (filters.district && participant.district !== filters.district)
+        return false;
+      if (filters.sex && participant.sex !== filters.sex) return false;
+      if (filters.project && participant.project_id !== filters.project)
+        return false;
+      if (filters.isPWD && participant.isPWD !== filters.isPWD) return false;
+      return true;
+    },
+  );
+
   return (
     <div className="container mx-auto py-10">
       <ParticipantsTable
-        data={participantsResult.data || []}
+        data={filteredData}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onAdd={() => setIsOpen(true)}
@@ -155,6 +214,14 @@ export function ParticipantsClient({
         handleSubmit={handleSubmit}
         isLoading={createParticipant.isPending || updateParticipant.isPending}
         projects={projects}
+        // Pass through filter props
+        clusterId={clusterId}
+        organizations={clusterOrganizations}
+        clusters={clusters}
+        districts={districts}
+        sexOptions={sexOptions}
+        filters={filters}
+        setFilters={setFilters}
       />
     </div>
   );
