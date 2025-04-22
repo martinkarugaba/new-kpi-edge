@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
-type PageParams = { token: string };
+interface PageProps {
+  params: { token: string };
+}
 
-export default async function Page({ params }: { params: PageParams }) {
-  const { token } = params;
-
+export default async function Page({ params }: PageProps) {
   // Verify the token is valid
-  const isValid = await verifyResetToken(token);
+  const isValid = await verifyResetToken(params.token);
 
   if (!isValid) {
     notFound();
@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: PageParams }) {
               Enter your new password below
             </p>
           </div>
-          <ResetPasswordForm token={token} />
+          <ResetPasswordForm token={params.token} />
         </div>
       </div>
     </div>
