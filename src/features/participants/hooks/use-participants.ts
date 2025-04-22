@@ -9,10 +9,10 @@ import {
 } from "../actions";
 import { type NewParticipant } from "../types";
 
-export function useParticipants(organizationId: string) {
+export function useParticipants(clusterId: string) {
   return useQuery({
-    queryKey: ["participants", organizationId],
-    queryFn: () => getParticipants(organizationId),
+    queryKey: ["participants", clusterId],
+    queryFn: () => getParticipants(clusterId),
   });
 }
 
@@ -23,7 +23,7 @@ export function useCreateParticipant() {
     mutationFn: (data: NewParticipant) => createParticipant(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.organization_id],
+        queryKey: ["participants", variables.cluster_id],
       });
     },
   });
@@ -37,7 +37,7 @@ export function useUpdateParticipant() {
       updateParticipant(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.data.organization_id],
+        queryKey: ["participants", variables.data.cluster_id],
       });
     },
   });
@@ -47,16 +47,11 @@ export function useDeleteParticipant() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      id,
-      organizationId,
-    }: {
-      id: string;
-      organizationId: string;
-    }) => deleteParticipant(id, organizationId),
+    mutationFn: ({ id, clusterId }: { id: string; clusterId: string }) =>
+      deleteParticipant(id, clusterId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.organizationId],
+        queryKey: ["participants", variables.clusterId],
       });
     },
   });

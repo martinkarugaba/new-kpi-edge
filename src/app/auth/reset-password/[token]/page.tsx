@@ -8,18 +8,15 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
-interface ResetPasswordPageProps {
-  params: {
-    token: string;
-  };
-}
+// Correctly define Props with params as a promise
+type Props = {
+  params: Promise<{ token: string }>;
+};
 
-export default async function ResetPasswordPage({
-  params,
-}: ResetPasswordPageProps) {
-  const { token } = params;
+export default async function Page({ params }: Props) {
+  // Await the params promise to get the token
+  const { token } = await params;
 
-  // Verify the token is valid
   const isValid = await verifyResetToken(token);
 
   if (!isValid) {
@@ -28,10 +25,8 @@ export default async function ResetPasswordPage({
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/50">
-      {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,var(--primary)_0,transparent_100%)] opacity-10" />
 
-      {/* Content */}
       <div className="container relative mx-auto flex w-full max-w-[480px] flex-col items-center justify-center p-4">
         <div className="w-full rounded-xl border bg-card p-8 shadow-lg">
           <div className="mb-6 text-center">

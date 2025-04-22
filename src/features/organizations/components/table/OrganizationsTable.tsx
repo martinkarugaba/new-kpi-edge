@@ -6,7 +6,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Organization } from "@/features/organizations/types";
-import { Cluster } from "@/features/clusters/components/clusters-table";
+import { Cluster } from "@/features/clusters/types";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
 import { deleteOrganizations } from "@/features/organizations/actions/organizations";
 import { CreateOrganizationDialog } from "./create-organization-dialog";
@@ -24,6 +24,8 @@ export function OrganizationsTable({
 }: OrganizationsTableProps) {
   const router = useRouter();
   const [selectedRows, setSelectedRows] = useState<Organization[]>([]);
+  const [filteredOrganizations, setFilteredOrganizations] =
+    useState<Organization[]>(organizations);
 
   // const handleDelete = async (id: string) => {
   //   try {
@@ -87,7 +89,7 @@ export function OrganizationsTable({
       <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
         <ReusableDataTable
           columns={columns}
-          data={organizations}
+          data={filteredOrganizations}
           filterColumn="name"
           filterPlaceholder="Filter by name..."
           showColumnToggle={true}
@@ -103,7 +105,20 @@ export function OrganizationsTable({
               </Button>
             </CreateOrganizationDialog>
           }
-          customFilters={<TableFilters />}
+          customFilters={
+            <TableFilters
+              clusters={clusters}
+              onClusterChange={(clusterId) => {
+                if (clusterId) {
+                  setFilteredOrganizations(
+                    organizations.filter((org) => org.cluster_id === clusterId),
+                  );
+                } else {
+                  setFilteredOrganizations(organizations);
+                }
+              }}
+            />
+          }
           onRowSelectionChange={setSelectedRows}
         />
       </div>

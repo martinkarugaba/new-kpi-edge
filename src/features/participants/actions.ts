@@ -6,13 +6,13 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { type NewParticipant } from "./types";
 
-export async function getParticipants(organizationId: string) {
+export async function getParticipants(clusterId: string) {
   try {
-    console.log("Fetching participants for organization:", organizationId);
+    console.log("Fetching participants for cluster:", clusterId);
     const data = await db
       .select()
       .from(participants)
-      .where(eq(participants.organization_id, organizationId));
+      .where(eq(participants.cluster_id, clusterId));
 
     console.log("Fetched participants:", data);
     return { success: true, data, error: null };
@@ -34,7 +34,7 @@ export async function createParticipant(data: NewParticipant) {
       .insert(participants)
       .values({
         ...data,
-        organization_id: data.organization_id,
+        cluster_id: data.cluster_id,
         project_id: data.project_id,
       })
       .returning();
@@ -63,7 +63,7 @@ export async function updateParticipant(
       .update(participants)
       .set({
         ...data,
-        organization_id: data.organization_id,
+        cluster_id: data.cluster_id,
         project_id: data.project_id,
       })
       .where(eq(participants.id, id))
@@ -83,9 +83,9 @@ export async function updateParticipant(
   }
 }
 
-export async function deleteParticipant(id: string, organizationId: string) {
+export async function deleteParticipant(id: string, clusterId: string) {
   try {
-    console.log("Deleting participant:", { id, organizationId });
+    console.log("Deleting participant:", { id, clusterId });
     await db.delete(participants).where(eq(participants.id, id));
     revalidatePath(`/dashboard/participants`);
     return { success: true, error: null };

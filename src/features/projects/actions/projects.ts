@@ -81,7 +81,12 @@ export async function deleteProject(id: string) {
 
 export async function getProjects(organizationId?: string) {
   try {
-    if (organizationId) {
+    // Check if organizationId is a valid UUID before querying
+    // A simple regex check for UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (organizationId && uuidRegex.test(organizationId)) {
       // First find the organization's project
       const [org] = await db
         .select({

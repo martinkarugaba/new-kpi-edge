@@ -9,11 +9,11 @@ import {
 import { revalidatePath } from "next/cache";
 
 export async function getParticipants(
-  organizationId: string,
+  clusterId: string,
 ): Promise<ParticipantsResponse> {
   try {
     const data = await db.query.participants.findMany({
-      where: eq(participants.organization_id, organizationId),
+      where: eq(participants.cluster_id, clusterId),
     });
 
     return {
@@ -38,7 +38,7 @@ export async function createParticipant(
       .values(data)
       .returning();
 
-    revalidatePath(`/organizations/${data.organization_id}/participants`);
+    revalidatePath(`/clusters/${data.cluster_id}/participants`);
     return {
       success: true,
       data: participant,
@@ -63,7 +63,7 @@ export async function updateParticipant(
       .where(eq(participants.id, id))
       .returning();
 
-    revalidatePath(`/organizations/${data.organization_id}/participants`);
+    revalidatePath(`/clusters/${data.cluster_id}/participants`);
     return {
       success: true,
       data: participant,
@@ -86,9 +86,7 @@ export async function deleteParticipant(
       .where(eq(participants.id, id))
       .returning();
 
-    revalidatePath(
-      `/organizations/${participant.organization_id}/participants`,
-    );
+    revalidatePath(`/clusters/${participant.cluster_id}/participants`);
     return {
       success: true,
       data: participant,

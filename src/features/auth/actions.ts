@@ -2,8 +2,34 @@
 
 import { auth } from "./auth";
 import { db } from "@/lib/db";
-import { organizationMembers, users } from "@/lib/db/schema";
+import { organizationMembers, users, organizations } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+
+export async function getUserClusterId() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return null;
+    }
+
+    // First get the organization ID for the user
+    const organizationId = await getOrganizationId();
+    if (!organizationId) {
+      return null;
+    }
+
+    // Now get the cluster ID for that organization
+    const [org] = await db
+      .select({ cluster_id: organizations.cluster_id })
+      .from(organizations)
+      .where(eq(organizations.id, organizationId));
+
+    return org?.cluster_id || null;
+  } catch (error) {
+    console.error("Error getting cluster ID:", error);
+    return null;
+  }
+}
 
 export async function getOrganizationId() {
   try {

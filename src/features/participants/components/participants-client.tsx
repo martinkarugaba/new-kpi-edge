@@ -1,17 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ParticipantForm } from "./participant-form";
 import { ParticipantsTable } from "./participants-table";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { type Project } from "@/features/projects/types";
 import { type Participant } from "../types";
@@ -24,23 +14,66 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ParticipantsClientProps {
-  organizationId: string;
+  clusterId: string;
   projects: Project[];
+  clusters: {
+    id: string;
+    name: string;
+    organizations?: { id: string; name: string }[];
+  }[];
 }
 
 export function ParticipantsClient({
-  organizationId,
+  clusterId,
   projects,
+  clusters,
 }: ParticipantsClientProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingParticipant, setEditingParticipant] =
     useState<Participant | null>(null);
+  const [filters, setFilters] = useState({
+    cluster: "",
+    project: "",
+    district: "",
+    sex: "",
+    isPWD: "",
+  });
 
   const { data: participantsResult, isLoading: isLoadingParticipants } =
-    useParticipants(organizationId);
+    useParticipants(clusterId);
   const createParticipant = useCreateParticipant();
   const updateParticipant = useUpdateParticipant();
   const deleteParticipant = useDeleteParticipant();
+
+  // Get the current cluster's organizations
+  const currentCluster = clusters.find((c) => c.id === clusterId);
+  const clusterOrganizations =
+    currentCluster?.organizations?.map((org) => ({
+      id: org.id,
+      name: org.name,
+      acronym: org.name
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase(),
+      cluster_id: clusterId,
+      project_id: null,
+      country: "",
+      district: "",
+      sub_county: "",
+      parish: "",
+      village: "",
+      address: "",
+      created_at: null,
+      updated_at: null,
+      cluster: currentCluster
+        ? {
+            id: currentCluster.id,
+            name: currentCluster.name,
+          }
+        : null,
+      project: null,
+    })) || [];
 
   const handleSubmit = async (formData: {
     firstName: string;
@@ -68,11 +101,17 @@ export function ParticipantsClient({
       };
 
       if (editingParticipant) {
+        // Make sure we have a cluster ID
+        if (!clusterId) {
+          toast.error("Cluster ID is required");
+          return;
+        }
+
         const result = await updateParticipant.mutateAsync({
           id: editingParticipant.id,
           data: {
             ...data,
-            organization_id: organizationId,
+            cluster_id: clusterId,
           },
         });
         if (!result.success) {
@@ -80,9 +119,15 @@ export function ParticipantsClient({
         }
         toast.success("Participant updated successfully");
       } else {
+        // Make sure we have a cluster ID
+        if (!clusterId) {
+          toast.error("Cluster ID is required");
+          return;
+        }
+
         const result = await createParticipant.mutateAsync({
           ...data,
-          organization_id: organizationId,
+          cluster_id: clusterId,
           project_id: data.project_id,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -123,7 +168,7 @@ export function ParticipantsClient({
     try {
       const result = await deleteParticipant.mutateAsync({
         id: participant.id,
-        organizationId,
+        clusterId: clusterId,
       });
       if (!result.success) {
         throw new Error(result.error || "Failed to delete participant");
@@ -152,52 +197,53 @@ export function ParticipantsClient({
     );
   }
 
+  // Extract unique values for filters from participants data
+  const districts = Array.from(
+    new Set((participantsResult?.data || []).map((p) => p.district)),
+  )
+    .filter(Boolean)
+    .sort();
+
+  const sexOptions = Array.from(
+    new Set((participantsResult?.data || []).map((p) => p.sex)),
+  ).filter(Boolean);
+
+  // Apply filters to the data
+  const filteredData = (participantsResult?.data || []).filter(
+    (participant) => {
+      if (filters.cluster && participant.cluster_id !== filters.cluster)
+        return false;
+      if (filters.district && participant.district !== filters.district)
+        return false;
+      if (filters.sex && participant.sex !== filters.sex) return false;
+      if (filters.project && participant.project_id !== filters.project)
+        return false;
+      if (filters.isPWD && participant.isPWD !== filters.isPWD) return false;
+      return true;
+    },
+  );
+
   return (
     <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Participants</h1>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Participant
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingParticipant ? "Edit Participant" : "Add Participant"}
-              </DialogTitle>
-            </DialogHeader>
-            <ParticipantForm
-              initialData={
-                editingParticipant
-                  ? {
-                      ...editingParticipant,
-                      age: editingParticipant.age.toString(),
-                      sex: editingParticipant.sex as
-                        | "male"
-                        | "female"
-                        | "other",
-                      isPWD: editingParticipant.isPWD as "yes" | "no",
-                      isMother: editingParticipant.isMother as "yes" | "no",
-                      isRefugee: editingParticipant.isRefugee as "yes" | "no",
-                    }
-                  : undefined
-              }
-              onSubmit={handleSubmit}
-              isLoading={
-                createParticipant.isPending || updateParticipant.isPending
-              }
-              projects={projects}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
       <ParticipantsTable
-        data={participantsResult.data || []}
+        data={filteredData}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onAdd={() => setIsOpen(true)}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        editingParticipant={editingParticipant}
+        handleSubmit={handleSubmit}
+        isLoading={createParticipant.isPending || updateParticipant.isPending}
+        projects={projects}
+        // Pass through filter props
+        clusterId={clusterId}
+        organizations={clusterOrganizations}
+        clusters={clusters}
+        districts={districts}
+        sexOptions={sexOptions}
+        filters={filters}
+        setFilters={setFilters}
       />
     </div>
   );
