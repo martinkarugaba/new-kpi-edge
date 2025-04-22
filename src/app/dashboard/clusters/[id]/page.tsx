@@ -6,9 +6,11 @@ import { getClusterById } from "@/features/clusters/actions/clusters";
 export default async function ClusterDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const result = await getClusterById(params.id);
+  // Await the params promise to get the id
+  const { id } = await params;
+  const result = await getClusterById(id);
 
   if (!result.success || !result.data) {
     return notFound();
