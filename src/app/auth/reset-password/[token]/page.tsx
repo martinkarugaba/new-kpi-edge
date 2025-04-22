@@ -8,15 +8,9 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
-interface ResetPasswordPageProps {
-  params: {
-    token: string;
-  };
-}
+type PageParams = { token: string };
 
-export default async function ResetPasswordPage({
-  params,
-}: ResetPasswordPageProps) {
+export default async function Page({ params }: { params: PageParams }) {
   const { token } = params;
 
   // Verify the token is valid
