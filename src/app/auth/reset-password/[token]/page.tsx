@@ -8,15 +8,14 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
-// Define PageProps correctly for Next.js dynamic route
-interface PageProps {
+// Fix: Use Next.js App Router's correct params type
+type Props = {
   params: {
     token: string;
   };
-}
+};
 
-export default async function Page({ params }: PageProps) {
-  // Verify the token is valid
+export default async function Page({ params }: Props) {
   const isValid = await verifyResetToken(params.token);
 
   if (!isValid) {
@@ -25,10 +24,8 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/50">
-      {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,var(--primary)_0,transparent_100%)] opacity-10" />
 
-      {/* Content */}
       <div className="container relative mx-auto flex w-full max-w-[480px] flex-col items-center justify-center p-4">
         <div className="w-full rounded-xl border bg-card p-8 shadow-lg">
           <div className="mb-6 text-center">
