@@ -10,9 +10,7 @@ import Link from "next/link";
 import { OrganizationMembers } from "@/features/organizations/components/members";
 
 interface OrganizationDetailsPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>; // Correctly type params as a Promise
 }
 
 interface Member {
@@ -33,24 +31,21 @@ export default async function OrganizationDetailsPage({
     redirect("/auth/login");
   }
 
-  // Get the organization ID from params - we need to await params
-  const { id } = await Promise.resolve(params);
-  if (!id) {
-    notFound();
-  }
+  // Await params to get the id
+  const { id } = await params; // Properly await the Promise
 
   const organizationResult = await getOrganization(id);
   const membersResult = await getOrganizationMembers(id);
 
-  if (!organizationResult.success) {
+  if (!organizationResult.success || !organizationResult.data) {
     notFound();
   }
 
-  const organization = organizationResult.data!;
+  const organization = organizationResult.data;
 
   return (
     <>
-      <SiteHeader title={organization?.name} />
+      <SiteHeader title={organization.name} />
       <div className="container py-6 space-y-6">
         <div className="mx-auto max-w-7xl">
           {/* Header Section */}
