@@ -8,8 +8,11 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
+// Define PageProps correctly for Next.js dynamic route
 interface PageProps {
-  params: { token: string };
+  params: {
+    token: string;
+  };
 }
 
 export default async function Page({ params }: PageProps) {
