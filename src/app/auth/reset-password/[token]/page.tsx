@@ -8,15 +8,16 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
-// Fix: Use Next.js App Router's correct params type
+// Correctly define Props with params as a promise
 type Props = {
-  params: {
-    token: string;
-  };
+  params: Promise<{ token: string }>;
 };
 
 export default async function Page({ params }: Props) {
-  const isValid = await verifyResetToken(params.token);
+  // Await the params promise to get the token
+  const { token } = await params;
+
+  const isValid = await verifyResetToken(token);
 
   if (!isValid) {
     notFound();
@@ -36,7 +37,7 @@ export default async function Page({ params }: Props) {
               Enter your new password below
             </p>
           </div>
-          <ResetPasswordForm token={params.token} />
+          <ResetPasswordForm token={token} />
         </div>
       </div>
     </div>
