@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 type ExtendedParticipant = Participant & {
   noOfTrainings?: string | number;
   isActive?: string;
+  organization_id?: string;
 };
 
 interface AddParticipantDialogProps {
@@ -29,7 +30,6 @@ interface AddParticipantDialogProps {
   isLoading: boolean;
   projects: Project[];
   clusters: { id: string; name: string }[];
-  clusterId: string;
 }
 
 export function AddParticipantDialog({
@@ -61,7 +61,7 @@ export function AddParticipantDialog({
         designation: editingParticipant.designation,
         enterprise: editingParticipant.enterprise,
         contact: editingParticipant.contact,
-        cluster_id: editingParticipant.cluster_id,
+        organization_id: editingParticipant.organization_id || "", // Added organization_id
         project_id: editingParticipant.project_id,
         noOfTrainings: editingParticipant.noOfTrainings?.toString() || "0",
         isActive: (editingParticipant.isActive as "yes" | "no") || "yes",
@@ -94,7 +94,7 @@ export function AddParticipantDialog({
           onSubmit={handleSubmit}
           isLoading={isLoading}
           projects={projects}
-          clusters={clusters}
+          clusterId={clusters[0]?.id}
         />
       </DialogContent>
     </Dialog>

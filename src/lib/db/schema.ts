@@ -117,6 +117,31 @@ export const participants = pgTable("participants", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
+export const clusterMembers = pgTable("cluster_members", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  cluster_id: uuid("cluster_id")
+    .references(() => clusters.id)
+    .notNull(),
+  organization_id: uuid("organization_id")
+    .references(() => organizations.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const clusterUsers = pgTable("cluster_users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  cluster_id: uuid("cluster_id")
+    .references(() => clusters.id)
+    .notNull(),
+  user_id: text("user_id")
+    .references(() => users.id)
+    .notNull(),
+  role: userRole("role").notNull().default("cluster_manager"),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
 export const passwordResetTokens = pgTable("password_reset_tokens", {
   token: text("token").primaryKey(),
   user_id: text("user_id")
@@ -145,6 +170,8 @@ export const organizationsRelations = relations(
 export const clustersRelations = relations(clusters, ({ many }) => ({
   organizations: many(organizations),
   participants: many(participants),
+  members: many(clusterMembers),
+  users: many(clusterUsers),
 }));
 
 export const kpisRelations = relations(kpis, ({ one }) => ({
@@ -161,6 +188,7 @@ export const projectsRelations = relations(projects, ({ many }) => ({
 
 export const usersRelations = relations(users, ({ many }) => ({
   organizations: many(organizationMembers),
+  clusters: many(clusterUsers),
 }));
 
 export const organizationMembersRelations = relations(
@@ -176,6 +204,28 @@ export const organizationMembersRelations = relations(
     }),
   }),
 );
+
+export const clusterMembersRelations = relations(clusterMembers, ({ one }) => ({
+  cluster: one(clusters, {
+    fields: [clusterMembers.cluster_id],
+    references: [clusters.id],
+  }),
+  organization: one(organizations, {
+    fields: [clusterMembers.organization_id],
+    references: [organizations.id],
+  }),
+}));
+
+export const clusterUsersRelations = relations(clusterUsers, ({ one }) => ({
+  cluster: one(clusters, {
+    fields: [clusterUsers.cluster_id],
+    references: [clusters.id],
+  }),
+  user: one(users, {
+    fields: [clusterUsers.user_id],
+    references: [users.id],
+  }),
+}));
 
 export const participantsRelations = relations(participants, ({ one }) => ({
   cluster: one(clusters, {

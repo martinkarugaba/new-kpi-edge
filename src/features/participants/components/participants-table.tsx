@@ -25,7 +25,30 @@ interface ParticipantsTableProps {
   projects: Project[];
   // Add filter-related props
   clusterId: string;
-  organizations: { id: string; name: string; cluster_id: string }[];
+  organizations: {
+    id: string;
+    name: string;
+    acronym: string;
+    cluster_id: string | null;
+    project_id: string | null;
+    country: string;
+    district: string;
+    sub_county: string;
+    parish: string;
+    village: string;
+    address: string;
+    created_at: Date | null;
+    updated_at: Date | null;
+    cluster: {
+      id: string;
+      name: string;
+    } | null;
+    project: {
+      id: string;
+      name: string;
+      acronym: string;
+    } | null;
+  }[];
   clusters: { id: string; name: string }[];
   districts: string[];
   sexOptions: string[];
@@ -58,7 +81,6 @@ export function ParticipantsTable({
   isLoading,
   projects,
   // Add filter props
-  clusterId,
   organizations,
   clusters,
   districts,
@@ -92,8 +114,8 @@ export function ParticipantsTable({
         <ReusableDataTable
           columns={columns}
           data={data}
-          filterColumn="firstName"
-          filterPlaceholder="Filter by first name..."
+          filterColumn="fullName"
+          filterPlaceholder="Filter by name..."
           showColumnToggle={true}
           showPagination={true}
           showRowSelection={true}
@@ -108,7 +130,6 @@ export function ParticipantsTable({
               isLoading={isLoading}
               projects={projects}
               clusters={clusters}
-              clusterId={clusterId}
             />
           }
         />

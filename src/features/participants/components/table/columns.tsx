@@ -44,14 +44,15 @@ export function getColumns({
       enableHiding: false,
     },
     {
-      accessorKey: "firstName",
-      header: "First Name",
+      id: "fullName",
+      header: "Name",
       enableHiding: true,
-    },
-    {
-      accessorKey: "lastName",
-      header: "Last Name",
-      enableHiding: true,
+      accessorFn: (row) => `${row.firstName} ${row.lastName}`, // This enables sorting and filtering
+      cell: ({ row }) => (
+        <div>
+          {row.original.firstName} {row.original.lastName}
+        </div>
+      ),
     },
     {
       accessorKey: "sex",

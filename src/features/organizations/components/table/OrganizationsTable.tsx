@@ -6,7 +6,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Organization } from "@/features/organizations/types";
-import { Cluster } from "@/features/clusters/components/clusters-table";
+import { Cluster } from "@/features/clusters/types";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
 import { deleteOrganizations } from "@/features/organizations/actions/organizations";
 import { CreateOrganizationDialog } from "./create-organization-dialog";

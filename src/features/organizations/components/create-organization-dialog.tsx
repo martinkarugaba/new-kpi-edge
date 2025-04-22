@@ -13,6 +13,7 @@ import { OrganizationForm } from "./organization-form";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Cluster } from "@/features/clusters/components/clusters-table";
+import { Separator } from "@/components/ui/separator";
 
 type CreateOrganizationDialogProps = {
   clusters: Cluster[];
@@ -42,16 +43,14 @@ export function CreateOrganizationDialog({
       <DialogTrigger asChild>
         {children || <Button className="h-10">New Organization</Button>}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-xl text-center font-semibold">
             Create Organization
           </DialogTitle>
-          <DialogDescription>
-            Add a new organization to {selectedCluster?.name || "your cluster"}.
-            Fill in the details below.
-          </DialogDescription>
+          <DialogDescription className="text-sm text-muted-foreground"></DialogDescription>
         </DialogHeader>
+        <Separator />
         <OrganizationForm
           clusters={clusters}
           defaultClusterId={selectedCluster?.id}

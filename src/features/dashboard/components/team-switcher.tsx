@@ -27,6 +27,7 @@ import {
   getCurrentOrganizationWithCluster,
   getOrganizationsByCluster,
 } from "@/features/organizations/actions/organizations";
+import { getCurrentUserClusterOrganizations } from "@/features/clusters/actions/cluster-users";
 
 interface Organization {
   id: string;
@@ -75,32 +76,70 @@ export function TeamSwitcher() {
       queryFn: async (): Promise<OrganizationsData | null> => {
         if (!organizationId) return null;
 
+        // Fetch the current organization with its cluster
         const currentOrgResult =
           await getCurrentOrganizationWithCluster(organizationId);
         if (!currentOrgResult.success || !currentOrgResult.data) return null;
 
         const currentOrg = currentOrgResult.data;
 
+        // Fetch organizations from the cluster members table - these are the ones
+        // explicitly connected via the cluster_members table
+        let clusterOrgs: Organization[] = [];
+        let userClusterOrgs: Organization[] = [];
+        let isClustered = false;
+
+        // Get organizations from the current org's cluster if it belongs to one
         if (currentOrg.cluster_id) {
           const orgsResult = await getOrganizationsByCluster(
             currentOrg.cluster_id,
           );
-          if (!orgsResult.success || !orgsResult.data) return null;
+          if (orgsResult.success && orgsResult.data) {
+            clusterOrgs = orgsResult.data;
+            isClustered = true;
+          }
+        }
 
-          return {
-            currentOrg,
-            organizations: orgsResult.data,
-            isClustered: true,
+        // Get organizations from clusters the user belongs to through the cluster_users table
+        const userOrgsResult = await getCurrentUserClusterOrganizations();
+        if (userOrgsResult.success === true) {
+          // Use type assertion to help TypeScript understand the structure
+          const successResult = userOrgsResult as {
+            success: true;
+            data: Organization[];
           };
+          userClusterOrgs = successResult.data;
+          isClustered = isClustered || userClusterOrgs.length > 0;
+        }
+
+        // Combine and deduplicate organizations from both sources
+        const combinedOrgs = [...clusterOrgs];
+
+        // Add organizations from user's clusters if not already included
+        for (const org of userClusterOrgs) {
+          if (!combinedOrgs.find((existingOrg) => existingOrg.id === org.id)) {
+            combinedOrgs.push(org);
+          }
+        }
+
+        // Always include the current organization
+        if (!combinedOrgs.find((org) => org.id === currentOrg.id)) {
+          combinedOrgs.push(currentOrg);
         }
 
         return {
           currentOrg,
-          organizations: [currentOrg],
-          isClustered: false,
+          organizations: combinedOrgs,
+          isClustered,
         };
       },
       enabled: !!organizationId,
+      // Refetch when the window regains focus to ensure fresh data
+      refetchOnWindowFocus: true,
+      // Cache for a short time to avoid excessive requests (10 seconds)
+      staleTime: 10 * 1000,
+      // Set up a refresh interval to periodically check for changes (30 seconds)
+      refetchInterval: 30 * 1000,
     });
 
   if (isLoadingOrgId || isLoadingOrgs) {

@@ -22,6 +22,13 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { type Project } from "@/features/projects/types";
+import { useQuery } from "@tanstack/react-query";
+import { getOrganizationId } from "@/features/auth/actions";
+import {
+  getCurrentOrganizationWithCluster,
+  getOrganizationsByCluster,
+} from "@/features/organizations/actions/organizations";
+import { getCurrentUserClusterOrganizations } from "@/features/clusters/actions/cluster-users";
 
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -42,7 +49,7 @@ const formSchema = z.object({
   enterprise: z.string().min(2, "Enterprise is required"),
   contact: z.string().min(10, "Contact must be at least 10 characters"),
   project_id: z.string().min(1, "Project is required"),
-  cluster_id: z.string().min(1, "Cluster is required"),
+  organization_id: z.string().min(1, "Organization is required"),
 });
 
 export type ParticipantFormValues = z.infer<typeof formSchema>;
@@ -52,7 +59,7 @@ interface ParticipantFormProps {
   onSubmit: (data: ParticipantFormValues) => Promise<void>;
   isLoading?: boolean;
   projects: Project[];
-  clusters: { id: string; name: string }[];
+  clusterId?: string;
 }
 
 export function ParticipantForm({
@@ -60,8 +67,104 @@ export function ParticipantForm({
   onSubmit,
   isLoading,
   projects,
-  clusters,
+  clusterId: propClusterId,
 }: ParticipantFormProps) {
+  const { data: organizationId } = useQuery({
+    queryKey: ["organizationId"],
+    queryFn: getOrganizationId,
+  });
+
+  // Add a local Organization type for use in this file
+  interface Organization {
+    id: string;
+    name: string;
+    acronym: string;
+    cluster_id: string | null;
+    project_id: string | null;
+    country: string;
+    district: string;
+    sub_county: string;
+    parish: string;
+    village: string;
+    address: string;
+    created_at: Date | null;
+    updated_at: Date | null;
+    cluster: {
+      id: string;
+      name: string;
+    } | null;
+    project: {
+      id: string;
+      name: string;
+      acronym: string;
+    } | null;
+  }
+
+  // Add type for API response
+  interface ApiResponse<T> {
+    success: boolean;
+    data?: T;
+    error?: string;
+  }
+
+  const { data: organizationsData } = useQuery({
+    queryKey: ["organizations", organizationId],
+    queryFn: async () => {
+      if (!organizationId) return null;
+
+      // Fetch the current organization with its cluster
+      const currentOrgResult =
+        await getCurrentOrganizationWithCluster(organizationId);
+      if (!currentOrgResult.success || !currentOrgResult.data) {
+        console.error("Failed to fetch organization:", currentOrgResult.error);
+        return null;
+      }
+
+      const currentOrg = currentOrgResult.data as Organization;
+
+      // Fetch organizations from both sources
+      let clusterOrgs: Organization[] = [];
+      let userClusterOrgs: Organization[] = [];
+
+      // Get organizations from the current org's cluster if it belongs to one
+      if (currentOrg.cluster_id) {
+        const orgsResult = (await getOrganizationsByCluster(
+          currentOrg.cluster_id,
+        )) as ApiResponse<Organization[]>;
+        if (orgsResult.success && orgsResult.data) {
+          clusterOrgs = orgsResult.data;
+        }
+      }
+
+      // Get organizations from clusters the user belongs to
+      const userOrgsResult =
+        (await getCurrentUserClusterOrganizations()) as ApiResponse<
+          Organization[]
+        >;
+      if (userOrgsResult.success && userOrgsResult.data) {
+        userClusterOrgs = userOrgsResult.data;
+      }
+
+      // Combine and deduplicate organizations
+      const availableOrgs: Organization[] = [...clusterOrgs];
+      for (const org of userClusterOrgs) {
+        if (!availableOrgs.find((existingOrg) => existingOrg.id === org.id)) {
+          availableOrgs.push(org);
+        }
+      }
+      if (!availableOrgs.find((org) => org.id === currentOrg.id)) {
+        availableOrgs.push(currentOrg);
+      }
+
+      return {
+        currentOrg,
+        organizations: availableOrgs,
+        currentClusterId: currentOrg.cluster_id || propClusterId,
+      };
+    },
+    enabled: !!organizationId,
+  });
+
   const form = useForm<ParticipantFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
@@ -83,7 +186,7 @@ export function ParticipantForm({
       enterprise: "",
       contact: "",
       project_id: "",
-      cluster_id: "",
+      organization_id: "",
     },
   });
 
@@ -109,25 +212,33 @@ export function ParticipantForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="cluster_id"
+            name="organization_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Cluster</FormLabel>
+                <FormLabel>Organization</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select cluster" />
+                      <SelectValue placeholder="Select organization" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {clusters.map((cluster) => (
-                      <SelectItem key={cluster.id} value={cluster.id}>
-                        {cluster.name}
-                      </SelectItem>
-                    ))}
+                    {organizationsData?.organizations &&
+                    organizationsData.organizations.length > 0 ? (
+                      organizationsData.organizations.map((org) => (
+                        <SelectItem key={org.id} value={org.id}>
+                          {org.acronym || org.name}
+                          {org.cluster?.name ? ` (${org.cluster.name})` : ""}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="py-2 px-2 text-sm text-muted-foreground">
+                        No organizations available
+                      </div>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />

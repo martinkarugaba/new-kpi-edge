@@ -1,18 +1,20 @@
 import {
+  IconActivity,
+  IconBuildings,
   IconCamera,
   IconChartBar,
   IconDashboard,
   IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
   IconFolder,
   IconHelp,
-  IconListDetails,
+  IconNote,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
+  IconUsersGroup,
 } from "@tabler/icons-react";
 
 export const navigationData = {
@@ -30,7 +32,7 @@ export const navigationData = {
     {
       title: "Clusters",
       url: "/dashboard/clusters",
-      icon: IconListDetails,
+      icon: IconBuildings,
     },
     {
       title: "Organisations",
@@ -115,9 +117,14 @@ export const navigationData = {
   ],
   kpis: [
     {
+      name: "Overview",
+      url: "/dashboard/kpis-overview",
+      icon: IconDatabase,
+    },
+    {
       name: "Participants",
       url: "/dashboard/participants",
-      icon: IconDatabase,
+      icon: IconUsersGroup,
     },
     {
       name: "Reports",
@@ -127,12 +134,12 @@ export const navigationData = {
     {
       name: "Activities",
       url: "/dashboard/activities",
-      icon: IconFileWord,
+      icon: IconActivity,
     },
     {
       name: "Concept notes",
       url: "/ dashboard/concept-notes",
-      icon: IconFileWord,
+      icon: IconNote,
     },
   ],
 };

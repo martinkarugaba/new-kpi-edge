@@ -49,8 +49,30 @@ export function ParticipantsClient({
   const currentCluster = clusters.find((c) => c.id === clusterId);
   const clusterOrganizations =
     currentCluster?.organizations?.map((org) => ({
-      ...org,
+      id: org.id,
+      name: org.name,
+      acronym: org.name
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase(),
       cluster_id: clusterId,
+      project_id: null,
+      country: "",
+      district: "",
+      sub_county: "",
+      parish: "",
+      village: "",
+      address: "",
+      created_at: null,
+      updated_at: null,
+      cluster: currentCluster
+        ? {
+            id: currentCluster.id,
+            name: currentCluster.name,
+          }
+        : null,
+      project: null,
     })) || [];
 
   const handleSubmit = async (formData: {
