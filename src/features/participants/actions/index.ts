@@ -1,12 +1,14 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { participants } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { participants, organizations, clusterMembers } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 import {
   type NewParticipant,
   type ParticipantResponse,
   type ParticipantsResponse,
-} from "../types";
-import { revalidatePath } from "next/cache";
+} from "../types/types";
 
 export async function getParticipants(
   clusterId: string,
@@ -33,9 +35,48 @@ export async function createParticipant(
   data: NewParticipant,
 ): Promise<ParticipantResponse> {
   try {
+    if (!data.cluster_id || !data.project_id || !data.organization_id) {
+      return {
+        success: false,
+        error: "cluster_id, project_id, and organization_id are required",
+      };
+    }
+
+    // Verify that the organization exists and belongs to the cluster
+    const organization = await db.query.organizations.findFirst({
+      where: eq(organizations.id, data.organization_id),
+    });
+
+    if (!organization) {
+      return {
+        success: false,
+        error: "Organization not found",
+      };
+    }
+
+    // Verify that the organization belongs to the cluster
+    const clusterMember = await db.query.clusterMembers.findFirst({
+      where: and(
+        eq(clusterMembers.organization_id, data.organization_id),
+        eq(clusterMembers.cluster_id, data.cluster_id),
+      ),
+    });
+
+    if (!clusterMember) {
+      return {
+        success: false,
+        error: "Organization does not belong to the specified cluster",
+      };
+    }
+
     const [participant] = await db
       .insert(participants)
-      .values(data)
+      .values({
+        ...data,
+        cluster_id: data.cluster_id,
+        project_id: data.project_id,
+        organization_id: data.organization_id,
+      })
       .returning();
 
     revalidatePath(`/clusters/${data.cluster_id}/participants`);
@@ -47,7 +88,8 @@ export async function createParticipant(
     console.error("Error creating participant:", error);
     return {
       success: false,
-      error: "Failed to create participant",
+      error:
+        error instanceof Error ? error.message : "Failed to create participant",
     };
   }
 }

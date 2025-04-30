@@ -33,19 +33,19 @@ export function OrganizationsTable({
   const router = useRouter();
   const [selectedRows, setSelectedRows] = useState<Organization[]>([]);
 
-  const handleDelete = async (id: string) => {
-    try {
-      const result = await deleteOrganizations([id]);
-      if (result.success) {
-        toast.success("Organization deleted successfully");
-        router.refresh();
-      } else {
-        toast.error(result.error || "Failed to delete organization");
-      }
-    } catch (error) {
-      toast.error("Failed to delete organization");
-    }
-  };
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     const result = await deleteOrganizations([id]);
+  //     if (result.success) {
+  //       toast.success("Organization deleted successfully");
+  //       router.refresh();
+  //     } else {
+  //       toast.error(result.error || "Failed to delete organization");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to delete organization");
+  //   }
+  // };
 
   const handleBulkDelete = async () => {
     if (selectedRows.length === 0) return;

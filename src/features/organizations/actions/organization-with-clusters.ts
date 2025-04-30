@@ -18,7 +18,7 @@ const createOrganizationSchema = z.object({
   project_id: z.string().nullable(),
   country: z.string().min(1, "Country is required"),
   district: z.string().min(1, "District is required"),
-  sub_county: z.string().min(1, "Sub-county is required"),
+  sub_county: z.array(z.string()).min(1, "At least one sub-county is required"),
   parish: z.string().min(1, "Parish is required"),
   village: z.string().min(1, "Village is required"),
   address: z.string().min(1, "Address is required"),

@@ -37,7 +37,7 @@ interface Organization {
   project_id: string | null;
   country: string;
   district: string;
-  sub_county: string;
+  sub_county: string[]; // Changed from string to string[]
   parish: string;
   village: string;
   address: string;
@@ -102,13 +102,8 @@ export function TeamSwitcher() {
 
         // Get organizations from clusters the user belongs to through the cluster_users table
         const userOrgsResult = await getCurrentUserClusterOrganizations();
-        if (userOrgsResult.success === true) {
-          // Use type assertion to help TypeScript understand the structure
-          const successResult = userOrgsResult as {
-            success: true;
-            data: Organization[];
-          };
-          userClusterOrgs = successResult.data;
+        if (userOrgsResult.success === true && "data" in userOrgsResult) {
+          userClusterOrgs = userOrgsResult.data;
           isClustered = isClustered || userClusterOrgs.length > 0;
         }
 
@@ -169,7 +164,7 @@ export function TeamSwitcher() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <Building2 className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">

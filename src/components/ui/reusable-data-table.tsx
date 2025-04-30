@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 "use client";
 
 import * as React from "react";
@@ -15,10 +13,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -56,7 +53,6 @@ export function ReusableDataTable<TData, TValue>({
   filterPlaceholder = "Filter...",
   showColumnToggle = true,
   showPagination = true,
-  showRowSelection = false,
   pageSize = 10,
   onRowSelectionChange,
   customActions,
@@ -106,18 +102,6 @@ export function ReusableDataTable<TData, TValue>({
   }, [rowSelection, onRowSelectionChange, table]);
 
   // Get columns that can be hidden for the column toggle dropdown
-  const columnsToToggle = React.useMemo(() => {
-    if (!table || !table.getAllColumns) return [];
-
-    return table
-      .getAllColumns()
-      .filter(
-        (column) =>
-          column.getCanHide() &&
-          column.id !== "select" &&
-          column.id !== "actions",
-      );
-  }, [table]);
 
   return (
     <div className="space-y-4">

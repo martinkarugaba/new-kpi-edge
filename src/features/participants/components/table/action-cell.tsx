@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
-import { type Participant } from "../../types";
+import { type Participant } from "../../types/types";
 
 interface ActionCellProps {
   participant: Participant;

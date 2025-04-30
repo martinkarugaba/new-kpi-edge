@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { type Project } from "@/features/projects/types";
-import { type Participant } from "../../types";
+import { type Participant } from "../../types/types";
 import { type ParticipantFormValues } from "../participant-form";
 import { ParticipantForm } from "../participant-form";
 import { Separator } from "@/components/ui/separator";
@@ -61,10 +61,25 @@ export function AddParticipantDialog({
         designation: editingParticipant.designation,
         enterprise: editingParticipant.enterprise,
         contact: editingParticipant.contact,
-        organization_id: editingParticipant.organization_id || "", // Added organization_id
+        organization_id: editingParticipant.organization_id || "",
         project_id: editingParticipant.project_id,
-        noOfTrainings: editingParticipant.noOfTrainings?.toString() || "0",
-        isActive: (editingParticipant.isActive as "yes" | "no") || "yes",
+        cluster_id: editingParticipant.cluster_id || clusters[0]?.id || "",
+        isPermanentResident: (editingParticipant.isPermanentResident ||
+          "yes") as "yes" | "no",
+        areParentsAlive: (editingParticipant.areParentsAlive || "yes") as
+          | "yes"
+          | "no",
+        numberOfChildren:
+          editingParticipant.numberOfChildren?.toString() || "0",
+        employmentStatus: editingParticipant.employmentStatus || "unemployed",
+        monthlyIncome: editingParticipant.monthlyIncome?.toString() || "0",
+        mainChallenge: editingParticipant.mainChallenge || "",
+        skillOfInterest: editingParticipant.skillOfInterest || "",
+        expectedImpact: editingParticipant.expectedImpact || "",
+        isWillingToParticipate: (editingParticipant.isWillingToParticipate ||
+          "yes") as "yes" | "no",
+        noOfTrainings: "0",
+        isActive: "yes" as const,
       }
     : undefined;
 

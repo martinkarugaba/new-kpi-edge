@@ -9,6 +9,7 @@ import {
   IconFileDescription,
   IconFolder,
   IconHelp,
+  IconLocation,
   IconNote,
   IconReport,
   IconSearch,
@@ -48,6 +49,11 @@ export const navigationData = {
       title: "Users",
       url: "/dashboard/users",
       icon: IconUsers,
+    },
+    {
+      title: "Locations",
+      url: "/dashboard/locations",
+      icon: IconLocation,
     },
   ],
   navClouds: [

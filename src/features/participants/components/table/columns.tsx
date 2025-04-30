@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef, type Table, type Row } from "@tanstack/react-table";
-import { type Participant } from "../../types";
+import { type Participant } from "../../types/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ActionCell } from "./action-cell";
 

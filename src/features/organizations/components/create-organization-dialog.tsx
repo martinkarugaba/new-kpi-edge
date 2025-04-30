@@ -9,11 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { OrganizationForm } from "./organization-form";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Cluster } from "@/features/clusters/components/clusters-table";
 import { Separator } from "@/components/ui/separator";
+import { OrganizationForm } from "./organization-form/organization-form";
 
 type CreateOrganizationDialogProps = {
   clusters: Cluster[];

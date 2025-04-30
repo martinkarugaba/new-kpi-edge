@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
 import { type Project } from "@/features/projects/types";
-import { type Participant } from "../types";
+import { type Participant } from "../types/types";
 import { type ParticipantFormValues } from "./participant-form";
 import {
   AddParticipantDialog,
@@ -11,6 +11,7 @@ import {
   getColumns,
   ParticipantTableFilters,
 } from "./table";
+import { ImportParticipants } from "./import/import-participants";
 
 interface ParticipantsTableProps {
   data: Participant[];
@@ -21,6 +22,7 @@ interface ParticipantsTableProps {
   setIsOpen: (isOpen: boolean) => void;
   editingParticipant: Participant | null;
   handleSubmit: (data: ParticipantFormValues) => Promise<void>;
+  onImportParticipants: (data: ParticipantFormValues[]) => Promise<void>;
   isLoading: boolean;
   projects: Project[];
   // Add filter-related props
@@ -78,6 +80,7 @@ export function ParticipantsTable({
   setIsOpen,
   editingParticipant,
   handleSubmit,
+  onImportParticipants,
   isLoading,
   projects,
   // Add filter props
@@ -122,15 +125,22 @@ export function ParticipantsTable({
           pageSize={10}
           onRowSelectionChange={setSelectedRows}
           customActions={
-            <AddParticipantDialog
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              editingParticipant={editingParticipant}
-              handleSubmit={handleSubmit}
-              isLoading={isLoading}
-              projects={projects}
-              clusters={clusters}
-            />
+            <div className="flex items-center gap-2">
+              <ImportParticipants
+                onImport={onImportParticipants}
+                clusterId={clusters[0]?.id || ""}
+                projects={projects}
+              />
+              <AddParticipantDialog
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                editingParticipant={editingParticipant}
+                handleSubmit={handleSubmit}
+                isLoading={isLoading}
+                projects={projects}
+                clusters={clusters}
+              />
+            </div>
           }
         />
       </div>

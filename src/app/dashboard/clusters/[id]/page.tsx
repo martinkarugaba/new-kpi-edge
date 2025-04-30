@@ -25,11 +25,7 @@ export default async function ClusterDetailsPage({
 
   return (
     <>
-      <SiteHeader title={result.data.name}>
-        <h2 className="text-sm text-muted-foreground">
-          Manage cluster details and members
-        </h2>
-      </SiteHeader>
+      <SiteHeader title={result.data.name} />
       <ClusterDetails cluster={clusterWithValidDates} />
     </>
   );

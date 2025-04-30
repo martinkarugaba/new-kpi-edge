@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -8,8 +6,6 @@ import { CreateProjectDialog } from "./create-project-dialog";
 import { Plus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -100,7 +96,7 @@ function ActionsCell({
 }
 
 export function ProjectsTable({ projects }: ProjectsTableProps) {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [, setSelectedProject] = useState<Project | null>(null);
 
   // Define the columns for the projects table
   const columns: ColumnDef<Project>[] = [

@@ -16,7 +16,7 @@ export const organizations = pgTable("organizations", {
   project_id: uuid("project_id").references(() => projects.id),
   country: text("country").notNull(),
   district: text("district").notNull(),
-  sub_county: text("sub_county").notNull(),
+  sub_county: text("sub_county").array().notNull().default([]),
   parish: text("parish").notNull(),
   village: text("village").notNull(),
   address: text("address").notNull(),
@@ -107,12 +107,28 @@ export const participants = pgTable("participants", {
   designation: text("designation").notNull(),
   enterprise: text("enterprise").notNull(),
   contact: text("contact").notNull(),
+  isPermanentResident: text("is_permanent_resident").notNull().default("no"),
+  areParentsAlive: text("are_parents_alive").notNull().default("no"),
+  numberOfChildren: integer("number_of_children").notNull().default(0),
+  employmentStatus: text("employment_status").notNull().default("unemployed"),
+  monthlyIncome: integer("monthly_income").notNull().default(0),
+  mainChallenge: text("main_challenge"),
+  skillOfInterest: text("skill_of_interest"),
+  expectedImpact: text("expected_impact"),
+  isWillingToParticipate: text("is_willing_to_participate")
+    .notNull()
+    .default("yes"),
+  organization_id: uuid("organization_id")
+    .references(() => organizations.id)
+    .notNull(),
   cluster_id: uuid("cluster_id")
     .references(() => clusters.id)
     .notNull(),
   project_id: uuid("project_id")
     .references(() => projects.id)
     .notNull(),
+  noOfTrainings: integer("no_of_trainings").notNull().default(0),
+  isActive: text("is_active").notNull().default("yes"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });
@@ -150,6 +166,94 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   expires: timestamp("expires").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const countries = pgTable("countries", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const districts = pgTable("districts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(),
+  country_id: uuid("country_id")
+    .references(() => countries.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const subCounties = pgTable("sub_counties", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(),
+  district_id: uuid("district_id")
+    .references(() => districts.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const parishes = pgTable("parishes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(),
+  sub_county_id: uuid("sub_county_id")
+    .references(() => subCounties.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const villages = pgTable("villages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(),
+  parish_id: uuid("parish_id")
+    .references(() => parishes.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+// Add relations for administrative divisions
+export const countriesRelations = relations(countries, ({ many }) => ({
+  districts: many(districts),
+}));
+
+export const districtsRelations = relations(districts, ({ one, many }) => ({
+  country: one(countries, {
+    fields: [districts.country_id],
+    references: [countries.id],
+  }),
+  subCounties: many(subCounties),
+}));
+
+export const subCountiesRelations = relations(subCounties, ({ one, many }) => ({
+  district: one(districts, {
+    fields: [subCounties.district_id],
+    references: [districts.id],
+  }),
+  parishes: many(parishes),
+}));
+
+export const parishesRelations = relations(parishes, ({ one, many }) => ({
+  subCounty: one(subCounties, {
+    fields: [parishes.sub_county_id],
+    references: [subCounties.id],
+  }),
+  villages: many(villages),
+}));
+
+export const villagesRelations = relations(villages, ({ one }) => ({
+  parish: one(parishes, {
+    fields: [villages.parish_id],
+    references: [parishes.id],
+  }),
+}));
 
 // Relations
 export const organizationsRelations = relations(
