@@ -1,273 +1,117 @@
-import { db } from "@/lib/db";
-import { countries, districts } from "@/lib/db/schema";
+import { db } from "../src/lib/db";
 import { sql } from "drizzle-orm";
-import { State, IState } from "country-state-city";
+import { districts as dbDistricts, countries } from "../src/lib/db/schema";
+import districts from "ug-locale/districts.json";
+import * as dotenv from "dotenv";
+import path from "path";
 
-// Define East African country codes
-const EAST_AFRICAN_COUNTRIES = ["UG", "KE", "TZ", "RW", "BI", "ET"];
-
-// Import any custom districts data here
-// Define the interface for our custom districts to match required properties
-interface CustomDistrict {
-  name: string;
-  code: string;
-  isoCode?: string;
-  countryCode?: string;
-}
-
-const UGANDA_DISTRICTS: CustomDistrict[] = [
-  // These are additional districts not in the country-state-city library
-  { name: "Kampala", code: "UG-KMP" },
-  { name: "Wakiso", code: "UG-WAK" },
-  { name: "Mukono", code: "UG-MUK" },
-  { name: "Jinja", code: "UG-JIN" },
-  { name: "Mbarara", code: "UG-MBR" },
-  { name: "Gulu", code: "UG-GUL" },
-  { name: "Lira", code: "UG-LIR" },
-  { name: "Mbale", code: "UG-MBL" },
-  { name: "Arua", code: "UG-ARU" },
-  { name: "Masaka", code: "UG-MSK" },
-  { name: "Kabale", code: "UG-KBL" },
-  { name: "Tororo", code: "UG-TOR" },
-  { name: "Iganga", code: "UG-IGA" },
-  { name: "Moroto", code: "UG-MRT" },
-  { name: "Kitgum", code: "UG-KTG" },
-  { name: "Hoima", code: "UG-HMA" },
-  { name: "Fortportal", code: "UG-FPT" },
-  { name: "Masindi", code: "UG-MSN" },
-  { name: "Soroti", code: "UG-SOR" },
-  { name: "Nebbi", code: "UG-NBB" },
-  { name: "Moyo", code: "UG-MOY" },
-  { name: "Adjumani", code: "UG-ADJ" },
-  { name: "Rukungiri", code: "UG-RUK" },
-  { name: "Kasese", code: "UG-KAS" },
-  { name: "Ntungamo", code: "UG-NTU" },
-  { name: "Apac", code: "UG-APC" },
-  { name: "Bushenyi", code: "UG-BSH" },
-  { name: "Kiboga", code: "UG-KIB" },
-  { name: "Kabarole", code: "UG-KBR" },
-  { name: "Kamuli", code: "UG-KML" },
-  { name: "Mubende", code: "UG-MBN" },
-  { name: "Kayunga", code: "UG-KAY" },
-  { name: "Kalangala", code: "UG-KLG" },
-  { name: "Koboko", code: "UG-KOB" },
-  { name: "Mityana", code: "UG-MIT" },
-  { name: "Nakaseke", code: "UG-NAK" },
-  { name: "Amuria", code: "UG-AMU" },
-  { name: "Bududa", code: "UG-BUD" },
-  { name: "Bukedea", code: "UG-BUK" },
-  { name: "Buliisa", code: "UG-BUL" },
-  { name: "Dokolo", code: "UG-DOK" },
-  { name: "Kaberamaido", code: "UG-KAB" },
-  { name: "Lyantonde", code: "UG-LYA" },
-  { name: "Manafwa", code: "UG-MAN" },
-  { name: "Namutumba", code: "UG-NAM" },
-  { name: "Yumbe", code: "UG-YUM" },
-];
-
-// Function to check existing districts
-// This function is kept for future use but commented out to avoid linter errors
-/*
-async function getExistingDistricts() {
-  try {
-    console.log('🔍 Checking existing districts data...');
-    const existingDistricts = await db.select().from(districts);
-    console.log(`✅ Found ${existingDistricts.length} existing districts`);
-    return existingDistricts;
-  } catch (error) {
-    console.error(
-      '❌ Error checking district data:',
-      error instanceof Error ? error.message : String(error)
-    );
-    console.error('Error details:', error);
-    console.log('⚠️ Will continue with an empty list of existing districts.');
-    return [];
-  }
-}
-*/
-
-// Get country ID by country code
-async function getCountryIdByCode(countryCode: string) {
-  try {
-    const country = await db
-      .select()
-      .from(countries)
-      .where(sql`${countries.code} = ${countryCode}`);
-
-    if (country && country.length > 0) {
-      return country[0].id;
-    }
-    return null;
-  } catch (error) {
-    console.error(
-      `❌ Error getting country ID for code ${countryCode}:`,
-      error instanceof Error ? error.message : String(error),
-    );
-    return null;
-  }
-}
-
-async function deleteExistingDistricts() {
-  try {
-    console.log("🧹 Deleting existing districts for selected countries...");
-
-    for (const countryCode of EAST_AFRICAN_COUNTRIES) {
-      const countryId = await getCountryIdByCode(countryCode);
-      if (countryId) {
-        await db
-          .delete(districts)
-          .where(sql`${districts.country_id} = ${countryId}`);
-        console.log(`✅ Deleted districts for country ${countryCode}`);
-      }
-    }
-  } catch (error) {
-    console.error(
-      "❌ Error deleting districts:",
-      error instanceof Error ? error.message : String(error),
-    );
-  }
-}
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 async function seedDistricts() {
   try {
-    console.log("🌱 Starting to seed districts...");
+    console.log("Starting districts seeding...");
 
-    // Since we deleted existing districts for these countries, we don't need to check
-    const existingCodes = new Set();
+    // First, get the Uganda country ID
+    const [uganda] = await db
+      .select()
+      .from(countries)
+      .where(sql`LOWER(${countries.name}) = 'uganda'`);
 
-    let successCount = 0;
-    let errorCount = 0;
-    let skippedCount = 0;
-
-    // Process each East African country
-    for (const countryCode of EAST_AFRICAN_COUNTRIES) {
-      // Get the country ID
-      const countryId = await getCountryIdByCode(countryCode);
-
-      if (!countryId) {
-        console.log(
-          `⚠️ Country with code ${countryCode} not found in the database. Skipping.`,
-        );
-        continue;
-      }
-
-      console.log(`🔍 Processing districts for country ${countryCode}...`);
-
-      // Get states/districts from country-state-city
-      const statesFromAPI = State.getStatesOfCountry(countryCode);
-
-      // Add custom districts for Uganda
-      let allDistricts: (IState | CustomDistrict)[] = [...statesFromAPI];
-      if (countryCode === "UG") {
-        allDistricts = [...allDistricts, ...UGANDA_DISTRICTS];
-      }
-
-      if (allDistricts.length === 0) {
-        console.log(`ℹ️ No districts found for ${countryCode} in the API.`);
-        continue;
-      }
-
-      console.log(
-        `📊 Found ${allDistricts.length} districts for ${countryCode}`,
+    if (!uganda) {
+      throw new Error(
+        "Uganda country record not found. Please seed countries first.",
       );
+    }
 
-      // Process districts in batches
-      const batchSize = 20;
-      for (let i = 0; i < allDistricts.length; i += batchSize) {
-        const batch = allDistricts.slice(i, i + batchSize);
+    console.log("Found Uganda country record");
 
-        // Process each district in the batch
-        for (const district of batch) {
-          try {
-            // Format district code to follow country-district pattern (e.g., UG-BSH)
-            let districtCode =
-              "isoCode" in district
-                ? district.isoCode || ""
-                : (district as CustomDistrict).code;
-            const districtName = district.name;
+    // Process districts data
+    // Create a map to track code usage
+    const codeCount = new Map<string, number>();
 
-            // Standardize code format
-            if (!districtCode.startsWith(countryCode + "-")) {
-              districtCode = `${countryCode}-${districtCode}`;
+    const districtsData = districts.map(
+      (district: { name: string; code?: string }) => {
+        // Clean the name and format it properly (first letter uppercase, rest lowercase)
+        const formattedName = district.name
+          .toLowerCase()
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+
+        // Clean name for code generation (remove spaces and special characters)
+        const cleanedName = district.name.replace(/[^a-zA-Z]/g, "");
+
+        // Get first, last, and middle letter for the code
+        const firstLetter = cleanedName[0];
+        const lastLetter = cleanedName[cleanedName.length - 1];
+        const middleLetter = cleanedName[Math.floor(cleanedName.length / 2)];
+
+        let baseCode =
+          `${uganda.code}-${firstLetter}${middleLetter}${lastLetter}`.toUpperCase();
+
+        // Track the number of times this code has been used
+        const count = (codeCount.get(baseCode) || 0) + 1;
+        codeCount.set(baseCode, count);
+
+        // If this is not the first occurrence, try different middle letters
+        if (count > 1) {
+          for (let i = 1; i < cleanedName.length - 1; i++) {
+            const altCode =
+              `${uganda.code}-${firstLetter}${cleanedName[i]}${lastLetter}`.toUpperCase();
+            if (!codeCount.has(altCode)) {
+              baseCode = altCode;
+              codeCount.set(baseCode, 1);
+              break;
             }
-
-            // Skip if code is undefined or already exists
-            if (!districtCode || existingCodes.has(districtCode)) {
-              console.log(
-                `⏭️ District ${districtName} (${districtCode || "undefined"}) ${!districtCode ? "has no code" : "already exists"}, skipping.`,
-              );
-              skippedCount++;
-              continue;
-            }
-
-            // Insert the district
-            await db.insert(districts).values({
-              name: districtName,
-              code: districtCode,
-              country_id: countryId,
-            });
-
-            successCount++;
-            console.log(
-              `✅ Added district: ${districtName} (${districtCode}) for country ${countryCode}`,
-            );
-
-            // Add to existing codes to prevent duplicates
-            existingCodes.add(districtCode);
-          } catch (error) {
-            errorCount++;
-            console.error(
-              `❌ Error adding district ${district.name}:`,
-              error instanceof Error ? error.message : String(error),
-            );
           }
         }
-      }
-    }
 
-    // Report results
-    if (successCount > 0) {
-      console.log(`✅ Successfully added ${successCount} districts!`);
-    } else {
-      console.log(`ℹ️ No new districts were added.`);
-    }
-
-    if (skippedCount > 0) {
-      console.log(`⏭️ Skipped ${skippedCount} districts (already exist).`);
-    }
-
-    if (errorCount > 0) {
-      console.log(`⚠️ Encountered ${errorCount} errors during seeding.`);
-    }
-  } catch (error) {
-    console.error(
-      "❌ Error seeding districts data:",
-      error instanceof Error ? error.message : String(error),
+        return {
+          name: formattedName,
+          code: baseCode,
+          country_id: uganda.id,
+        };
+      },
     );
+
+    console.log(`Prepared ${districtsData.length} districts for insertion`);
+
+    // Insert districts in batches to avoid overwhelming the database
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < districtsData.length; i += BATCH_SIZE) {
+      const batch = districtsData.slice(i, i + BATCH_SIZE);
+      await db
+        .insert(dbDistricts)
+        .values(batch)
+        .onConflictDoUpdate({
+          target: [dbDistricts.code],
+          set: {
+            name: sql`EXCLUDED.name`,
+            updated_at: sql`CURRENT_TIMESTAMP`,
+          },
+        });
+      console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
+    }
+
+    console.log("Districts seeding completed successfully");
+  } catch (error) {
+    console.error("Error seeding districts:", error);
     throw error;
   }
 }
 
-async function main() {
-  try {
-    console.log("🚀 Starting districts seeding process...");
-
-    // First delete existing districts for specified countries
-    await deleteExistingDistricts();
-
-    // Then seed districts again
-    await seedDistricts();
-
-    console.log("✨ Districts seeding completed!");
-    process.exit(0);
-  } catch (error) {
-    console.error(
-      "Failed to seed districts:",
-      error instanceof Error ? error.message : String(error),
-    );
-    console.error("Error details:", error);
-    process.exit(1);
-  }
+// Run the seeding if this file is executed directly
+if (require.main === module) {
+  seedDistricts()
+    .then(() => {
+      console.log("Districts seeding completed");
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error("Districts seeding failed:", error);
+      process.exit(1);
+    });
 }
 
-main();
+export { seedDistricts };

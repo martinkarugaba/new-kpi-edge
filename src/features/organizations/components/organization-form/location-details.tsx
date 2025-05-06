@@ -299,7 +299,6 @@ export function LocationDetails({
                     <div key={districtName} className="mt-2">
                       <span className="text-sm">{districtName}</span>
                       <div className="ml-4 flex flex-wrap gap-1">
-                        {/* Use .values() instead of .entries() to avoid unused variables */}
                         {Object.values(districtSubCounties)
                           .filter((subCounties) => subCounties.length > 0)
                           .flatMap((subCounties) =>

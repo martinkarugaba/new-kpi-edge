@@ -2,21 +2,23 @@
 
 import { DistrictsTable } from "../districts-table";
 import { useEffect, useState } from "react";
-import { districts } from "@/lib/db/schema";
+import { countries, districts } from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { getDistricts } from "@/features/locations/actions/locations";
 
-type District = InferSelectModel<typeof districts>;
+type Country = InferSelectModel<typeof countries>;
 
-// Use a type instead of an empty interface
-type DistrictsTabProps = Record<string, never>;
+type District = InferSelectModel<typeof districts> & {
+  country?: Country;
+};
 
-export function DistrictsTab({}: DistrictsTabProps) {
+export function DistrictsTab() {
   const [data, setData] = useState<District[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await getDistricts();
+      console.log("Districts data:", result.data);
       if (result.success && result.data) {
         setData(result.data);
       }

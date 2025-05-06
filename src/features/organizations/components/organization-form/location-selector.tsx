@@ -27,7 +27,7 @@ import {
   LocationSelection,
 } from "../../atoms/organization-form";
 import {
-  getDistricts,
+  getDistrictsByCountry,
   getSubCounties,
 } from "@/features/locations/actions/locations";
 import {
@@ -65,9 +65,9 @@ export function LocationSelector({ form }: LocationSelectorProps) {
     setCurrentDistrict(null);
     setCurrentSubCounties([]);
     // Fetch districts for selected country
-    const result = await getDistricts();
+    const result = await getDistrictsByCountry(countryCode);
     if (result.success && result.data) {
-      // Convert DB districts to IState format and filter by country code if needed
+      // Convert DB districts to IState format
       const convertedDistricts: IState[] = result.data.map((d) => ({
         name: d.name,
         isoCode: d.code,
@@ -87,18 +87,21 @@ export function LocationSelector({ form }: LocationSelectorProps) {
     setCurrentSubCounties([]);
     // Fetch sub-counties for selected district
     if (currentCountry) {
+      // Since we don't have a specific function to get subcounties by district,
+      // we'll get all subcounties and filter them manually
       const result = await getSubCounties();
       if (result.success && result.data) {
-        // Convert DB sub-counties to ICity format and filter by district code if needed
-        const convertedSubCounties: ICity[] = result.data
-          .filter((sc) => sc.district_id === districtCode)
-          .map((sc) => ({
-            name: sc.name,
-            stateCode: districtCode,
-            countryCode: currentCountry.code,
-            latitude: "",
-            longitude: "",
-          }));
+        // Filter by district code and convert to ICity format
+        const filteredSubCounties = result.data.filter(
+          (sc) => sc.district.code === districtCode,
+        );
+        const convertedSubCounties: ICity[] = filteredSubCounties.map((sc) => ({
+          name: sc.name,
+          stateCode: districtCode,
+          countryCode: currentCountry.code,
+          latitude: "",
+          longitude: "",
+        }));
         setSubCounties(convertedSubCounties);
       }
     }
@@ -183,7 +186,7 @@ export function LocationSelector({ form }: LocationSelectorProps) {
           <FormField
             control={form.control}
             name="country"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Select Country</FormLabel>
                 <Popover>
@@ -193,7 +196,7 @@ export function LocationSelector({ form }: LocationSelectorProps) {
                       role="combobox"
                       className={cn(
                         "w-full justify-between",
-                        "text-muted-foreground",
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       Select a country
@@ -239,7 +242,7 @@ export function LocationSelector({ form }: LocationSelectorProps) {
               <FormField
                 control={form.control}
                 name="district"
-                render={() => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Select District</FormLabel>
                     <Popover>
@@ -249,7 +252,7 @@ export function LocationSelector({ form }: LocationSelectorProps) {
                           role="combobox"
                           className={cn(
                             "w-full justify-between",
-                            "text-muted-foreground",
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           Select a district

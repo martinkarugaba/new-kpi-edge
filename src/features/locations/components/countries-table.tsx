@@ -25,7 +25,7 @@ export function CountriesTable({ data }: CountriesTableProps) {
         showColumnToggle={true}
         showPagination={true}
         showRowSelection={true}
-        pageSize={10}
+        pageSize={20}
         customActions={
           <AddCountryDialog>
             <Button size="sm">

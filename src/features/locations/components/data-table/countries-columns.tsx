@@ -23,18 +23,25 @@ export const columns: ColumnDef<Country>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -47,24 +54,24 @@ export const columns: ColumnDef<Country>[] = [
     accessorKey: "code",
     header: "Code",
   },
-  {
-    accessorKey: "created_at",
-    header: "Created At",
-    cell: ({ row }) => {
-      if (!row.original.created_at) return "-";
-      const date = new Date(row.original.created_at);
-      return date.toLocaleDateString();
-    },
-  },
-  {
-    accessorKey: "updated_at",
-    header: "Updated At",
-    cell: ({ row }) => {
-      if (!row.original.updated_at) return "-";
-      const date = new Date(row.original.updated_at);
-      return date.toLocaleDateString();
-    },
-  },
+  // {
+  //   accessorKey: 'created_at',
+  //   header: 'Created At',
+  //   cell: ({ row }) => {
+  //     if (!row.original.created_at) return '-';
+  //     const date = new Date(row.original.created_at);
+  //     return date.toLocaleDateString();
+  //   },
+  // },
+  // {
+  //   accessorKey: 'updated_at',
+  //   header: 'Updated At',
+  //   cell: ({ row }) => {
+  //     if (!row.original.updated_at) return '-';
+  //     const date = new Date(row.original.updated_at);
+  //     return date.toLocaleDateString();
+  //   },
+  // },
   {
     id: "actions",
     header: "Actions",

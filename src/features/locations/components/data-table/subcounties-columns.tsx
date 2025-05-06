@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { subCounties } from "@/lib/db/schema";
+import { subCounties, districts, counties, countries } from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -17,24 +17,35 @@ import {
 import { deleteSubCounty } from "@/features/locations/actions/subcounties";
 import { toast } from "sonner";
 
-type SubCounty = InferSelectModel<typeof subCounties>;
+type SubCounty = InferSelectModel<typeof subCounties> & {
+  district?: InferSelectModel<typeof districts>;
+  county?: InferSelectModel<typeof counties>;
+  country?: InferSelectModel<typeof countries>;
+};
 
 export const columns: ColumnDef<SubCounty>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -51,7 +62,21 @@ export const columns: ColumnDef<SubCounty>[] = [
     id: "district",
     header: "District",
     cell: ({ row }) => {
-      return row.original.district_id || "-";
+      return row.original.district?.name || "-";
+    },
+  },
+  {
+    id: "county",
+    header: "County",
+    cell: ({ row }) => {
+      return row.original.county?.name || "-";
+    },
+  },
+  {
+    id: "country",
+    header: "Country",
+    cell: ({ row }) => {
+      return row.original.country?.name || "-";
     },
   },
   {

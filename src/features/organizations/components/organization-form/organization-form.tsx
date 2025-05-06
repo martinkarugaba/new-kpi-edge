@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Cluster } from "@/features/clusters/types";
 import { Project } from "@/features/projects/types";
 import { getProjects } from "@/features/projects/actions/projects";
@@ -103,7 +103,7 @@ export function OrganizationForm({
     }
   }, [initialData]);
 
-  const handleCountrySelect = useCallback(
+  const handleCountrySelect = React.useCallback(
     (countryCode: string, countryName: string) => {
       setCurrentCountry({ code: countryCode, name: countryName });
       const countryDistricts = getDistricts(countryCode);
@@ -113,47 +113,59 @@ export function OrganizationForm({
       form.setValue("sub_county", []);
       setDistrictSubCounties({});
     },
-    [setCurrentCountry, setDistricts, form, setDistrictSubCounties],
+    [form, setCurrentCountry, setDistricts, setDistrictSubCounties],
   );
 
-  const handleDistrictSelect = (districtCode: string, districtName: string) => {
-    setCurrentDistrict({ code: districtCode, name: districtName });
-    const currentDistricts = form.getValues("district") || [];
-    if (!currentDistricts.includes(districtName)) {
-      form.setValue("district", [...currentDistricts, districtName]);
-    }
-    const subCounties = getSubCounties(
-      currentCountry?.code || "",
-      districtCode,
-    );
-    setAvailableSubCounties(subCounties);
-  };
+  const handleDistrictSelect = useCallback(
+    (districtCode: string, districtName: string) => {
+      setCurrentDistrict({ code: districtCode, name: districtName });
+      const currentDistricts = form.getValues("district") || [];
+      if (!currentDistricts.includes(districtName)) {
+        form.setValue("district", [...currentDistricts, districtName]);
+      }
+      const subCounties = getSubCounties(
+        currentCountry?.code || "",
+        districtCode,
+      );
+      setAvailableSubCounties(subCounties);
+    },
+    [currentCountry, form, setCurrentDistrict, setAvailableSubCounties],
+  );
 
-  const handleSubCountySelect = (subCountyName: string) => {
-    if (!currentDistrict?.code) return;
+  const handleSubCountySelect = useCallback(
+    (subCountyName: string) => {
+      if (!currentDistrict?.code) return;
 
-    const currentSubCounties = districtSubCounties[currentDistrict.code] || [];
-    if (!currentSubCounties.includes(subCountyName)) {
-      setDistrictSubCounties({
-        ...districtSubCounties,
-        [currentDistrict.code]: [...currentSubCounties, subCountyName],
-      });
-      const allSubCounties = form.getValues("sub_county") || [];
-      form.setValue("sub_county", [...allSubCounties, subCountyName]);
-    }
-  };
+      const currentSubCounties =
+        districtSubCounties[currentDistrict.code] || [];
+      if (!currentSubCounties.includes(subCountyName)) {
+        setDistrictSubCounties({
+          ...districtSubCounties,
+          [currentDistrict.code]: [...currentSubCounties, subCountyName],
+        });
+        const allSubCounties = form.getValues("sub_county") || [];
+        form.setValue("sub_county", [...allSubCounties, subCountyName]);
+      }
+    },
+    [currentDistrict, districtSubCounties, form, setDistrictSubCounties],
+  );
 
-  const handleFinishCountry = () => {
+  const handleFinishCountry = useCallback(() => {
     setCurrentCountry(null);
     setCurrentDistrict(null);
     setAvailableSubCounties([]);
     setDistrictSubCounties({});
-  };
+  }, [
+    setCurrentCountry,
+    setCurrentDistrict,
+    setAvailableSubCounties,
+    setDistrictSubCounties,
+  ]);
 
-  const handleAddDistrict = () => {
+  const handleAddDistrict = useCallback(() => {
     setCurrentDistrict(null);
     setAvailableSubCounties([]);
-  };
+  }, [setCurrentDistrict, setAvailableSubCounties]);
 
   // Initialize countries when component mounts
   useEffect(() => {
@@ -176,7 +188,7 @@ export function OrganizationForm({
         ...data,
         country: data.country[0],
         district: data.district[0],
-        sub_county: data.sub_county, // Keep as array of strings
+        sub_county: data.sub_county, // Keep this as an array
       };
 
       if (initialData) {

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -32,7 +33,7 @@ const formSchema = z.object({
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   country: z.string().min(2, "Country is required"),
   district: z.string().min(2, "District is required"),
-  subCounty: z.string().min(2, "Sub-county is required"),
+  subCounty: z.string().min(2, "Sub-county is required"), // We keep this as a single string for the form
   parish: z.string().min(2, "Parish is required"),
   village: z.string().min(2, "Village is required"),
   sex: z.enum(["male", "female", "other"]),
@@ -90,7 +91,7 @@ export function ParticipantForm({
     project_id: string | null;
     country: string;
     district: string;
-    sub_county: string[]; // Changed from string to string[] to match the actual data structure
+    sub_county: string[]; // Changed from string to string[]
     parish: string;
     village: string;
     address: string;
@@ -120,7 +121,25 @@ export function ParticipantForm({
         return null;
       }
 
-      const currentOrg = currentOrgResult.data as Organization;
+      // Convert to our local Organization type
+      const orgData = currentOrgResult.data;
+      const currentOrg: Organization = {
+        id: orgData.id,
+        name: orgData.name,
+        acronym: orgData.acronym,
+        cluster_id: orgData.cluster_id,
+        project_id: orgData.project_id,
+        country: orgData.country,
+        district: orgData.district,
+        sub_county: orgData.sub_county,
+        parish: orgData.parish,
+        village: orgData.village,
+        address: orgData.address,
+        created_at: orgData.created_at,
+        updated_at: orgData.updated_at,
+        cluster: orgData.cluster,
+        project: orgData.project,
+      };
 
       return {
         currentOrg,
@@ -166,7 +185,7 @@ export function ParticipantForm({
   });
 
   // Set organization_id and cluster_id when organization data is available
-  React.useEffect(() => {
+  useEffect(() => {
     if (organizationData?.currentOrg) {
       form.setValue("organization_id", organizationData.currentOrg.id);
       if (organizationData.currentOrg.cluster_id) {
@@ -200,18 +219,34 @@ export function ParticipantForm({
           <FormField
             control={form.control}
             name="organization_id"
-            render={() => (
-              <FormItem>
-                <FormLabel>Organization</FormLabel>
-                <FormControl>
-                  <Input
-                    value={organizationData?.currentOrg?.name || "Loading..."}
-                    disabled
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              // Directly set values based on current data instead of useEffect
+              if (organizationData?.currentOrg && !field.value) {
+                // Use setTimeout to defer the state update
+                setTimeout(() => {
+                  field.onChange(organizationData.currentOrg.id);
+                  if (organizationData.currentOrg.cluster_id) {
+                    form.setValue(
+                      "cluster_id",
+                      organizationData.currentOrg.cluster_id,
+                    );
+                  }
+                }, 0);
+              }
+
+              return (
+                <FormItem>
+                  <FormLabel>Organization</FormLabel>
+                  <FormControl>
+                    <Input
+                      value={organizationData?.currentOrg?.name || "Loading..."}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}

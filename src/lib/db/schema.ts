@@ -182,14 +182,18 @@ export const districts = pgTable("districts", {
   country_id: uuid("country_id")
     .references(() => countries.id)
     .notNull(),
+  region: text("region"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const subCounties = pgTable("sub_counties", {
+export const counties = pgTable("counties", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   code: text("code").notNull().unique(),
+  country_id: uuid("country_id")
+    .references(() => countries.id)
+    .notNull(),
   district_id: uuid("district_id")
     .references(() => districts.id)
     .notNull(),
@@ -204,6 +208,15 @@ export const parishes = pgTable("parishes", {
   sub_county_id: uuid("sub_county_id")
     .references(() => subCounties.id)
     .notNull(),
+  district_id: uuid("district_id")
+    .references(() => districts.id)
+    .notNull(),
+  county_id: uuid("county_id")
+    .references(() => counties.id)
+    .notNull(),
+  country_id: uuid("country_id")
+    .references(() => countries.id)
+    .notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });
@@ -214,6 +227,35 @@ export const villages = pgTable("villages", {
   code: text("code").notNull().unique(),
   parish_id: uuid("parish_id")
     .references(() => parishes.id)
+    .notNull(),
+  sub_county_id: uuid("sub_county_id")
+    .references(() => subCounties.id)
+    .notNull(),
+  district_id: uuid("district_id")
+    .references(() => districts.id)
+    .notNull(),
+  county_id: uuid("county_id")
+    .references(() => counties.id)
+    .notNull(),
+  country_id: uuid("country_id")
+    .references(() => countries.id)
+    .notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+});
+
+export const subCounties = pgTable("subcounties", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(),
+  country_id: uuid("country_id")
+    .references(() => countries.id)
+    .notNull(),
+  district_id: uuid("district_id")
+    .references(() => districts.id)
+    .notNull(),
+  county_id: uuid("county_id")
+    .references(() => counties.id)
     .notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
@@ -230,20 +272,37 @@ export const districtsRelations = relations(districts, ({ one, many }) => ({
     references: [countries.id],
   }),
   subCounties: many(subCounties),
+  counties: many(counties),
 }));
 
-export const subCountiesRelations = relations(subCounties, ({ one, many }) => ({
+export const countiesRelations = relations(counties, ({ one, many }) => ({
+  country: one(countries, {
+    fields: [counties.country_id],
+    references: [countries.id],
+  }),
   district: one(districts, {
-    fields: [subCounties.district_id],
+    fields: [counties.district_id],
     references: [districts.id],
   }),
-  parishes: many(parishes),
+  subCounties: many(subCounties),
 }));
 
 export const parishesRelations = relations(parishes, ({ one, many }) => ({
   subCounty: one(subCounties, {
     fields: [parishes.sub_county_id],
     references: [subCounties.id],
+  }),
+  district: one(districts, {
+    fields: [parishes.district_id],
+    references: [districts.id],
+  }),
+  county: one(counties, {
+    fields: [parishes.county_id],
+    references: [counties.id],
+  }),
+  country: one(countries, {
+    fields: [parishes.country_id],
+    references: [countries.id],
   }),
   villages: many(villages),
 }));
@@ -252,6 +311,37 @@ export const villagesRelations = relations(villages, ({ one }) => ({
   parish: one(parishes, {
     fields: [villages.parish_id],
     references: [parishes.id],
+  }),
+  subCounty: one(subCounties, {
+    fields: [villages.sub_county_id],
+    references: [subCounties.id],
+  }),
+  district: one(districts, {
+    fields: [villages.district_id],
+    references: [districts.id],
+  }),
+  county: one(counties, {
+    fields: [villages.county_id],
+    references: [counties.id],
+  }),
+  country: one(countries, {
+    fields: [villages.country_id],
+    references: [countries.id],
+  }),
+}));
+
+export const subCountiesRelations = relations(subCounties, ({ one }) => ({
+  country: one(countries, {
+    fields: [subCounties.country_id],
+    references: [countries.id],
+  }),
+  district: one(districts, {
+    fields: [subCounties.district_id],
+    references: [districts.id],
+  }),
+  county: one(counties, {
+    fields: [subCounties.county_id],
+    references: [counties.id],
   }),
 }));
 

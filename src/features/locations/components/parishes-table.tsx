@@ -2,13 +2,24 @@
 
 import { columns } from "@/features/locations/components/data-table/parishes-columns";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { parishes } from "@/lib/db/schema";
+import {
+  parishes,
+  countries,
+  counties,
+  districts,
+  subCounties,
+} from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { AddParishDialog } from "@/features/locations/components/dialogs/add-parish-dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-type Parish = InferSelectModel<typeof parishes>;
+type Parish = InferSelectModel<typeof parishes> & {
+  subCounty?: InferSelectModel<typeof subCounties>;
+  district?: InferSelectModel<typeof districts>;
+  county?: InferSelectModel<typeof counties>;
+  country?: InferSelectModel<typeof countries>;
+};
 
 interface ParishesTableProps {
   data: Parish[];

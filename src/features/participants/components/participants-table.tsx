@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
 import { type Project } from "@/features/projects/types";
+import { type Organization } from "@/features/organizations/types";
 import { type Participant } from "../types/types";
 import { type ParticipantFormValues } from "./participant-form";
 import {
@@ -26,31 +27,7 @@ interface ParticipantsTableProps {
   isLoading: boolean;
   projects: Project[];
   // Add filter-related props
-  clusterId: string;
-  organizations: {
-    id: string;
-    name: string;
-    acronym: string;
-    cluster_id: string | null;
-    project_id: string | null;
-    country: string;
-    district: string;
-    sub_county: string;
-    parish: string;
-    village: string;
-    address: string;
-    created_at: Date | null;
-    updated_at: Date | null;
-    cluster: {
-      id: string;
-      name: string;
-    } | null;
-    project: {
-      id: string;
-      name: string;
-      acronym: string;
-    } | null;
-  }[];
+  organizations: Organization[];
   clusters: { id: string; name: string }[];
   districts: string[];
   sexOptions: string[];

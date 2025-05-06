@@ -1,44 +1,63 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { addDistrict } from "@/features/locations/actions/districts";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getCountries } from "@/features/locations/actions/countries";
 
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  code: z.string().min(1, "Code is required"),
-  countryId: z.string().min(1, "Country is required"),
-});
+import {
+  AddDistrictDialogProps,
+  Country,
+  formSchema,
+  FormValues,
+  generateDistrictCode,
+  DistrictForm,
+} from "./district";
 
-interface AddDistrictDialogProps {
-  children: React.ReactNode;
-}
-
-export function AddDistrictDialog({ children }: AddDistrictDialogProps) {
+export function AddDistrictDialog({
+  children,
+  countries = [],
+}: AddDistrictDialogProps) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [countryList, setCountryList] = useState<Country[]>(countries);
+  const [isLoading, setIsLoading] = useState(countries.length === 0);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (countries.length === 0) {
+      // Fetch countries if they weren't provided
+      const fetchCountries = async () => {
+        try {
+          const result = await getCountries();
+          if (result.success && result.data) {
+            setCountryList(result.data);
+          } else {
+            toast.error("Failed to load countries");
+          }
+        } catch (error) {
+          console.error("Error fetching countries:", error);
+          toast.error("Failed to load countries");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchCountries();
+    }
+  }, [countries]);
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -47,19 +66,46 @@ export function AddDistrictDialog({ children }: AddDistrictDialogProps) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  // Watch for changes in name and countryId to auto-generate code
+  const districtName = form.watch("name");
+  const countryId = form.watch("countryId");
+
+  useEffect(() => {
+    if (districtName && countryId) {
+      const selectedCountry = countryList.find(
+        (country) => country.id === countryId,
+      );
+      if (selectedCountry?.code) {
+        const generatedCode = generateDistrictCode(
+          selectedCountry.code,
+          districtName,
+        );
+        form.setValue("code", generatedCode);
+      }
+    }
+  }, [districtName, countryId, countryList, form]);
+
+  async function onSubmit(values: FormValues) {
     try {
-      await addDistrict(values);
+      const result = await addDistrict(values);
+
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
+
       form.reset();
       toast.success("District added successfully");
+      setOpen(false); // Close dialog after successful submission
       router.refresh();
-    } catch {
+    } catch (error) {
+      console.error("Error adding district:", error);
       toast.error("Failed to add district");
     }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -68,52 +114,14 @@ export function AddDistrictDialog({ children }: AddDistrictDialogProps) {
             Add a new district to the system.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter district name..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Code</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter district code..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="countryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Country ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter country ID..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button type="submit">Add District</Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <DistrictForm
+          form={form}
+          onSubmit={onSubmit}
+          countryList={countryList}
+          isLoading={isLoading}
+          districtName={districtName}
+          countryId={countryId}
+        />
       </DialogContent>
     </Dialog>
   );

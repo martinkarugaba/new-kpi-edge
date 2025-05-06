@@ -42,3 +42,16 @@ export async function deleteCountry(id: string) {
     return { error: "Failed to delete country" };
   }
 }
+
+export async function getCountries() {
+  try {
+    const allCountries = await db
+      .select()
+      .from(countries)
+      .orderBy(countries.name);
+    return { success: true, data: allCountries };
+  } catch (error) {
+    console.error("Error fetching countries:", error);
+    return { error: "Failed to fetch countries" };
+  }
+}

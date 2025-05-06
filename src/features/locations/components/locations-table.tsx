@@ -30,7 +30,14 @@ interface LocationsTableProps {
   locations: Location[];
 }
 
-function ActionsCell({ location }: { location: Location }) {
+interface ActionsCellProps {
+  location: Location;
+}
+
+function ActionsCell({ location }: ActionsCellProps) {
+  // We'll use the location ID for when we implement the edit and delete functionality
+  const locationId = location.id;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -40,10 +47,19 @@ function ActionsCell({ location }: { location: Location }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions for {location.name}</DropdownMenuLabel>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => console.log(`Edit location: ${locationId}`)}
+        >
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+        <DropdownMenuItem
+          className="text-destructive"
+          onClick={() => console.log(`Delete location: ${locationId}`)}
+        >
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

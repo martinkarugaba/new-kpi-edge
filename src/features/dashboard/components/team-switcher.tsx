@@ -102,7 +102,11 @@ export function TeamSwitcher() {
 
         // Get organizations from clusters the user belongs to through the cluster_users table
         const userOrgsResult = await getCurrentUserClusterOrganizations();
-        if (userOrgsResult.success === true && "data" in userOrgsResult) {
+        if (
+          userOrgsResult.success === true &&
+          "data" in userOrgsResult &&
+          userOrgsResult.data
+        ) {
           userClusterOrgs = userOrgsResult.data;
           isClustered = isClustered || userClusterOrgs.length > 0;
         }

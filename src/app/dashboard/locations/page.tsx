@@ -3,6 +3,7 @@ import { SiteHeader } from "@/features/dashboard/components/site-header";
 import {
   CountriesTab,
   DistrictsTab,
+  CountiesTab,
   ParishesTab,
   SubCountiesTab,
   VillagesTab,
@@ -20,6 +21,9 @@ export default async function LocationsPage() {
             </TabsTrigger>
             <TabsTrigger className="cursor-pointer" value="districts">
               Districts
+            </TabsTrigger>
+            <TabsTrigger className="cursor-pointer" value="counties">
+              Counties
             </TabsTrigger>
             <TabsTrigger className="cursor-pointer" value="subcounties">
               Sub-Counties
@@ -39,6 +43,10 @@ export default async function LocationsPage() {
 
         <TabsContent value="districts" className="space-y-4">
           <DistrictsTab />
+        </TabsContent>
+
+        <TabsContent value="counties" className="space-y-4">
+          <CountiesTab />
         </TabsContent>
 
         <TabsContent value="subcounties" className="space-y-4">

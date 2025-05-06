@@ -2,16 +2,17 @@
 
 import { SubCountiesTable } from "../subcounties-table";
 import { useEffect, useState } from "react";
-import { subCounties } from "@/lib/db/schema";
+import { subCounties, districts, counties, countries } from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { getSubCounties } from "@/features/locations/actions/locations";
 
-type SubCounty = InferSelectModel<typeof subCounties>;
+type SubCounty = InferSelectModel<typeof subCounties> & {
+  district?: InferSelectModel<typeof districts>;
+  county?: InferSelectModel<typeof counties>;
+  country?: InferSelectModel<typeof countries>;
+};
 
-// Use a type instead of an empty interface
-type SubCountiesTabProps = Record<string, never>;
-
-export function SubCountiesTab({}: SubCountiesTabProps) {
+export function SubCountiesTab() {
   const [data, setData] = useState<SubCounty[]>([]);
 
   useEffect(() => {

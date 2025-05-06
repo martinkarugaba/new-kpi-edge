@@ -10,6 +10,9 @@ const createParishSchema = z.object({
   name: z.string().min(1, "Name is required"),
   code: z.string().min(1, "Code is required"),
   subCountyId: z.string().min(1, "Sub County is required"),
+  districtId: z.string().min(1, "District is required"),
+  countyId: z.string().min(1, "County is required"),
+  countryId: z.string().min(1, "Country is required"),
 });
 
 export async function addParish(data: z.infer<typeof createParishSchema>) {
@@ -19,13 +22,17 @@ export async function addParish(data: z.infer<typeof createParishSchema>) {
     return { error: validatedFields.error.message };
   }
 
-  const { name, code, subCountyId } = validatedFields.data;
+  const { name, code, subCountyId, districtId, countyId, countryId } =
+    validatedFields.data;
 
   try {
     await db.insert(parishes).values({
       name,
       code,
       sub_county_id: subCountyId,
+      district_id: districtId,
+      county_id: countyId,
+      country_id: countryId,
     });
 
     revalidatePath("/dashboard/locations");

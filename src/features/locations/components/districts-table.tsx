@@ -2,13 +2,17 @@
 
 import { columns } from "@/features/locations/components/data-table/districts-columns";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { districts } from "@/lib/db/schema";
+import { countries, districts } from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { AddDistrictDialog } from "@/features/locations/components/dialogs/add-district-dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-type District = InferSelectModel<typeof districts>;
+type Country = InferSelectModel<typeof countries>;
+
+type District = InferSelectModel<typeof districts> & {
+  country?: Country;
+};
 
 interface DistrictsTableProps {
   data: District[];
@@ -25,7 +29,7 @@ export function DistrictsTable({ data }: DistrictsTableProps) {
         showColumnToggle={true}
         showPagination={true}
         showRowSelection={true}
-        pageSize={10}
+        pageSize={20}
         customActions={
           <AddDistrictDialog>
             <Button size="sm">

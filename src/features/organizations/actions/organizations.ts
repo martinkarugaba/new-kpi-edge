@@ -6,7 +6,7 @@ import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-const createOrganizationSchema = z.object({
+export const createOrganizationSchema = z.object({
   name: z.string().min(1, "Name is required"),
   acronym: z.string().min(1, "Acronym is required"),
   cluster_id: z.string().nullable(),

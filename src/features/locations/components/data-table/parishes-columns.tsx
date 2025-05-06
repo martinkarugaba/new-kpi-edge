@@ -1,7 +1,13 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { parishes } from "@/lib/db/schema";
+import {
+  parishes,
+  subCounties,
+  districts,
+  counties,
+  countries,
+} from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -17,24 +23,36 @@ import {
 import { deleteParish } from "@/features/locations/actions/parishes";
 import { toast } from "sonner";
 
-type Parish = InferSelectModel<typeof parishes>;
+type Parish = InferSelectModel<typeof parishes> & {
+  subCounty?: InferSelectModel<typeof subCounties>;
+  district?: InferSelectModel<typeof districts>;
+  county?: InferSelectModel<typeof counties>;
+  country?: InferSelectModel<typeof countries>;
+};
 
 export const columns: ColumnDef<Parish>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -51,25 +69,28 @@ export const columns: ColumnDef<Parish>[] = [
     id: "subcounty",
     header: "Sub County",
     cell: ({ row }) => {
-      return row.original.sub_county_id || "-";
+      return row.original.subCounty?.name || "-";
     },
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    id: "district",
+    header: "District",
     cell: ({ row }) => {
-      if (!row.original.created_at) return "-";
-      const date = new Date(row.original.created_at);
-      return date.toLocaleDateString();
+      return row.original.district?.name || "-";
     },
   },
   {
-    accessorKey: "updated_at",
-    header: "Updated At",
+    id: "county",
+    header: "County",
     cell: ({ row }) => {
-      if (!row.original.updated_at) return "-";
-      const date = new Date(row.original.updated_at);
-      return date.toLocaleDateString();
+      return row.original.county?.name || "-";
+    },
+  },
+  {
+    id: "country",
+    header: "Country",
+    cell: ({ row }) => {
+      return row.original.country?.name || "-";
     },
   },
   {

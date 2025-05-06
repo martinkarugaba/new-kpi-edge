@@ -2,13 +2,26 @@
 
 import { columns } from "@/features/locations/components/data-table/villages-columns";
 import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { villages } from "@/lib/db/schema";
+import {
+  villages,
+  parishes,
+  subCounties,
+  counties,
+  districts,
+  countries,
+} from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { AddVillageDialog } from "@/features/locations/components/dialogs/add-village-dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-type Village = InferSelectModel<typeof villages>;
+type Village = InferSelectModel<typeof villages> & {
+  parish?: InferSelectModel<typeof parishes>;
+  subCounty?: InferSelectModel<typeof subCounties>;
+  county?: InferSelectModel<typeof counties>;
+  district?: InferSelectModel<typeof districts>;
+  country?: InferSelectModel<typeof countries>;
+};
 
 interface VillagesTableProps {
   data: Village[];

@@ -37,6 +37,12 @@ import {
 } from "../actions/administrative-units";
 import { getParentOptions } from "../actions/get-parent-options";
 import { LocationType } from "./columns";
+import {
+  getDistrictById,
+  getSubCountyById,
+  getParishById,
+  findDefaultCountyForDistrict,
+} from "../actions/location-details";
 
 const formSchema = z.object({
   type: z.enum(["country", "district", "subcounty", "parish", "village"]),
@@ -132,10 +138,30 @@ export function AddLocationDialog({
             toast.error("Please select a district");
             return;
           }
+
+          // Get district details
+          const districtResult = await getDistrictById(data.parentId);
+          if (!districtResult.success || !districtResult.data) {
+            toast.error("Failed to get district details");
+            return;
+          }
+
+          // Get default county for this district
+          const countyResult = await findDefaultCountyForDistrict(
+            data.parentId,
+          );
+          // Make sure countyResult.data exists and has an id property
+          const countyId =
+            countyResult.success && countyResult.data
+              ? countyResult.data.id
+              : "";
+
           result = await createSubCounty({
             name: data.name,
             code: data.code,
             districtId: data.parentId,
+            countryId: districtResult.data.country_id,
+            countyId: countyId,
           });
           break;
         case "parish":
@@ -143,10 +169,21 @@ export function AddLocationDialog({
             toast.error("Please select a sub-county");
             return;
           }
+
+          // Get the sub-county details
+          const subCountyResult = await getSubCountyById(data.parentId);
+          if (!subCountyResult.success || !subCountyResult.data) {
+            toast.error("Failed to get sub-county details");
+            return;
+          }
+
           result = await createParish({
             name: data.name,
             code: data.code,
             subCountyId: data.parentId,
+            districtId: subCountyResult.data.district_id,
+            countyId: subCountyResult.data.county_id,
+            countryId: subCountyResult.data.country_id,
           });
           break;
         case "village":
@@ -154,10 +191,22 @@ export function AddLocationDialog({
             toast.error("Please select a parish");
             return;
           }
+
+          // Get the parish details
+          const parishResult = await getParishById(data.parentId);
+          if (!parishResult.success || !parishResult.data) {
+            toast.error("Failed to get parish details");
+            return;
+          }
+
           result = await createVillage({
             name: data.name,
             code: data.code,
             parishId: data.parentId,
+            subCountyId: parishResult.data.sub_county_id,
+            countyId: parishResult.data.county_id,
+            districtId: parishResult.data.district_id,
+            countryId: parishResult.data.country_id,
           });
           break;
       }

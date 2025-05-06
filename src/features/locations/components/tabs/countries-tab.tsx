@@ -8,10 +8,7 @@ import { getCountries } from "@/features/locations/actions/locations";
 
 type Country = InferSelectModel<typeof countries>;
 
-// Use a type instead of an empty interface
-type CountriesTabProps = Record<string, never>;
-
-export function CountriesTab({}: CountriesTabProps) {
+export function CountriesTab() {
   const [data, setData] = useState<Country[]>([]);
 
   useEffect(() => {

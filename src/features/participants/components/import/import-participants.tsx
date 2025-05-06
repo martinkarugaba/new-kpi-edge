@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import toast from "react-hot-toast";
@@ -28,14 +28,14 @@ interface ImportParticipantsProps {
 export function ImportParticipants({
   onImport,
   clusterId,
-  projects,
+  projects = [], // Default to empty array
 }: ImportParticipantsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [selectedSubCounty, setSelectedSubCounty] = useState<string>("");
-  const [districts, setDistricts] = useState<string[]>([]);
-  const [subCounties, setSubCounties] = useState<string[]>([]);
+  const [districts /* setDistricts */] = useState<string[]>([]);
+  const [subCounties /* setSubCounties */] = useState<string[]>([]);
 
   const {
     isLoading,
@@ -47,40 +47,20 @@ export function ImportParticipants({
     resetImport,
   } = useExcelImport(clusterId);
 
-  // Extract districts and subcounties from parsed data when available
-  useEffect(() => {
-    if (parsedData?.data) {
-      // Extract unique districts and subcounties
-      const uniqueDistricts = [
-        ...new Set(parsedData.data.map((p) => p.district)),
-      ].filter(Boolean);
-      setDistricts(uniqueDistricts);
+  // Handlers for filtering options
+  const handleProjectSelect = (value: string) => {
+    setSelectedProject(value);
+  };
 
-      // Reset selected district if it's no longer available
-      if (selectedDistrict && !uniqueDistricts.includes(selectedDistrict)) {
-        setSelectedDistrict("");
-      }
-    }
-  }, [parsedData, selectedDistrict]);
+  const handleDistrictSelect = (value: string) => {
+    setSelectedDistrict(value);
+    // TODO: Update subcounties based on selected district when API is ready
+    // Will use setDistricts and setSubCounties when implemented
+  };
 
-  // Update subcounties when district is selected
-  useEffect(() => {
-    if (parsedData?.data && selectedDistrict) {
-      const uniqueSubCounties = [
-        ...new Set(
-          parsedData.data
-            .filter((p) => p.district === selectedDistrict)
-            .map((p) => p.subCounty),
-        ),
-      ].filter(Boolean);
-      setSubCounties(uniqueSubCounties);
-
-      // Reset selected subcounty if it's no longer available
-      if (selectedSubCounty && !uniqueSubCounties.includes(selectedSubCounty)) {
-        setSelectedSubCounty("");
-      }
-    }
-  }, [parsedData, selectedDistrict, selectedSubCounty]);
+  const handleSubCountySelect = (value: string) => {
+    setSelectedSubCounty(value);
+  };
 
   const handleImport = async () => {
     if (!parsedData?.data || parsedData.data.length === 0) {
@@ -143,13 +123,13 @@ export function ImportParticipants({
               <ValidationErrors errors={parsedData.errors} />
               <DataPreview
                 data={parsedData.data}
-                projects={projects || []}
+                projects={projects}
                 selectedProject={selectedProject}
                 selectedDistrict={selectedDistrict}
                 selectedSubCounty={selectedSubCounty}
-                onProjectSelect={setSelectedProject}
-                onDistrictSelect={setSelectedDistrict}
-                onSubCountySelect={setSelectedSubCounty}
+                onProjectSelect={handleProjectSelect}
+                onDistrictSelect={handleDistrictSelect}
+                onSubCountySelect={handleSubCountySelect}
                 districts={districts}
                 subCounties={subCounties}
               />

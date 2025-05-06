@@ -10,21 +10,10 @@ import {
 } from "./organizations";
 import { z } from "zod";
 
-// Import the schema from the organizations.ts file
-const createOrganizationSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  acronym: z.string().min(1, "Acronym is required"),
-  cluster_id: z.string().nullable(),
-  project_id: z.string().nullable(),
-  country: z.string().min(1, "Country is required"),
-  district: z.string().min(1, "District is required"),
-  sub_county: z.array(z.string()).min(1, "At least one sub-county is required"),
-  parish: z.string().min(1, "Parish is required"),
-  village: z.string().min(1, "Village is required"),
-  address: z.string().min(1, "Address is required"),
-});
+// Import the schema from the original organizations.ts file
+import { createOrganizationSchema as originalCreateSchema } from "./organizations";
 
-type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;
+type CreateOrganizationInput = z.infer<typeof originalCreateSchema>;
 
 export async function createOrganizationWithClusters(
   data: CreateOrganizationInput,
@@ -32,7 +21,7 @@ export async function createOrganizationWithClusters(
 ) {
   try {
     // Validate the input data
-    const validationResult = createOrganizationSchema.safeParse(data);
+    const validationResult = originalCreateSchema.safeParse(data);
     if (!validationResult.success) {
       return {
         success: false,
@@ -80,7 +69,7 @@ export async function updateOrganizationWithClusters(
 ) {
   try {
     // Validate the input data
-    const validationResult = createOrganizationSchema.safeParse(data);
+    const validationResult = originalCreateSchema.safeParse(data);
     if (!validationResult.success) {
       return {
         success: false,

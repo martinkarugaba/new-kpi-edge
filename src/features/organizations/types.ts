@@ -6,7 +6,7 @@ export interface Organization {
   project_id: string | null;
   country: string;
   district: string;
-  sub_county: string[]; // Changed from string to string[] to match DB schema
+  sub_county: string[];
   parish: string;
   village: string;
   address: string;

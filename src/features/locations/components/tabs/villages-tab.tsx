@@ -2,16 +2,26 @@
 
 import { VillagesTable } from "../villages-table";
 import { useEffect, useState } from "react";
-import { villages } from "@/lib/db/schema";
+import {
+  villages,
+  parishes,
+  subCounties,
+  counties,
+  districts,
+  countries,
+} from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { getVillages } from "@/features/locations/actions/locations";
 
-type Village = InferSelectModel<typeof villages>;
+type Village = InferSelectModel<typeof villages> & {
+  parish?: InferSelectModel<typeof parishes>;
+  subCounty?: InferSelectModel<typeof subCounties>;
+  county?: InferSelectModel<typeof counties>;
+  district?: InferSelectModel<typeof districts>;
+  country?: InferSelectModel<typeof countries>;
+};
 
-// Use a type instead of an empty interface
-type VillagesTabProps = Record<string, never>;
-
-export function VillagesTab({}: VillagesTabProps) {
+export function VillagesTab() {
   const [data, setData] = useState<Village[]>([]);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { districts } from "@/lib/db/schema";
+import { countries, districts } from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -17,24 +17,35 @@ import {
 import { deleteDistrict } from "../../actions/districts";
 import { toast } from "sonner";
 
-type District = InferSelectModel<typeof districts>;
+type Country = InferSelectModel<typeof countries>;
+
+type District = InferSelectModel<typeof districts> & {
+  country?: Country;
+};
 
 export const columns: ColumnDef<District>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -51,27 +62,34 @@ export const columns: ColumnDef<District>[] = [
     id: "country",
     header: "Country",
     cell: ({ row }) => {
-      return row.original.country_id || "-";
+      return row.original.country?.name || "-";
     },
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: "region",
+    header: "Region",
     cell: ({ row }) => {
-      if (!row.original.created_at) return "-";
-      const date = new Date(row.original.created_at);
-      return date.toLocaleDateString();
+      return row.original.region || "-";
     },
   },
-  {
-    accessorKey: "updated_at",
-    header: "Updated At",
-    cell: ({ row }) => {
-      if (!row.original.updated_at) return "-";
-      const date = new Date(row.original.updated_at);
-      return date.toLocaleDateString();
-    },
-  },
+  // {
+  //   accessorKey: 'created_at',
+  //   header: 'Created At',
+  //   cell: ({ row }) => {
+  //     if (!row.original.created_at) return '-';
+  //     const date = new Date(row.original.created_at);
+  //     return date.toLocaleDateString();
+  //   },
+  // },
+  // {
+  //   accessorKey: 'updated_at',
+  //   header: 'Updated At',
+  //   cell: ({ row }) => {
+  //     if (!row.original.updated_at) return '-';
+  //     const date = new Date(row.original.updated_at);
+  //     return date.toLocaleDateString();
+  //   },
+  // },
   {
     id: "actions",
     header: "Actions",

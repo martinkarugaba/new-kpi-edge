@@ -73,13 +73,22 @@ export async function getDistricts(countryId: string) {
 export async function createSubCounty(data: {
   name: string;
   code: string;
+  countryId: string;
   districtId: string;
+  countyId: string;
 }) {
   try {
+    // Ensure all required fields are present
+    if (!data.countryId) {
+      return { success: false, error: "Country ID is required" };
+    }
+
     await db.insert(subCounties).values({
       name: data.name,
       code: data.code,
+      country_id: data.countryId,
       district_id: data.districtId,
+      county_id: data.countyId,
     });
     revalidatePath("/dashboard/locations");
     return { success: true };
@@ -107,12 +116,18 @@ export async function createParish(data: {
   name: string;
   code: string;
   subCountyId: string;
+  districtId: string;
+  countyId: string;
+  countryId: string;
 }) {
   try {
     await db.insert(parishes).values({
       name: data.name,
       code: data.code,
       sub_county_id: data.subCountyId,
+      district_id: data.districtId,
+      county_id: data.countyId,
+      country_id: data.countryId,
     });
     revalidatePath("/dashboard/locations");
     return { success: true };
@@ -140,12 +155,20 @@ export async function createVillage(data: {
   name: string;
   code: string;
   parishId: string;
+  subCountyId: string;
+  countyId: string;
+  districtId: string;
+  countryId: string;
 }) {
   try {
     await db.insert(villages).values({
       name: data.name,
       code: data.code,
       parish_id: data.parishId,
+      sub_county_id: data.subCountyId,
+      county_id: data.countyId,
+      district_id: data.districtId,
+      country_id: data.countryId,
     });
     revalidatePath("/dashboard/locations");
     return { success: true };

@@ -30,6 +30,10 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   code: z.string().min(1, "Code is required"),
   parishId: z.string().min(1, "Parish is required"),
+  subCountyId: z.string().min(1, "Sub County is required"),
+  countyId: z.string().min(1, "County is required"),
+  districtId: z.string().min(1, "District is required"),
+  countryId: z.string().min(1, "Country is required"),
 });
 
 interface AddVillageDialogProps {
@@ -44,6 +48,10 @@ export function AddVillageDialog({ children }: AddVillageDialogProps) {
       name: "",
       code: "",
       parishId: "",
+      subCountyId: "",
+      countyId: "",
+      districtId: "",
+      countryId: "",
     },
   });
 
@@ -104,6 +112,58 @@ export function AddVillageDialog({ children }: AddVillageDialogProps) {
                   <FormLabel>Parish ID</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter parish ID..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="subCountyId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sub County ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter sub county ID..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="countyId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>County ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter county ID..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="districtId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>District ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter district ID..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="countryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter country ID..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

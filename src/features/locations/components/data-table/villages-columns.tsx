@@ -1,7 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { villages } from "@/lib/db/schema";
+import {
+  villages,
+  parishes,
+  subCounties,
+  counties,
+  districts,
+  countries,
+} from "@/lib/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -17,24 +24,37 @@ import {
 import { deleteVillage } from "@/features/locations/actions/villages";
 import { toast } from "sonner";
 
-type Village = InferSelectModel<typeof villages>;
+type Village = InferSelectModel<typeof villages> & {
+  parish?: InferSelectModel<typeof parishes>;
+  subCounty?: InferSelectModel<typeof subCounties>;
+  county?: InferSelectModel<typeof counties>;
+  district?: InferSelectModel<typeof districts>;
+  country?: InferSelectModel<typeof countries>;
+};
 
 export const columns: ColumnDef<Village>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -51,25 +71,35 @@ export const columns: ColumnDef<Village>[] = [
     id: "parish",
     header: "Parish",
     cell: ({ row }) => {
-      return row.original.parish_id || "-";
+      return row.original.parish?.name || "-";
     },
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    id: "subcounty",
+    header: "Sub County",
     cell: ({ row }) => {
-      if (!row.original.created_at) return "-";
-      const date = new Date(row.original.created_at);
-      return date.toLocaleDateString();
+      return row.original.subCounty?.name || "-";
     },
   },
   {
-    accessorKey: "updated_at",
-    header: "Updated At",
+    id: "county",
+    header: "County",
     cell: ({ row }) => {
-      if (!row.original.updated_at) return "-";
-      const date = new Date(row.original.updated_at);
-      return date.toLocaleDateString();
+      return row.original.county?.name || "-";
+    },
+  },
+  {
+    id: "district",
+    header: "District",
+    cell: ({ row }) => {
+      return row.original.district?.name || "-";
+    },
+  },
+  {
+    id: "country",
+    header: "Country",
+    cell: ({ row }) => {
+      return row.original.country?.name || "-";
     },
   },
   {

@@ -123,7 +123,7 @@ export const navigationData = {
   ],
   kpis: [
     {
-      name: "Overview",
+      name: "Dashboard",
       url: "/dashboard/kpis-overview",
       icon: IconDatabase,
     },
@@ -147,5 +147,15 @@ export const navigationData = {
       url: "/ dashboard/concept-notes",
       icon: IconNote,
     },
+    // {
+    //   name: 'VSLAs',
+    //   url: '/dashboard/vslas',
+    //   icon: IconCashBanknote,
+    // },
+    // {
+    //   name: 'Photos',
+    //   url: '/dashboard/photos',
+    //   icon: IconCamera,
+    // },
   ],
 };

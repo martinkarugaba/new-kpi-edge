@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -96,7 +98,7 @@ function ActionsCell({
 }
 
 export function ProjectsTable({ projects }: ProjectsTableProps) {
-  const [, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   // Define the columns for the projects table
   const columns: ColumnDef<Project>[] = [

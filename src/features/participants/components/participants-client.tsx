@@ -132,7 +132,7 @@ export function ParticipantsClient({
       project_id: null,
       country: "",
       district: "",
-      sub_county: "",
+      sub_county: [] as string[], // Changed from string to string[]
       parish: "",
       village: "",
       address: "",
@@ -381,7 +381,6 @@ export function ParticipantsClient({
             sexOptions={sexOptions}
             filters={filters}
             setFilters={setFilters}
-            clusterId={clusterId}
           />
         </CardContent>
       </Card>

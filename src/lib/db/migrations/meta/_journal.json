@@ -127,6 +127,27 @@
       "when": 1745520237059,
       "tag": "0017_public_mandarin",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1746429389585,
+      "tag": "0018_wooden_silk_fever",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1746463025318,
+      "tag": "0019_perpetual_thundra",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1746521417558,
+      "tag": "0020_oval_mercury",
+      "breakpoints": true
     }
   ]
 }
