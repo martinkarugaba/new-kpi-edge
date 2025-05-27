@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   FormControl,
@@ -6,10 +6,10 @@ import {
   FormLabel,
   FormMessage,
   FormField,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
-import { FormValues } from "./schema";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { UseFormReturn } from 'react-hook-form';
+import { FormValues } from './schema';
 
 interface CodeInputProps {
   form: UseFormReturn<FormValues>;
@@ -30,7 +30,7 @@ export function CodeInput({ form, districtName, countryId }: CodeInputProps) {
               placeholder="Auto-generated from country and name..."
               {...field}
               readOnly={!!(districtName && countryId)}
-              className={districtName && countryId ? "bg-muted" : ""}
+              className={districtName && countryId ? 'bg-muted' : ''}
             />
           </FormControl>
           <FormMessage />

@@ -1,4 +1,4 @@
-import { type ParticipantFormValues } from "../participant-form";
+import { type ParticipantFormValues } from '../participant-form';
 import {
   Table,
   TableBody,
@@ -6,22 +6,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 interface DataPreviewProps {
   data: ParticipantFormValues[];
@@ -65,7 +65,7 @@ export function DataPreview({
               </SelectTrigger>
               <SelectContent>
                 {Array.isArray(projects) &&
-                  projects.map((project) => (
+                  projects.map(project => (
                     <SelectItem key={project.id} value={project.id}>
                       {project.name}
                     </SelectItem>
@@ -83,7 +83,7 @@ export function DataPreview({
                 <SelectValue placeholder="Select a district" />
               </SelectTrigger>
               <SelectContent>
-                {districts.map((district) => (
+                {districts.map(district => (
                   <SelectItem key={district} value={district}>
                     {district}
                   </SelectItem>
@@ -105,7 +105,7 @@ export function DataPreview({
                 <SelectValue placeholder="Select a sub-county" />
               </SelectTrigger>
               <SelectContent>
-                {subCounties.map((subCounty) => (
+                {subCounties.map(subCounty => (
                   <SelectItem key={subCounty} value={subCounty}>
                     {subCounty}
                   </SelectItem>

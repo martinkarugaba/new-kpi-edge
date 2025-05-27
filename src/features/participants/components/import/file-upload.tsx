@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Download } from "lucide-react";
-import { downloadTemplate } from "../../lib/excel-utils";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Download } from 'lucide-react';
+import { downloadTemplate } from '../../lib/excel-utils';
 
 interface FileUploadProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;

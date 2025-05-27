@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Select,
@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 interface SheetSelectorProps {
   sheets: string[];
@@ -34,7 +34,7 @@ export function SheetSelector({
           <SelectValue placeholder="Select a sheet" />
         </SelectTrigger>
         <SelectContent>
-          {sheets.map((sheet) => (
+          {sheets.map(sheet => (
             <SelectItem key={sheet} value={sheet}>
               {sheet}
             </SelectItem>

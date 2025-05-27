@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   FormControl,
@@ -6,24 +6,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { UseFormReturn } from "react-hook-form";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form';
+import { UseFormReturn } from 'react-hook-form';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Country, FormValues } from "./schema";
+} from '@/components/ui/popover';
+import { Country, FormValues } from './schema';
 
 interface CountrySelectorProps {
   form: UseFormReturn<FormValues>;
@@ -53,14 +53,14 @@ export function CountrySelector({
                   role="combobox"
                   disabled={isLoading}
                   className={cn(
-                    "w-full justify-between",
-                    !field.value && "text-muted-foreground",
+                    'w-full justify-between',
+                    !field.value && 'text-muted-foreground'
                   )}
                 >
                   {field.value
-                    ? countryList.find((country) => country.id === field.value)
+                    ? countryList.find(country => country.id === field.value)
                         ?.name
-                    : "Select country"}
+                    : 'Select country'}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -69,10 +69,10 @@ export function CountrySelector({
               <Command>
                 <CommandInput placeholder="Search country..." />
                 <CommandEmpty>
-                  {isLoading ? "Loading countries..." : "No country found."}
+                  {isLoading ? 'Loading countries...' : 'No country found.'}
                 </CommandEmpty>
                 <CommandGroup className="max-h-[200px] overflow-y-auto">
-                  {countryList.map((country) => (
+                  {countryList.map(country => (
                     <CommandItem
                       value={country.name}
                       key={country.id}
@@ -83,10 +83,10 @@ export function CountrySelector({
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          'mr-2 h-4 w-4',
                           country.id === field.value
-                            ? "opacity-100"
-                            : "opacity-0",
+                            ? 'opacity-100'
+                            : 'opacity-0'
                         )}
                       />
                       {country.name}

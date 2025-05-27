@@ -1,32 +1,32 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, X } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
-import { FormValues } from "./types";
-import { ICity, ICountry, IState } from "country-state-city";
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { UseFormReturn } from 'react-hook-form';
+import { OrganizationFormValues } from './form-context/types';
+import { ICity, ICountry, IState } from 'country-state-city';
 
 interface LocationDetailsProps {
-  form: UseFormReturn<FormValues>;
+  form: UseFormReturn<OrganizationFormValues>;
   countries: ICountry[];
   districts: IState[];
   availableSubCounties: ICity[];
@@ -74,11 +74,11 @@ export function LocationDetails({
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground",
+                        'w-full justify-between',
+                        !field.value && 'text-muted-foreground'
                       )}
                     >
-                      {field.value?.[0] || "Select a country"}
+                      {field.value?.[0] || 'Select a country'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -88,7 +88,7 @@ export function LocationDetails({
                     <CommandInput placeholder="Search countries..." />
                     <CommandEmpty>No country found.</CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
-                      {countries.map((country) => (
+                      {countries.map(country => (
                         <CommandItem
                           value={country.name}
                           key={country.isoCode}
@@ -139,8 +139,8 @@ export function LocationDetails({
                             variant="outline"
                             role="combobox"
                             className={cn(
-                              "w-full justify-between",
-                              !field.value && "text-muted-foreground",
+                              'w-full justify-between',
+                              !field.value && 'text-muted-foreground'
                             )}
                           >
                             Select a district
@@ -153,14 +153,14 @@ export function LocationDetails({
                           <CommandInput placeholder="Search districts..." />
                           <CommandEmpty>No district found.</CommandEmpty>
                           <CommandGroup className="max-h-64 overflow-auto">
-                            {districts.map((district) => (
+                            {districts.map(district => (
                               <CommandItem
                                 value={district.name}
                                 key={district.isoCode}
                                 onSelect={() =>
                                   handleDistrictSelect(
                                     district.isoCode,
-                                    district.name,
+                                    district.name
                                   )
                                 }
                               >
@@ -193,7 +193,7 @@ export function LocationDetails({
 
                 <FormField
                   control={form.control}
-                  name="sub_county"
+                  name="operation_sub_counties"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Select Sub-Counties</FormLabel>
@@ -204,8 +204,8 @@ export function LocationDetails({
                               variant="outline"
                               role="combobox"
                               className={cn(
-                                "w-full justify-between",
-                                !field.value && "text-muted-foreground",
+                                'w-full justify-between',
+                                !field.value && 'text-muted-foreground'
                               )}
                             >
                               Select sub-counties
@@ -218,7 +218,7 @@ export function LocationDetails({
                             <CommandInput placeholder="Search sub-counties..." />
                             <CommandEmpty>No sub-county found.</CommandEmpty>
                             <CommandGroup className="max-h-64 overflow-auto">
-                              {availableSubCounties.map((subCounty) => (
+                              {availableSubCounties.map(subCounty => (
                                 <CommandItem
                                   value={subCounty.name}
                                   key={subCounty.name}
@@ -228,14 +228,14 @@ export function LocationDetails({
                                 >
                                   <Check
                                     className={cn(
-                                      "mr-2 h-4 w-4",
+                                      'mr-2 h-4 w-4',
                                       (
                                         districtSubCounties[
                                           currentDistrict.code
                                         ] || []
                                       ).includes(subCounty.name)
-                                        ? "opacity-100"
-                                        : "opacity-0",
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
                                     )}
                                   />
                                   {subCounty.name}
@@ -252,7 +252,7 @@ export function LocationDetails({
                         <div className="flex flex-wrap gap-2">
                           {(
                             districtSubCounties[currentDistrict.code] || []
-                          ).map((subCountyName) => (
+                          ).map(subCountyName => (
                             <Badge
                               key={subCountyName}
                               variant="secondary"
@@ -260,15 +260,21 @@ export function LocationDetails({
                               onClick={() => {
                                 const updatedSubCounties = districtSubCounties[
                                   currentDistrict.code
-                                ].filter((sc) => sc !== subCountyName);
+                                ].filter((sc: string) => sc !== subCountyName);
                                 setDistrictSubCounties({
                                   ...districtSubCounties,
                                   [currentDistrict.code]: updatedSubCounties,
                                 });
-                                const allSubCounties = form
-                                  .getValues("sub_county")
-                                  .filter((sc) => sc !== subCountyName);
-                                form.setValue("sub_county", allSubCounties);
+                                const currentValues =
+                                  form.getValues('operation_sub_counties') ||
+                                  [];
+                                const allSubCounties = currentValues.filter(
+                                  (sc: string) => sc !== subCountyName
+                                );
+                                form.setValue(
+                                  'operation_sub_counties',
+                                  allSubCounties
+                                );
                               }}
                             >
                               {subCountyName}
@@ -287,21 +293,21 @@ export function LocationDetails({
         )}
 
         {/* Summary of selected locations */}
-        {(form.getValues("country")?.length > 0 ||
-          form.getValues("district")?.length > 0) && (
+        {(form.getValues('country')?.length > 0 ||
+          form.getValues('district')?.length > 0) && (
           <div className="mt-4 p-4 border rounded-lg animate-in fade-in-50 duration-300">
             <h4 className="text-sm font-medium mb-2">Selected Locations:</h4>
-            {form.getValues("country")?.map((countryName) => (
+            {form.getValues('country')?.map(countryName => (
               <div key={countryName} className="mb-4">
                 <h5 className="font-medium text-sm">{countryName}</h5>
                 <div className="ml-4">
-                  {form.getValues("district")?.map((districtName) => (
+                  {form.getValues('district')?.map(districtName => (
                     <div key={districtName} className="mt-2">
                       <span className="text-sm">{districtName}</span>
                       <div className="ml-4 flex flex-wrap gap-1">
                         {Object.values(districtSubCounties)
-                          .filter((subCounties) => subCounties.length > 0)
-                          .flatMap((subCounties) =>
+                          .filter(subCounties => subCounties.length > 0)
+                          .flatMap(subCounties =>
                             subCounties.map((subCounty: string) => (
                               <Badge
                                 key={subCounty}
@@ -310,7 +316,7 @@ export function LocationDetails({
                               >
                                 {subCounty}
                               </Badge>
-                            )),
+                            ))
                           )}
                       </div>
                     </div>

@@ -1,0 +1,18 @@
+[
+  { "id": "cluster_members", "position": { "x": 50, "y": 1580 } },
+  { "id": "cluster_users", "position": { "x": 930, "y": 980 } },
+  { "id": "clusters", "position": { "x": 490, "y": 1250 } },
+  { "id": "counties", "position": { "x": 50, "y": 3630 } },
+  { "id": "countries", "position": { "x": 930, "y": 2950 } },
+  { "id": "districts", "position": { "x": 490, "y": 1910 } },
+  { "id": "kpis", "position": { "x": 2690, "y": 90 } },
+  { "id": "organization_members", "position": { "x": 1810, "y": 520 } },
+  { "id": "organizations", "position": { "x": 2250, "y": 50 } },
+  { "id": "parishes", "position": { "x": 1810, "y": 2260 } },
+  { "id": "participants", "position": { "x": 2690, "y": 730 } },
+  { "id": "password_reset_tokens", "position": { "x": 1810, "y": 1080 } },
+  { "id": "projects", "position": { "x": 3130, "y": 400 } },
+  { "id": "subcounties", "position": { "x": 1370, "y": 3200 } },
+  { "id": "users", "position": { "x": 1370, "y": 980 } },
+  { "id": "villages", "position": { "x": 2250, "y": 1750 } }
+]

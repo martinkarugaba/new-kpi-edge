@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -7,20 +7,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { addSubCounty } from "@/features/locations/actions/subcounties";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+} from '@/components/ui/dialog';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { addSubCounty } from '@/features/locations/actions/subcounties';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   getCountries,
   getDistrictsByCountry,
-} from "@/features/locations/actions/locations";
-import { SubCountyForm } from "./subcounty/subcounty-form";
-import { Country, District } from "./subcounty/schema";
-import { FormValues, formSchema } from "./subcounty/schema";
+} from '@/features/locations/actions/locations';
+import { SubCountyForm } from './subcounty/subcounty-form';
+import { Country, District } from './subcounty/schema';
+import { FormValues, formSchema } from './subcounty/schema';
 
 interface AddSubCountyDialogProps {
   children: React.ReactNode;
@@ -45,10 +45,10 @@ export function AddSubCountyDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      code: "",
-      countryId: "",
-      districtId: "",
+      name: '',
+      code: '',
+      countryId: '',
+      districtId: '',
     },
   });
 
@@ -61,11 +61,11 @@ export function AddSubCountyDialog({
           if (result.success && result.data) {
             setCountryList(result.data);
           } else {
-            toast.error("Failed to load countries");
+            toast.error('Failed to load countries');
           }
         } catch (error) {
-          console.error("Error fetching countries:", error);
-          toast.error("Failed to load countries");
+          console.error('Error fetching countries:', error);
+          toast.error('Failed to load countries');
         } finally {
           setIsLoading(false);
         }
@@ -76,7 +76,7 @@ export function AddSubCountyDialog({
   }, [countries]);
 
   // Watch for changes in countryId to fetch districts
-  const countryId = form.watch("countryId");
+  const countryId = form.watch('countryId');
   useEffect(() => {
     if (countryId) {
       const fetchDistricts = async () => {
@@ -86,12 +86,12 @@ export function AddSubCountyDialog({
           if (result.success && result.data) {
             setDistrictList(result.data);
           } else {
-            toast.error("Failed to load districts");
+            toast.error('Failed to load districts');
             setDistrictList([]);
           }
         } catch (error) {
-          console.error("Error fetching districts:", error);
-          toast.error("Failed to load districts");
+          console.error('Error fetching districts:', error);
+          toast.error('Failed to load districts');
           setDistrictList([]);
         } finally {
           setIsLoadingDistricts(false);
@@ -115,12 +115,12 @@ export function AddSubCountyDialog({
       }
 
       form.reset();
-      toast.success("Sub County added successfully");
+      toast.success('Sub County added successfully');
       setOpen(false); // Close dialog after successful submission
       router.refresh();
     } catch (error) {
-      console.error("Error adding sub county:", error);
-      toast.error("Failed to add sub county");
+      console.error('Error adding sub county:', error);
+      toast.error('Failed to add sub county');
     } finally {
       setIsLoading(false);
     }
@@ -142,20 +142,20 @@ export function AddSubCountyDialog({
           countryList={countryList}
           districtList={districtList}
           isLoading={isLoading || isLoadingDistricts}
-          subcountyName={form.watch("name")}
-          countryCode={countryList.find((c) => c.id === countryId)?.code ?? ""}
+          subcountyName={form.watch('name')}
+          countryCode={countryList.find(c => c.id === countryId)?.code ?? ''}
           districtCode={
-            districtList.find((d) => d.id === form.watch("districtId"))?.code ??
-            ""
+            districtList.find(d => d.id === form.watch('districtId'))?.code ??
+            ''
           }
           onCountrySelect={() => {
             // Reset district selection when country changes
-            form.setValue("districtId", "");
+            form.setValue('districtId', '');
             // Reset district list to trigger loading state
             setDistrictList([]);
           }}
-          onDistrictSelect={(id) => {
-            form.setValue("districtId", id);
+          onDistrictSelect={id => {
+            form.setValue('districtId', id);
           }}
         />
       </DialogContent>

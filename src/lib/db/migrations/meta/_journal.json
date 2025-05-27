@@ -148,6 +148,27 @@
       "when": 1746521417558,
       "tag": "0020_oval_mercury",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1747138975920,
+      "tag": "0021_talented_makkari",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1747429028009,
+      "tag": "0022_lazy_black_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1748074441355,
+      "tag": "0023_previous_power_man",
+      "breakpoints": true
     }
   ]
 }

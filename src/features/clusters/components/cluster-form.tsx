@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -9,22 +9,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { createCluster, updateCluster } from "../actions/clusters";
-import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
-import { Loader2 } from "lucide-react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { createCluster, updateCluster } from '../actions/clusters';
+import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, 'Name is required'),
   about: z.string().optional(),
-  country: z.string().min(1, "Country is required"),
-  districts: z.string().min(1, "At least one district is required"),
+  country: z.string().min(1, 'Country is required'),
+  districts: z.string().min(1, 'At least one district is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -52,10 +52,10 @@ export function ClusterForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      about: initialData?.about || "",
-      country: initialData?.country || "",
-      districts: initialData?.districts.join(", ") || "",
+      name: initialData?.name || '',
+      about: initialData?.about || '',
+      country: initialData?.country || '',
+      districts: initialData?.districts.join(', ') || '',
     },
   });
 
@@ -65,7 +65,7 @@ export function ClusterForm({
     try {
       const clusterData = {
         ...data,
-        districts: data.districts.split(",").map((d) => d.trim()),
+        districts: data.districts.split(',').map(d => d.trim()),
       };
 
       if (initialData) {
@@ -74,17 +74,17 @@ export function ClusterForm({
           ...clusterData,
         });
         if (!result.success) throw new Error(result.error);
-        toast.success("Cluster updated successfully");
+        toast.success('Cluster updated successfully');
       } else {
         const result = await createCluster(clusterData);
         if (!result.success) throw new Error(result.error);
-        toast.success("Cluster created successfully");
+        toast.success('Cluster created successfully');
       }
 
       router.refresh();
       onSuccess?.();
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
       console.error(error);
     } finally {
       if (setIsLoading) setIsLoading(false);
@@ -192,12 +192,12 @@ export function ClusterForm({
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {initialData ? "Updating..." : "Creating..."}
+                  {initialData ? 'Updating...' : 'Creating...'}
                 </>
               ) : initialData ? (
-                "Update Cluster"
+                'Update Cluster'
               ) : (
-                "Create Cluster"
+                'Create Cluster'
               )}
             </Button>
           </div>

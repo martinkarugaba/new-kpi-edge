@@ -1,34 +1,34 @@
-"use server";
+'use server';
 
-import { db } from "@/lib/db";
-import { countries, districts, subCounties, parishes } from "@/lib/db/schema";
-import { LocationType } from "../components/columns";
+import { db } from '@/lib/db';
+import { countries, districts, subCounties, parishes } from '@/lib/db/schema';
+import { LocationType } from '../components/columns';
 
 export async function getParentOptions(type: LocationType) {
   try {
     switch (type) {
-      case "district":
+      case 'district':
         return {
           success: true,
           data: await db
             .select({ id: countries.id, name: countries.name })
             .from(countries),
         };
-      case "subcounty":
+      case 'subcounty':
         return {
           success: true,
           data: await db
             .select({ id: districts.id, name: districts.name })
             .from(districts),
         };
-      case "parish":
+      case 'parish':
         return {
           success: true,
           data: await db
             .select({ id: subCounties.id, name: subCounties.name })
             .from(subCounties),
         };
-      case "village":
+      case 'village':
         return {
           success: true,
           data: await db
@@ -39,7 +39,7 @@ export async function getParentOptions(type: LocationType) {
         return { success: true, data: [] };
     }
   } catch (error) {
-    console.error("Error fetching parent options:", error);
-    return { success: false, error: "Failed to fetch parent options" };
+    console.error('Error fetching parent options:', error);
+    return { success: false, error: 'Failed to fetch parent options' };
   }
 }

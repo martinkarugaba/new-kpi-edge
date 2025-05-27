@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { columns } from "@/features/locations/components/data-table/villages-columns";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { columns } from '@/features/locations/components/data-table/villages-columns';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
 import {
   villages,
   parishes,
@@ -9,11 +9,11 @@ import {
   counties,
   districts,
   countries,
-} from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { AddVillageDialog } from "@/features/locations/components/dialogs/add-village-dialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+} from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { AddVillageDialog } from '@/features/locations/components/dialogs/add-village-dialog';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 type Village = InferSelectModel<typeof villages> & {
   parish?: InferSelectModel<typeof parishes>;

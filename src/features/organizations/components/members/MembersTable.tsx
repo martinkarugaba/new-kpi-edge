@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import { Loader2, Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { format } from 'date-fns';
+import { Loader2, Trash } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -10,23 +10,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { OrganizationMember } from "../../types";
-import { userRole } from "@/lib/db/schema";
+} from '@/components/ui/select';
+import { OrganizationMember } from '../../types';
+import { userRole } from '@/lib/db/schema';
 
 interface MembersTableProps {
   members: OrganizationMember[];
   onRemoveMember: (userId: string) => Promise<void>;
   onUpdateRole: (
     userId: string,
-    role: (typeof userRole.enumValues)[number],
+    role: (typeof userRole.enumValues)[number]
   ) => Promise<void>;
   loadingStates: Record<string, boolean>;
 }
@@ -60,17 +60,17 @@ export function MembersTable({
             </TableCell>
           </TableRow>
         ) : (
-          members.map((member) => (
+          members.map(member => (
             <TableRow key={member.id}>
               <TableCell>{member.name}</TableCell>
               <TableCell>{member.email}</TableCell>
               <TableCell>
                 <Select
                   value={member.role}
-                  onValueChange={(value) =>
+                  onValueChange={value =>
                     onUpdateRole(
                       member.id,
-                      value as (typeof userRole.enumValues)[number],
+                      value as (typeof userRole.enumValues)[number]
                     )
                   }
                   disabled={loadingStates[member.id]}
@@ -86,13 +86,13 @@ export function MembersTable({
               </TableCell>
               <TableCell>
                 {member.created_at
-                  ? format(new Date(member.created_at), "PPp")
-                  : "N/A"}
+                  ? format(new Date(member.created_at), 'PPp')
+                  : 'N/A'}
               </TableCell>
               <TableCell>
                 {member.updated_at
-                  ? format(new Date(member.updated_at), "PPp")
-                  : "N/A"}
+                  ? format(new Date(member.updated_at), 'PPp')
+                  : 'N/A'}
               </TableCell>
               <TableCell>
                 <Button

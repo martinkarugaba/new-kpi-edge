@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -15,8 +15,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -25,9 +25,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { UserPlus, UserX, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { UserPlus, UserX, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   Form,
   FormControl,
@@ -35,23 +35,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+} from '@/components/ui/select';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import {
   addUserToCluster,
   removeUserFromCluster,
-} from "../actions/cluster-users";
-import { getAllUsers } from "@/features/organizations/actions/organization-members";
-import { formatDistanceToNow } from "date-fns";
+  getClusterUsers,
+} from '../actions/cluster-users';
+import { getAllUsers } from '@/features/organizations/actions/organization-members';
+import { formatDistanceToNow } from 'date-fns';
 
 interface User {
   id: string;
@@ -67,21 +68,21 @@ interface ClusterUser {
   name: string;
   email: string;
   role: string;
-  created_at: string;
-  updated_at: string;
+  created_at: Date | string | null;
+  updated_at: Date | string | null;
 }
 
 const roles = [
-  "super_admin",
-  "cluster_manager",
-  "organization_admin",
-  "organization_member",
-  "user",
+  'super_admin',
+  'cluster_manager',
+  'organization_admin',
+  'organization_member',
+  'user',
 ] as const;
 type UserRole = (typeof roles)[number];
 
 const formSchema = z.object({
-  user_id: z.string().min(1, "Please select a user"),
+  user_id: z.string().min(1, 'Please select a user'),
   role: z.enum(roles),
 });
 
@@ -95,14 +96,14 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
-    {},
+    {}
   );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user_id: "",
-      role: "cluster_manager" as UserRole,
+      user_id: '',
+      role: 'cluster_manager' as UserRole,
     },
   });
 
@@ -111,17 +112,14 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
     setIsLoading(true);
     setError(null);
     try {
-      // Implement an API call to fetch cluster users
-      // This is a placeholder until we implement the actual API endpoint
-      const response = await fetch(`/api/clusters/${clusterId}/users`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch cluster users");
+      const result = await getClusterUsers(clusterId);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch cluster users');
       }
-      const data = await response.json();
-      setUsers(data.users || []);
+      setUsers(result.data || []);
     } catch (error) {
-      console.error("Error fetching cluster users:", error);
-      setError("Failed to load cluster users");
+      console.error('Error fetching cluster users:', error);
+      setError('Failed to load cluster users');
       setUsers([]); // Set empty array on error
     } finally {
       setIsLoading(false);
@@ -134,16 +132,16 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
       const result = await getAllUsers();
       if (result.success && result.data) {
         // Filter out users who are already cluster members
-        const existingUserIds = users.map((user) => user.id);
+        const existingUserIds = users.map(user => user.id);
         const filtered = result.data.filter(
-          (user) => !existingUserIds.includes(user.id),
+          user => !existingUserIds.includes(user.id)
         );
         setAvailableUsers(filtered);
       } else {
         setAvailableUsers([]);
       }
     } catch (error) {
-      console.error("Error fetching available users:", error);
+      console.error('Error fetching available users:', error);
       setAvailableUsers([]);
     }
   }, [users]);
@@ -168,16 +166,16 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
       const result = await addUserToCluster(data.user_id, clusterId, data.role);
 
       if (result.success) {
-        toast.success("User added to cluster successfully");
+        toast.success('User added to cluster successfully');
         setDialogOpen(false);
         form.reset();
         fetchUsers(); // Refresh user list
       } else {
-        toast.error(result.error || "Failed to add user to cluster");
+        toast.error(result.error || 'Failed to add user to cluster');
       }
     } catch (error) {
-      console.error("Error adding user to cluster:", error);
-      toast.error("Failed to add user to cluster");
+      console.error('Error adding user to cluster:', error);
+      toast.error('Failed to add user to cluster');
     } finally {
       setIsSubmitting(false);
     }
@@ -185,22 +183,22 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
 
   // Remove a user from the cluster
   const handleRemoveUser = async (userId: string) => {
-    setLoadingStates((prev) => ({ ...prev, [userId]: true }));
+    setLoadingStates(prev => ({ ...prev, [userId]: true }));
 
     try {
       const result = await removeUserFromCluster(userId, clusterId);
 
       if (result.success) {
-        toast.success("User removed from cluster");
+        toast.success('User removed from cluster');
         fetchUsers(); // Refresh user list
       } else {
-        toast.error(result.error || "Failed to remove user from cluster");
+        toast.error(result.error || 'Failed to remove user from cluster');
       }
     } catch (error) {
-      console.error("Error removing user from cluster:", error);
-      toast.error("Failed to remove user from cluster");
+      console.error('Error removing user from cluster:', error);
+      toast.error('Failed to remove user from cluster');
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [userId]: false }));
+      setLoadingStates(prev => ({ ...prev, [userId]: false }));
     }
   };
 
@@ -253,7 +251,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                               No available users
                             </div>
                           ) : (
-                            availableUsers.map((user) => (
+                            availableUsers.map(user => (
                               <SelectItem key={user.id} value={user.id}>
                                 {user.name || user.email} ({user.email})
                               </SelectItem>
@@ -311,7 +309,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                         Adding...
                       </>
                     ) : (
-                      "Add User"
+                      'Add User'
                     )}
                   </Button>
                 </DialogFooter>
@@ -343,7 +341,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {users.map(user => (
                 <TableRow key={user.id}>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
@@ -353,7 +351,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                       ? formatDistanceToNow(new Date(user.created_at), {
                           addSuffix: true,
                         })
-                      : "Unknown"}
+                      : 'Unknown'}
                   </TableCell>
                   <TableCell>
                     <Button

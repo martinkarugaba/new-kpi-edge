@@ -1,5 +1,5 @@
-import { atom } from "jotai";
-import type { ICity, ICountry, IState } from "country-state-city";
+import { atom } from 'jotai';
+import type { ICity, ICountry, IState } from 'country-state-city';
 
 // Types for location selection
 export interface LocationSelection {
@@ -18,10 +18,10 @@ export const subCountiesAtom = atom<ICity[]>([]);
 
 // Current selection atoms with proper types
 export const currentCountryAtom = atom<{ code: string; name: string } | null>(
-  null,
+  null
 );
 export const currentDistrictAtom = atom<{ code: string; name: string } | null>(
-  null,
+  null
 );
 export const districtSubCountiesAtom = atom<Record<string, string[]>>({});
 export const selectedLocationsAtom = atom<LocationSelection[]>([]);

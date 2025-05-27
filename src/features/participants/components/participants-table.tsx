@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { type Project } from "@/features/projects/types";
-import { type Organization } from "@/features/organizations/types";
-import { type Participant } from "../types/types";
-import { type ParticipantFormValues } from "./participant-form";
+import { useState } from 'react';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+import { type Project } from '@/features/projects/types';
+import { type Organization } from '@/features/organizations/types';
+import { type Participant } from '../types/types';
+import { type ParticipantFormValues } from './participant-form';
 import {
   AddParticipantDialog,
   BulkDeleteButton,
   getColumns,
   ParticipantTableFilters,
-} from "./table";
-import { ImportParticipants } from "./import/import-participants";
+} from './table';
+import { ImportParticipants } from './import/import-participants';
 
 interface ParticipantsTableProps {
   data: Participant[];
@@ -105,7 +105,7 @@ export function ParticipantsTable({
             <div className="flex items-center gap-2">
               <ImportParticipants
                 onImport={onImportParticipants}
-                clusterId={clusters[0]?.id || ""}
+                clusterId={clusters[0]?.id || ''}
                 projects={projects}
               />
               <AddParticipantDialog

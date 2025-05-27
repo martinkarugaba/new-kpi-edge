@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import { Cluster } from "@/features/clusters/components/clusters-table";
+} from '@/components/ui/select';
+import { useEffect, useState } from 'react';
+import { Cluster } from '@/features/clusters/components/clusters-table';
 
 type ClusterSelectorProps = {
   clusters: Cluster[];
@@ -18,10 +18,10 @@ type ClusterSelectorProps = {
 export function ClusterSelector({ clusters }: ClusterSelectorProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedClusterId, setSelectedClusterId] = useState<string>("");
+  const [selectedClusterId, setSelectedClusterId] = useState<string>('');
 
   useEffect(() => {
-    const clusterId = searchParams.get("clusterId");
+    const clusterId = searchParams.get('clusterId');
     if (clusterId) {
       setSelectedClusterId(clusterId);
     } else if (clusters.length > 0) {
@@ -33,7 +33,7 @@ export function ClusterSelector({ clusters }: ClusterSelectorProps) {
     setSelectedClusterId(value);
 
     const params = new URLSearchParams(searchParams.toString());
-    params.set("clusterId", value);
+    params.set('clusterId', value);
 
     router.push(`/dashboard/organizations?${params.toString()}`);
   };
@@ -50,7 +50,7 @@ export function ClusterSelector({ clusters }: ClusterSelectorProps) {
           <SelectValue placeholder="Select a cluster" />
         </SelectTrigger>
         <SelectContent>
-          {clusters.map((cluster) => (
+          {clusters.map(cluster => (
             <SelectItem key={cluster.id} value={cluster.id}>
               {cluster.name}
             </SelectItem>

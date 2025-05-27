@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
 interface UserMenuProps {
   session: Session;
@@ -24,7 +24,7 @@ export function UserMenu({ session }: UserMenuProps) {
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
-    router.push("/auth/login");
+    router.push('/auth/login');
   };
 
   return (
@@ -33,16 +33,16 @@ export function UserMenu({ session }: UserMenuProps) {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={session.user?.image || ""}
-              alt={session.user?.name || ""}
+              src={session.user?.image || ''}
+              alt={session.user?.name || ''}
             />
             <AvatarFallback>
               {session.user?.name
                 ? session.user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                : "U"}
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')
+                : 'U'}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -60,10 +60,10 @@ export function UserMenu({ session }: UserMenuProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+          <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
+          <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
             Settings
           </DropdownMenuItem>
         </DropdownMenuGroup>

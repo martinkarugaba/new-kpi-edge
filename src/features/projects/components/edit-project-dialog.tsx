@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { ProjectForm } from "./project-form";
-import { useState } from "react";
-import { Project } from "../types";
-import { Modal } from "@/components/ui/modal";
+import { ProjectForm } from './project-form';
+import { useState } from 'react';
+import { Project } from '../types';
+import { Modal } from '@/components/ui/modal';
 
 type EditProjectDialogProps = {
   project: Project;

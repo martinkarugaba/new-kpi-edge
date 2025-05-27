@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "sonner";
+import * as React from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
 
 interface AddCountryDialogProps {
   children: React.ReactNode;
 }
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -28,16 +28,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { addCountry } from "@/features/locations/actions/countries";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { addCountry } from '@/features/locations/actions/countries';
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
   code: z
     .string()
-    .min(2, "Code must be at least 2 characters")
-    .max(3, "Code must be at most 3 characters"),
+    .min(2, 'Code must be at least 2 characters')
+    .max(3, 'Code must be at most 3 characters'),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -48,8 +48,8 @@ export function AddCountryDialog({ children }: AddCountryDialogProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      code: "",
+      name: '',
+      code: '',
     },
   });
 
@@ -61,15 +61,15 @@ export function AddCountryDialog({ children }: AddCountryDialogProps) {
       });
 
       if (!result.success) {
-        toast.error(result.error || "Failed to add country");
+        toast.error(result.error || 'Failed to add country');
         return;
       }
 
-      toast.success("Country added successfully");
+      toast.success('Country added successfully');
       form.reset();
       setOpen(false);
     } catch {
-      toast.error("Failed to add country");
+      toast.error('Failed to add country');
     }
   }
 

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -8,25 +8,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { UseFormReturn } from 'react-hook-form';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import { FormValues, District, Country } from "./schema";
+} from '@/components/ui/command';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+import { FormValues, District, Country } from './schema';
 
 interface CountyFormProps {
   form: UseFormReturn<FormValues>;
@@ -48,18 +48,18 @@ export function CountyForm({
   const [openDistrict, setOpenDistrict] = useState(false);
 
   // Watch name and district_id for changes to generate the code
-  const name = form.watch("name");
-  const districtId = form.watch("district_id");
+  const name = form.watch('name');
+  const districtId = form.watch('district_id');
 
   // Generate county code when district and county name change
   useEffect(() => {
     if (districtId && name) {
-      const district = districtList.find((d) => d.id === districtId);
+      const district = districtList.find(d => d.id === districtId);
       if (district) {
         // Generate code from district code + first 3 letters of county name (uppercase)
         const namePrefix = name.slice(0, 3).toUpperCase();
         const newCode = `${district.code}-${namePrefix}`;
-        form.setValue("code", newCode);
+        form.setValue('code', newCode);
       }
     }
   }, [name, districtId, districtList, form]);
@@ -98,9 +98,9 @@ export function CountyForm({
                     >
                       {field.value
                         ? countryList.find(
-                            (country) => country.id === field.value,
+                            country => country.id === field.value
                           )?.name
-                        : "Select a country"}
+                        : 'Select a country'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -110,22 +110,22 @@ export function CountyForm({
                     <CommandInput placeholder="Search countries..." />
                     <CommandEmpty>No country found.</CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
-                      {countryList.map((country) => (
+                      {countryList.map(country => (
                         <CommandItem
                           value={country.name}
                           key={country.id}
                           onSelect={() => {
                             field.onChange(country.id);
-                            form.setValue("district_id", ""); // Reset district when country changes
+                            form.setValue('district_id', ''); // Reset district when country changes
                             setOpenCountry(false);
                           }}
                         >
                           <Check
                             className={cn(
-                              "mr-2 h-4 w-4",
+                              'mr-2 h-4 w-4',
                               field.value === country.id
-                                ? "opacity-100"
-                                : "opacity-0",
+                                ? 'opacity-100'
+                                : 'opacity-0'
                             )}
                           />
                           {country.name}
@@ -154,13 +154,13 @@ export function CountyForm({
                       role="combobox"
                       aria-expanded={openDistrict}
                       className="w-full justify-between"
-                      disabled={!form.watch("country_id")}
+                      disabled={!form.watch('country_id')}
                     >
                       {field.value
                         ? districtList.find(
-                            (district) => district.id === field.value,
+                            district => district.id === field.value
                           )?.name
-                        : "Select a district"}
+                        : 'Select a district'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -170,13 +170,13 @@ export function CountyForm({
                     <CommandInput placeholder="Search districts..." />
                     <CommandEmpty>
                       {isLoading
-                        ? "Loading districts..."
-                        : form.watch("country_id")
-                          ? "No districts found for this country."
-                          : "Please select a country first."}
+                        ? 'Loading districts...'
+                        : form.watch('country_id')
+                          ? 'No districts found for this country.'
+                          : 'Please select a country first.'}
                     </CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
-                      {districtList.map((district) => (
+                      {districtList.map(district => (
                         <CommandItem
                           value={district.name}
                           key={district.id}
@@ -187,10 +187,10 @@ export function CountyForm({
                         >
                           <Check
                             className={cn(
-                              "mr-2 h-4 w-4",
+                              'mr-2 h-4 w-4',
                               field.value === district.id
-                                ? "opacity-100"
-                                : "opacity-0",
+                                ? 'opacity-100'
+                                : 'opacity-0'
                             )}
                           />
                           {district.name}
@@ -225,7 +225,7 @@ export function CountyForm({
         />
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? "Adding..." : "Add County"}
+          {isLoading ? 'Adding...' : 'Add County'}
         </Button>
       </form>
     </Form>

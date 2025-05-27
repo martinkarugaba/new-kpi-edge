@@ -1,11 +1,11 @@
-import { Metadata } from "next";
-import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
-import { notFound } from "next/navigation";
-import { verifyResetToken } from "@/features/auth/actions/auth";
+import { Metadata } from 'next';
+import { ResetPasswordForm } from '@/features/auth/components/ResetPasswordForm';
+import { notFound } from 'next/navigation';
+import { verifyResetToken } from '@/features/auth/actions/auth';
 
 export const metadata: Metadata = {
-  title: "Reset Password | KPI Tracking",
-  description: "Reset your password",
+  title: 'Reset Password | KPI Tracking',
+  description: 'Reset your password',
 };
 
 // Correctly define Props with params as a promise

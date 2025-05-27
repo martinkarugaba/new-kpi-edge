@@ -1,19 +1,19 @@
-"use server";
+'use server';
 
-import { z } from "zod";
-import { subCounties, districts, counties } from "@/lib/db/schema";
-import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { z } from 'zod';
+import { subCounties, districts, counties } from '@/lib/db/schema';
+import { db } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
+import { eq } from 'drizzle-orm';
 
 const createSubCountySchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  code: z.string().min(1, "Code is required"),
-  districtId: z.string().min(1, "District is required"),
+  name: z.string().min(1, 'Name is required'),
+  code: z.string().min(1, 'Code is required'),
+  districtId: z.string().min(1, 'District is required'),
 });
 
 export async function addSubCounty(
-  data: z.infer<typeof createSubCountySchema>,
+  data: z.infer<typeof createSubCountySchema>
 ) {
   const validatedFields = createSubCountySchema.safeParse(data);
 
@@ -30,7 +30,7 @@ export async function addSubCounty(
     });
 
     if (!district) {
-      return { error: "District not found" };
+      return { error: 'District not found' };
     }
 
     // Find the county for this district
@@ -39,7 +39,7 @@ export async function addSubCounty(
     });
 
     if (!county) {
-      return { error: "County not found for this district" };
+      return { error: 'County not found for this district' };
     }
 
     await db.insert(subCounties).values({
@@ -50,20 +50,20 @@ export async function addSubCounty(
       county_id: county.id,
     });
 
-    revalidatePath("/dashboard/locations");
+    revalidatePath('/dashboard/locations');
     return { success: true };
   } catch (error) {
-    console.error("Error adding sub county:", error);
-    return { error: "Failed to create sub county" };
+    console.error('Error adding sub county:', error);
+    return { error: 'Failed to create sub county' };
   }
 }
 
 export async function deleteSubCounty(id: string) {
   try {
     await db.delete(subCounties).where(eq(subCounties.id, id));
-    revalidatePath("/dashboard/locations");
+    revalidatePath('/dashboard/locations');
     return { success: true };
   } catch {
-    return { error: "Failed to delete sub county" };
+    return { error: 'Failed to delete sub county' };
   }
 }

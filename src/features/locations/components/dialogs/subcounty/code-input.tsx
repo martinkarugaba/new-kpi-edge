@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   FormControl,
@@ -6,12 +6,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
-import { FormValues } from "./schema";
-import { generateSubcountyCode } from "./utils";
-import { useEffect } from "react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { UseFormReturn } from 'react-hook-form';
+import { FormValues } from './schema';
+import { generateSubcountyCode } from './utils';
+import { useEffect } from 'react';
 
 interface CodeInputProps {
   form: UseFormReturn<FormValues>;
@@ -30,9 +30,9 @@ export function CodeInput({
     const code = generateSubcountyCode(
       countryCode,
       districtCode,
-      subcountyName,
+      subcountyName
     );
-    form.setValue("code", code);
+    form.setValue('code', code);
   }, [form, countryCode, districtCode, subcountyName]);
 
   return (

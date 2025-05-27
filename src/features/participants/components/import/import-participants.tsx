@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
-import toast from "react-hot-toast";
-import { type ParticipantFormValues } from "../participant-form";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Upload } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { type ParticipantFormValues } from '../participant-form';
 import {
   Dialog,
   DialogContent,
@@ -12,12 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { FileUpload } from "./file-upload";
-import { SheetSelector } from "./sheet-selector";
-import { ValidationErrors } from "./validation-errors";
-import { DataPreview } from "./data-preview";
-import { useExcelImport } from "./hooks/use-excel-import";
+} from '@/components/ui/dialog';
+import { FileUpload } from './file-upload';
+import { SheetSelector } from './sheet-selector';
+import { ValidationErrors } from './validation-errors';
+import { DataPreview } from './data-preview';
+import { useExcelImport } from './hooks/use-excel-import';
 
 interface ImportParticipantsProps {
   onImport: (data: ParticipantFormValues[]) => Promise<void>;
@@ -31,9 +31,9 @@ export function ImportParticipants({
   projects = [], // Default to empty array
 }: ImportParticipantsProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<string>("");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
-  const [selectedSubCounty, setSelectedSubCounty] = useState<string>("");
+  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('');
+  const [selectedSubCounty, setSelectedSubCounty] = useState<string>('');
   const [districts /* setDistricts */] = useState<string[]>([]);
   const [subCounties /* setSubCounties */] = useState<string[]>([]);
 
@@ -64,12 +64,12 @@ export function ImportParticipants({
 
   const handleImport = async () => {
     if (!parsedData?.data || parsedData.data.length === 0) {
-      toast.error("No data to import");
+      toast.error('No data to import');
       return;
     }
 
     const toastId = toast.loading(
-      `Importing ${parsedData.data.length} participants...`,
+      `Importing ${parsedData.data.length} participants...`
     );
     try {
       await onImport(parsedData.data);
@@ -77,17 +77,17 @@ export function ImportParticipants({
         `Successfully imported ${parsedData.data.length} participants`,
         {
           id: toastId,
-        },
+        }
       );
       setIsOpen(false);
       resetImport();
     } catch (error) {
-      console.error("Import error:", error);
+      console.error('Import error:', error);
       toast.error(
         error instanceof Error
           ? `Import failed: ${error.message}`
-          : "Failed to import participants",
-        { id: toastId },
+          : 'Failed to import participants',
+        { id: toastId }
       );
     }
   };
@@ -140,7 +140,7 @@ export function ImportParticipants({
                   onClick={handleImport}
                   disabled={isLoading}
                 >
-                  {isLoading ? "Importing..." : "Confirm Import"}
+                  {isLoading ? 'Importing...' : 'Confirm Import'}
                 </Button>
               )}
             </div>

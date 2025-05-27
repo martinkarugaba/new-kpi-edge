@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { columns } from "@/features/locations/components/data-table/districts-columns";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { countries, districts } from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { AddDistrictDialog } from "@/features/locations/components/dialogs/add-district-dialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { columns } from '@/features/locations/components/data-table/districts-columns';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+import { countries, districts } from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { AddDistrictDialog } from '@/features/locations/components/dialogs/add-district-dialog';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 type Country = InferSelectModel<typeof countries>;
 

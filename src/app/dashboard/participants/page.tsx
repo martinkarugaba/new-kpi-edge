@@ -1,10 +1,10 @@
-import { SiteHeader } from "@/features/dashboard/components/site-header";
-import { ParticipantsClient } from "@/features/participants/components/participants-client";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getProjects } from "@/features/projects/actions/projects";
-import { getOrganizationId, getUserClusterId } from "@/features/auth/actions";
-import { getClusters } from "@/features/clusters/actions/clusters";
+import { SiteHeader } from '@/features/dashboard/components/site-header';
+import { ParticipantsClient } from '@/features/participants/components/participants-client';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getProjects } from '@/features/projects/actions/projects';
+import { getOrganizationId, getUserClusterId } from '@/features/auth/actions';
+import { getClusters } from '@/features/clusters/actions/clusters';
 
 function ParticipantsTableSkeleton() {
   return (

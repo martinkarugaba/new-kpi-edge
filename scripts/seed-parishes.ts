@@ -1,42 +1,42 @@
-import { db } from "../src/lib/db";
-import { sql } from "drizzle-orm";
+import { db } from '../src/lib/db';
+import { sql } from 'drizzle-orm';
 import {
   districts,
   subCounties,
   counties,
   parishes,
-} from "../src/lib/db/schema";
-import parishesData from "ug-locale/parishes.json";
-import subcountiesData from "ug-locale/subcounties.json";
-import * as dotenv from "dotenv";
-import path from "path";
+} from '../src/lib/db/schema';
+import parishesData from 'ug-locale/parishes.json';
+import subcountiesData from 'ug-locale/subcounties.json';
+import * as dotenv from 'dotenv';
+import path from 'path';
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 function normalizeSubCountyName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, "");
+  const base = name.toLowerCase().replace(/[^a-z]/g, '');
 
   // Create variations by removing common subcounty suffixes/prefixes
   const variations = [
     base,
-    base.replace("subcounty", ""),
-    base.replace("sc", ""),
-    base.replace("tc", ""),
-    base.replace("towncounty", ""),
-    base.replace("town", ""),
-    base.replace("council", ""),
-    base.replace("division", ""),
+    base.replace('subcounty', ''),
+    base.replace('sc', ''),
+    base.replace('tc', ''),
+    base.replace('towncounty', ''),
+    base.replace('town', ''),
+    base.replace('council', ''),
+    base.replace('division', ''),
   ];
 
   // Filter out duplicates and empty strings
-  return [...new Set(variations.filter((v) => v))];
+  return [...new Set(variations.filter(v => v))];
 }
 
 function generateParishCode(subCountyCode: string, name: string): string {
   // Clean name for code generation (remove spaces and special characters)
-  const cleanedName = name.replace(/[^a-zA-Z]/g, "");
+  const cleanedName = name.replace(/[^a-zA-Z]/g, '');
 
   // Get first, middle, and last letter for code generation
   const firstLetter = cleanedName[0];
@@ -50,7 +50,7 @@ function generateParishCode(subCountyCode: string, name: string): string {
 
 async function seedParishes() {
   try {
-    console.log("Starting parishes seeding...");
+    console.log('Starting parishes seeding...');
 
     // Get all required records
     const subCountyRecords = await db.select().from(subCounties);
@@ -63,9 +63,9 @@ async function seedParishes() {
 
     // Create maps for lookups
     const subCountyMap = new Map();
-    subCountyRecords.forEach((subcounty) => {
+    subCountyRecords.forEach(subcounty => {
       const variations = normalizeSubCountyName(subcounty.name);
-      variations.forEach((variant) => {
+      variations.forEach(variant => {
         subCountyMap.set(variant, subcounty);
       });
       // Also map by ID for direct lookups
@@ -73,8 +73,8 @@ async function seedParishes() {
     });
 
     console.log(
-      "Available subcounties sample:",
-      Array.from(subCountyMap.keys()).slice(0, 10).join(", "),
+      'Available subcounties sample:',
+      Array.from(subCountyMap.keys()).slice(0, 10).join(', ')
     );
 
     // Create a mapping between subcounty IDs and their related district/county/country
@@ -94,7 +94,7 @@ async function seedParishes() {
     });
 
     // Log some sample parishes to debug
-    console.log("Sample parishes:", parishesData.slice(0, 5));
+    console.log('Sample parishes:', parishesData.slice(0, 5));
 
     // Process parishes data
     const codeCount = new Map<string, number>();
@@ -106,7 +106,7 @@ async function seedParishes() {
         const subcountyFromApi = subcountyIdToApiRecord.get(parish.subcounty);
         if (!subcountyFromApi) {
           console.warn(
-            `Subcounty ID ${parish.subcounty} not found for parish ${parish.name}`,
+            `Subcounty ID ${parish.subcounty} not found for parish ${parish.name}`
           );
           return null;
         }
@@ -114,7 +114,7 @@ async function seedParishes() {
         // Find the corresponding subcounty in our database
         // Try all possible normalized variations of the subcounty name
         const normalizedVariations = normalizeSubCountyName(
-          subcountyFromApi.name,
+          subcountyFromApi.name
         );
         let subcounty;
 
@@ -130,7 +130,7 @@ async function seedParishes() {
         if (!subcounty) {
           console.warn(`Subcounty not found for parish: ${parish.name}`);
           console.warn(
-            `Looking for normalized subcounty name: "${normalizedSubcountyName}"`,
+            `Looking for normalized subcounty name: "${normalizedSubcountyName}"`
           );
           return null;
         }
@@ -145,9 +145,9 @@ async function seedParishes() {
         // Format parish name properly (first letter of each word uppercase, rest lowercase)
         const formattedName = parish.name
           .toLowerCase()
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 
         // Generate unique code for the parish
         const baseCodePrefix = subcounty.code;
@@ -161,7 +161,7 @@ async function seedParishes() {
         if (count > 1 || usedCodes.has(baseCode)) {
           // Try different letters from the name
           let found = false;
-          const cleanedName = formattedName.replace(/[^a-zA-Z]/g, "");
+          const cleanedName = formattedName.replace(/[^a-zA-Z]/g, '');
 
           for (let i = 0; i < cleanedName.length; i++) {
             // Skip first and last letters
@@ -179,7 +179,7 @@ async function seedParishes() {
             let counter = 1;
             while (
               usedCodes.has(
-                `${baseCodePrefix}-${cleanedName[0]}${counter}${cleanedName[cleanedName.length - 1]}`,
+                `${baseCodePrefix}-${cleanedName[0]}${counter}${cleanedName[cleanedName.length - 1]}`
               )
             ) {
               counter++;
@@ -201,7 +201,7 @@ async function seedParishes() {
       .filter((item): item is NonNullable<typeof item> => item !== null);
 
     console.log(
-      `Prepared ${parishesDataForInsertion.length} parishes for insertion`,
+      `Prepared ${parishesDataForInsertion.length} parishes for insertion`
     );
 
     // Insert parishes in batches to avoid overwhelming the database
@@ -221,9 +221,9 @@ async function seedParishes() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log("Parishes seeding completed successfully");
+    console.log('Parishes seeding completed successfully');
   } catch (error) {
-    console.error("Error seeding parishes:", error);
+    console.error('Error seeding parishes:', error);
     throw error;
   }
 }
@@ -232,11 +232,11 @@ async function seedParishes() {
 if (require.main === module) {
   seedParishes()
     .then(() => {
-      console.log("Parishes seeding completed");
+      console.log('Parishes seeding completed');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("Parishes seeding failed:", error);
+    .catch(error => {
+      console.error('Parishes seeding failed:', error);
       process.exit(1);
     });
 }

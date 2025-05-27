@@ -1,34 +1,38 @@
-import { db } from "../src/lib/db";
-import { sql } from "drizzle-orm";
+import { db } from '../src/lib/db';
+import { sql } from 'drizzle-orm';
 import {
   villages,
   parishes,
   subCounties,
   districts,
   counties,
-} from "../src/lib/db/schema";
-import villagesData from "ug-locale/villages.json";
-import parishesData from "ug-locale/parishes.json";
-import * as dotenv from "dotenv";
-import path from "path";
+} from '../src/lib/db/schema';
+import villagesData from 'ug-locale/villages.json';
+import parishesData from 'ug-locale/parishes.json';
+import * as dotenv from 'dotenv';
+import path from 'path';
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 function normalizeParishName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, "");
+  const base = name.toLowerCase().replace(/[^a-z]/g, '');
 
   // Create variations by removing common suffixes/prefixes
-  const variations = [base, base.replace("parish", ""), base.replace("ward", "")];
+  const variations = [
+    base,
+    base.replace('parish', ''),
+    base.replace('ward', ''),
+  ];
 
   // Filter out duplicates and empty strings
-  return [...new Set(variations.filter((v) => v))];
+  return [...new Set(variations.filter(v => v))];
 }
 
 function generateVillageCode(parishCode: string, name: string): string {
   // Clean name for code generation (remove spaces and special characters)
-  const cleanedName = name.replace(/[^a-zA-Z]/g, "");
+  const cleanedName = name.replace(/[^a-zA-Z]/g, '');
 
   // Get first, middle, and last letter for code generation
   const firstLetter = cleanedName[0];
@@ -42,7 +46,7 @@ function generateVillageCode(parishCode: string, name: string): string {
 
 async function seedVillages() {
   try {
-    console.log("Starting villages seeding...");
+    console.log('Starting villages seeding...');
 
     // Get all required records
     const parishRecords = await db.select().from(parishes);
@@ -57,9 +61,9 @@ async function seedVillages() {
 
     // Create maps for lookups
     const parishMap = new Map();
-    parishRecords.forEach((parish) => {
+    parishRecords.forEach(parish => {
       const variations = normalizeParishName(parish.name);
-      variations.forEach((variant) => {
+      variations.forEach(variant => {
         parishMap.set(variant, parish);
       });
       // Also map by ID
@@ -67,8 +71,8 @@ async function seedVillages() {
     });
 
     console.log(
-      "Available parishes sample:",
-      Array.from(parishMap.keys()).slice(0, 10).join(", "),
+      'Available parishes sample:',
+      Array.from(parishMap.keys()).slice(0, 10).join(', ')
     );
 
     // Create a mapping between parish IDs and their related entities
@@ -90,7 +94,7 @@ async function seedVillages() {
     });
 
     // Log some sample villages to debug
-    console.log("Sample villages:", villagesData.slice(0, 5));
+    console.log('Sample villages:', villagesData.slice(0, 5));
 
     // Process villages data
     const codeCount = new Map<string, number>();
@@ -102,7 +106,7 @@ async function seedVillages() {
         const parishFromApi = parishIdToApiRecord.get(village.parish);
         if (!parishFromApi) {
           console.warn(
-            `Parish ID ${village.parish} not found for village ${village.name}`,
+            `Parish ID ${village.parish} not found for village ${village.name}`
           );
           return null;
         }
@@ -124,7 +128,7 @@ async function seedVillages() {
         if (!parish) {
           console.warn(`Parish not found for village: ${village.name}`);
           console.warn(
-            `Looking for normalized parish name: "${normalizedParishName}"`,
+            `Looking for normalized parish name: "${normalizedParishName}"`
           );
           return null;
         }
@@ -139,9 +143,9 @@ async function seedVillages() {
         // Format village name properly (first letter of each word uppercase, rest lowercase)
         const formattedName = village.name
           .toLowerCase()
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 
         // Generate unique code for the village
         const baseCodePrefix = parish.code;
@@ -155,7 +159,7 @@ async function seedVillages() {
         if (count > 1 || usedCodes.has(baseCode)) {
           // Try different letters from the name
           let found = false;
-          const cleanedName = formattedName.replace(/[^a-zA-Z]/g, "");
+          const cleanedName = formattedName.replace(/[^a-zA-Z]/g, '');
 
           for (let i = 0; i < cleanedName.length; i++) {
             // Skip first and last letters
@@ -173,7 +177,7 @@ async function seedVillages() {
             let counter = 1;
             while (
               usedCodes.has(
-                `${baseCodePrefix}-${cleanedName[0]}${counter}${cleanedName[cleanedName.length - 1]}`,
+                `${baseCodePrefix}-${cleanedName[0]}${counter}${cleanedName[cleanedName.length - 1]}`
               )
             ) {
               counter++;
@@ -197,7 +201,7 @@ async function seedVillages() {
       .filter((item): item is NonNullable<typeof item> => item !== null);
 
     console.log(
-      `Prepared ${villagesDataForInsertion.length} villages for insertion`,
+      `Prepared ${villagesDataForInsertion.length} villages for insertion`
     );
 
     // Insert villages in batches to avoid overwhelming the database
@@ -217,9 +221,9 @@ async function seedVillages() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log("Villages seeding completed successfully");
+    console.log('Villages seeding completed successfully');
   } catch (error) {
-    console.error("Error seeding villages:", error);
+    console.error('Error seeding villages:', error);
     throw error;
   }
 }
@@ -228,11 +232,11 @@ async function seedVillages() {
 if (require.main === module) {
   seedVillages()
     .then(() => {
-      console.log("Villages seeding completed");
+      console.log('Villages seeding completed');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("Villages seeding failed:", error);
+    .catch(error => {
+      console.error('Villages seeding failed:', error);
       process.exit(1);
     });
 }

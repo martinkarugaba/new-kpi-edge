@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from '@tanstack/react-table';
 import {
   villages,
   parishes,
@@ -8,11 +8,11 @@ import {
   counties,
   districts,
   countries,
-} from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+} from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,9 +20,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { deleteVillage } from "@/features/locations/actions/villages";
-import { toast } from "sonner";
+} from '@/components/ui/dropdown-menu';
+import { deleteVillage } from '@/features/locations/actions/villages';
+import { toast } from 'sonner';
 
 type Village = InferSelectModel<typeof villages> & {
   parish?: InferSelectModel<typeof parishes>;
@@ -34,15 +34,15 @@ type Village = InferSelectModel<typeof villages> & {
 
 export const columns: ColumnDef<Village>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
       </div>
@@ -51,7 +51,7 @@ export const columns: ColumnDef<Village>[] = [
       <div className="flex items-center justify-center">
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={value => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
       </div>
@@ -60,51 +60,51 @@ export const columns: ColumnDef<Village>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: 'code',
+    header: 'Code',
   },
   {
-    id: "parish",
-    header: "Parish",
+    id: 'parish',
+    header: 'Parish',
     cell: ({ row }) => {
-      return row.original.parish?.name || "-";
+      return row.original.parish?.name || '-';
     },
   },
   {
-    id: "subcounty",
-    header: "Sub County",
+    id: 'subcounty',
+    header: 'Sub County',
     cell: ({ row }) => {
-      return row.original.subCounty?.name || "-";
+      return row.original.subCounty?.name || '-';
     },
   },
   {
-    id: "county",
-    header: "County",
+    id: 'county',
+    header: 'County',
     cell: ({ row }) => {
-      return row.original.county?.name || "-";
+      return row.original.county?.name || '-';
     },
   },
   {
-    id: "district",
-    header: "District",
+    id: 'district',
+    header: 'District',
     cell: ({ row }) => {
-      return row.original.district?.name || "-";
+      return row.original.district?.name || '-';
     },
   },
   {
-    id: "country",
-    header: "Country",
+    id: 'country',
+    header: 'Country',
     cell: ({ row }) => {
-      return row.original.country?.name || "-";
+      return row.original.country?.name || '-';
     },
   },
   {
-    id: "actions",
-    header: "Actions",
+    id: 'actions',
+    header: 'Actions',
     cell: ({ row }) => {
       const village = row.original;
 
@@ -121,7 +121,7 @@ export const columns: ColumnDef<Village>[] = [
             <DropdownMenuItem
               onClick={() => {
                 // TODO: Implement edit functionality
-                toast.info("Edit functionality coming soon");
+                toast.info('Edit functionality coming soon');
               }}
             >
               <Pencil className="mr-2 h-4 w-4" />
@@ -133,9 +133,9 @@ export const columns: ColumnDef<Village>[] = [
               onClick={async () => {
                 try {
                   await deleteVillage(village.id);
-                  toast.success("Village deleted successfully");
+                  toast.success('Village deleted successfully');
                 } catch {
-                  toast.error("Failed to delete village");
+                  toast.error('Failed to delete village');
                 }
               }}
             >

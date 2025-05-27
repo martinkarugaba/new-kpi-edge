@@ -1,12 +1,14 @@
-"use client";
+'use client';
 
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { countries } from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { countryColumns } from "@/features/locations/components/data-table";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { AddCountryDialog } from "@/features/locations/components/dialogs/add-country-dialog";
+import * as React from 'react';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+import { countries } from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { countryColumns } from '@/features/locations/components/data-table';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import { AddCountryDialog } from '@/features/locations/components/dialogs/add-country-dialog';
+import { useRouter } from 'next/navigation';
 
 type Country = InferSelectModel<typeof countries>;
 
@@ -15,10 +17,22 @@ interface CountriesTableProps {
 }
 
 export function CountriesTable({ data }: CountriesTableProps) {
+  const router = useRouter();
+
+  const handleRowClick = (countryId: string) => {
+    router.push(`/dashboard/locations/${countryId}`);
+  };
+
+  // Use the original columns without modifying them
+  // The row click will be handled by the onRowClick prop
+  const tableColumns = React.useMemo(() => {
+    return countryColumns;
+  }, []);
+
   return (
     <div className="w-full">
       <ReusableDataTable
-        columns={countryColumns}
+        columns={tableColumns}
         data={data}
         filterColumn="name"
         filterPlaceholder="Filter by name..."
@@ -26,6 +40,7 @@ export function CountriesTable({ data }: CountriesTableProps) {
         showPagination={true}
         showRowSelection={true}
         pageSize={20}
+        onRowClick={row => handleRowClick(row.id)}
         customActions={
           <AddCountryDialog>
             <Button size="sm">

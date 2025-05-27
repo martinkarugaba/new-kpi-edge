@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table";
-import { subCounties, districts, counties, countries } from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { ColumnDef } from '@tanstack/react-table';
+import { subCounties, districts, counties, countries } from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +13,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { deleteSubCounty } from "@/features/locations/actions/subcounties";
-import { toast } from "sonner";
+} from '@/components/ui/dropdown-menu';
+import { deleteSubCounty } from '@/features/locations/actions/subcounties';
+import { toast } from 'sonner';
 
 type SubCounty = InferSelectModel<typeof subCounties> & {
   district?: InferSelectModel<typeof districts>;
@@ -25,15 +25,15 @@ type SubCounty = InferSelectModel<typeof subCounties> & {
 
 export const columns: ColumnDef<SubCounty>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
       </div>
@@ -42,7 +42,7 @@ export const columns: ColumnDef<SubCounty>[] = [
       <div className="flex items-center justify-center">
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={value => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
       </div>
@@ -51,55 +51,55 @@ export const columns: ColumnDef<SubCounty>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: 'code',
+    header: 'Code',
   },
   {
-    id: "district",
-    header: "District",
+    id: 'district',
+    header: 'District',
     cell: ({ row }) => {
-      return row.original.district?.name || "-";
+      return row.original.district?.name || '-';
     },
   },
   {
-    id: "county",
-    header: "County",
+    id: 'county',
+    header: 'County',
     cell: ({ row }) => {
-      return row.original.county?.name || "-";
+      return row.original.county?.name || '-';
     },
   },
   {
-    id: "country",
-    header: "Country",
+    id: 'country',
+    header: 'Country',
     cell: ({ row }) => {
-      return row.original.country?.name || "-";
+      return row.original.country?.name || '-';
     },
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     cell: ({ row }) => {
-      if (!row.original.created_at) return "-";
+      if (!row.original.created_at) return '-';
       const date = new Date(row.original.created_at);
       return date.toLocaleDateString();
     },
   },
   {
-    accessorKey: "updated_at",
-    header: "Updated At",
+    accessorKey: 'updated_at',
+    header: 'Updated At',
     cell: ({ row }) => {
-      if (!row.original.updated_at) return "-";
+      if (!row.original.updated_at) return '-';
       const date = new Date(row.original.updated_at);
       return date.toLocaleDateString();
     },
   },
   {
-    id: "actions",
-    header: "Actions",
+    id: 'actions',
+    header: 'Actions',
     cell: ({ row }) => {
       const subCounty = row.original;
 
@@ -116,7 +116,7 @@ export const columns: ColumnDef<SubCounty>[] = [
             <DropdownMenuItem
               onClick={() => {
                 // TODO: Implement edit functionality
-                toast.info("Edit functionality coming soon");
+                toast.info('Edit functionality coming soon');
               }}
             >
               <Pencil className="mr-2 h-4 w-4" />
@@ -128,9 +128,9 @@ export const columns: ColumnDef<SubCounty>[] = [
               onClick={async () => {
                 try {
                   await deleteSubCounty(subCounty.id);
-                  toast.success("Sub County deleted successfully");
+                  toast.success('Sub County deleted successfully');
                 } catch {
-                  toast.error("Failed to delete sub county");
+                  toast.error('Failed to delete sub county');
                 }
               }}
             >

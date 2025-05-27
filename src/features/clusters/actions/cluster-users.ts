@@ -1,15 +1,15 @@
-"use server";
+'use server';
 
-import { db } from "@/lib/db";
+import { db } from '@/lib/db';
 import {
   clusterUsers,
   users,
   clusters,
   clusterMembers,
   organizations,
-} from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
-import { auth } from "@/features/auth/auth";
+} from '@/lib/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { auth } from '@/features/auth/auth';
 
 // Get clusters a user belongs to
 export async function getUserClusters(userId: string) {
@@ -32,15 +32,15 @@ export async function getUserClusters(userId: string) {
       .innerJoin(clusters, eq(clusterUsers.cluster_id, clusters.id))
       .where(eq(clusterUsers.user_id, userId));
 
-    const formattedClusters = clusterMemberships.map((item) => ({
+    const formattedClusters = clusterMemberships.map(item => ({
       ...item.cluster,
       role: item.membership.role,
     }));
 
     return { success: true, data: formattedClusters };
   } catch (error) {
-    console.error("Error fetching user clusters:", error);
-    return { success: false, error: "Failed to fetch user clusters" };
+    console.error('Error fetching user clusters:', error);
+    return { success: false, error: 'Failed to fetch user clusters' };
   }
 }
 
@@ -58,7 +58,7 @@ export async function getUserClusterOrganizations(userId: string) {
       return { success: true, data: [] };
     }
 
-    const clusterIds = userClustersResult.data.map((cluster) => cluster.id);
+    const clusterIds = userClustersResult.data.map(cluster => cluster.id);
 
     // Now get all organizations that are members of those clusters
     const members = await db
@@ -71,7 +71,7 @@ export async function getUserClusterOrganizations(userId: string) {
           project_id: organizations.project_id,
           country: organizations.country,
           district: organizations.district,
-          sub_county: organizations.sub_county,
+          sub_county_id: organizations.sub_county_id,
           parish: organizations.parish,
           village: organizations.village,
           address: organizations.address,
@@ -86,25 +86,25 @@ export async function getUserClusterOrganizations(userId: string) {
       .from(clusterMembers)
       .innerJoin(
         organizations,
-        eq(clusterMembers.organization_id, organizations.id),
+        eq(clusterMembers.organization_id, organizations.id)
       )
       .innerJoin(clusters, eq(clusterMembers.cluster_id, clusters.id))
       .where(
-        eq(clusterMembers.cluster_id, clusterIds[0]), // Start with first cluster
+        eq(clusterMembers.cluster_id, clusterIds[0]) // Start with first cluster
       );
 
     // Format the response
-    const formattedOrgs = members.map((member) => ({
+    const formattedOrgs = members.map(member => ({
       ...member.organization,
       cluster: member.cluster,
     }));
 
     return { success: true, data: formattedOrgs };
   } catch (error) {
-    console.error("Error fetching user cluster organizations:", error);
+    console.error('Error fetching user cluster organizations:', error);
     return {
       success: false,
-      error: "Failed to fetch user cluster organizations",
+      error: 'Failed to fetch user cluster organizations',
     };
   }
 }
@@ -115,16 +115,16 @@ export async function getCurrentUserClusterOrganizations() {
     const session = await auth();
 
     if (!session?.user) {
-      return { success: false, error: "User not authenticated" };
+      return { success: false, error: 'User not authenticated' };
     }
 
     return await getUserClusterOrganizations(session.user.id);
   } catch (error) {
     console.error(
       "Error fetching current user's cluster organizations:",
-      error,
+      error
     );
-    return { success: false, error: "Failed to fetch cluster organizations" };
+    return { success: false, error: 'Failed to fetch cluster organizations' };
   }
 }
 
@@ -133,18 +133,18 @@ export async function addUserToCluster(
   userId: string,
   clusterId: string,
   role:
-    | "super_admin"
-    | "cluster_manager"
-    | "organization_admin"
-    | "organization_member"
-    | "user" = "cluster_manager",
+    | 'super_admin'
+    | 'cluster_manager'
+    | 'organization_admin'
+    | 'organization_member'
+    | 'user' = 'cluster_manager'
 ) {
   try {
     // Check if already a member
     const existingMember = await db.query.clusterUsers.findFirst({
       where: and(
         eq(clusterUsers.user_id, userId),
-        eq(clusterUsers.cluster_id, clusterId),
+        eq(clusterUsers.cluster_id, clusterId)
       ),
     });
 
@@ -164,8 +164,8 @@ export async function addUserToCluster(
 
     return { success: true, data: newMember };
   } catch (error) {
-    console.error("Error adding user to cluster:", error);
-    return { success: false, error: "Failed to add user to cluster" };
+    console.error('Error adding user to cluster:', error);
+    return { success: false, error: 'Failed to add user to cluster' };
   }
 }
 
@@ -177,14 +177,14 @@ export async function removeUserFromCluster(userId: string, clusterId: string) {
       .where(
         and(
           eq(clusterUsers.user_id, userId),
-          eq(clusterUsers.cluster_id, clusterId),
-        ),
+          eq(clusterUsers.cluster_id, clusterId)
+        )
       );
 
     return { success: true };
   } catch (error) {
-    console.error("Error removing user from cluster:", error);
-    return { success: false, error: "Failed to remove user from cluster" };
+    console.error('Error removing user from cluster:', error);
+    return { success: false, error: 'Failed to remove user from cluster' };
   }
 }
 
@@ -209,9 +209,9 @@ export async function getClusterUsers(clusterId: string) {
       .innerJoin(users, eq(clusterUsers.user_id, users.id))
       .where(eq(clusterUsers.cluster_id, clusterId));
 
-    const formattedUsers = clusterMemberships.map((item) => ({
+    const formattedUsers = clusterMemberships.map(item => ({
       id: item.user.id,
-      name: item.user.name || "Unknown User",
+      name: item.user.name || 'Unknown User',
       email: item.user.email,
       role: item.membership.role,
       created_at: item.membership.created_at,
@@ -220,7 +220,7 @@ export async function getClusterUsers(clusterId: string) {
 
     return { success: true, data: formattedUsers };
   } catch (error) {
-    console.error("Error fetching cluster users:", error);
-    return { success: false, error: "Failed to fetch cluster users" };
+    console.error('Error fetching cluster users:', error);
+    return { success: false, error: 'Failed to fetch cluster users' };
   }
 }

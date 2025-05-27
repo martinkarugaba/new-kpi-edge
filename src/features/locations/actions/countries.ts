@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { z } from "zod";
-import { countries } from "@/lib/db/schema";
-import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { z } from 'zod';
+import { countries } from '@/lib/db/schema';
+import { db } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
+import { eq } from 'drizzle-orm';
 
 const createCountrySchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  code: z.string().min(1, "Code is required"),
+  name: z.string().min(1, 'Name is required'),
+  code: z.string().min(1, 'Code is required'),
 });
 
 export async function addCountry(data: z.infer<typeof createCountrySchema>) {
@@ -26,20 +26,20 @@ export async function addCountry(data: z.infer<typeof createCountrySchema>) {
       code,
     });
 
-    revalidatePath("/dashboard/locations");
+    revalidatePath('/dashboard/locations');
     return { success: true };
   } catch {
-    return { error: "Failed to create country" };
+    return { error: 'Failed to create country' };
   }
 }
 
 export async function deleteCountry(id: string) {
   try {
     await db.delete(countries).where(eq(countries.id, id));
-    revalidatePath("/dashboard/locations");
+    revalidatePath('/dashboard/locations');
     return { success: true };
   } catch {
-    return { error: "Failed to delete country" };
+    return { error: 'Failed to delete country' };
   }
 }
 
@@ -51,7 +51,7 @@ export async function getCountries() {
       .orderBy(countries.name);
     return { success: true, data: allCountries };
   } catch (error) {
-    console.error("Error fetching countries:", error);
-    return { error: "Failed to fetch countries" };
+    console.error('Error fetching countries:', error);
+    return { error: 'Failed to fetch countries' };
   }
 }

@@ -3,11 +3,11 @@ import {
   IconFolder,
   IconMapPin,
   IconTargetArrow,
-} from "@tabler/icons-react";
-import { MetricCard } from "@/components/ui/metric-card";
-import { Cluster } from "@/features/clusters/types";
-import { Organization } from "@/features/organizations/types";
-import { Project } from "@/features/projects/types";
+} from '@tabler/icons-react';
+import { MetricCard } from '@/components/ui/metric-card';
+import { Cluster } from '@/features/clusters/types';
+import { Organization } from '@/features/organizations/types';
+import { Project } from '@/features/projects/types';
 
 interface ClusterMetricsProps {
   clusters: Cluster[];
@@ -23,11 +23,11 @@ export function ClusterMetrics({
   const totalOrganizations = organizations.length;
   const totalProjects = projects.length;
   const activeProjects = projects.filter(
-    (project) => project.status === "active",
+    project => project.status === 'active'
   ).length;
   const totalDistricts = clusters.reduce(
     (acc, cluster) => acc + cluster.districts.length,
-    0,
+    0
   );
 
   return (
@@ -38,11 +38,11 @@ export function ClusterMetrics({
         trend={{
           value: 0,
           isPositive: true,
-          label: "Organizations in clusters",
+          label: 'Organizations in clusters',
         }}
         footer={{
-          title: "Organizations in clusters",
-          description: "Total organizations across all clusters",
+          title: 'Organizations in clusters',
+          description: 'Total organizations across all clusters',
         }}
         icon={<IconBuilding className="size-4" />}
       />
@@ -52,11 +52,11 @@ export function ClusterMetrics({
         trend={{
           value: 0,
           isPositive: true,
-          label: "Projects in clusters",
+          label: 'Projects in clusters',
         }}
         footer={{
-          title: "Projects in clusters",
-          description: "Total projects across all clusters",
+          title: 'Projects in clusters',
+          description: 'Total projects across all clusters',
         }}
         icon={<IconFolder className="size-4" />}
       />
@@ -66,11 +66,11 @@ export function ClusterMetrics({
         trend={{
           value: 0,
           isPositive: true,
-          label: "Active projects",
+          label: 'Active projects',
         }}
         footer={{
-          title: "Active projects",
-          description: "Currently active projects",
+          title: 'Active projects',
+          description: 'Currently active projects',
         }}
         icon={<IconTargetArrow className="size-4" />}
       />
@@ -80,11 +80,11 @@ export function ClusterMetrics({
         trend={{
           value: 0,
           isPositive: true,
-          label: "Districts covered",
+          label: 'Districts covered',
         }}
         footer={{
-          title: "Districts covered",
-          description: "Total districts across all clusters",
+          title: 'Districts covered',
+          description: 'Total districts across all clusters',
         }}
         icon={<IconMapPin className="size-4" />}
       />

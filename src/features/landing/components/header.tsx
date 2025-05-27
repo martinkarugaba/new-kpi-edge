@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/features/themes/components/mode-toggle";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { Brand } from "./brand";
-import { MainNavigationMenu } from "./navigation-menu";
-import { UserMenu } from "./user-menu";
-import { AuthButtons } from "./auth-buttons";
+import { Container } from '@/components/ui/container';
+import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/features/themes/components/mode-toggle';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { Brand } from './brand';
+import { MainNavigationMenu } from './navigation-menu';
+import { UserMenu } from './user-menu';
+import { AuthButtons } from './auth-buttons';
 
 export function Header() {
   const { data: session, status } = useSession();
-  const isLoading = status === "loading";
+  const isLoading = status === 'loading';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -6,11 +6,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { OrganizationForm } from "./organization-form";
-import { useState } from "react";
-import { Organization } from "../types";
-import { Cluster } from "@/features/clusters/components/clusters-table";
+} from '@/components/ui/dialog';
+import { useState } from 'react';
+import { Organization } from '../types';
+import { Cluster } from '@/features/clusters/components/clusters-table';
+import { OrganizationForm } from './organization-form/organization-form';
 
 type EditOrganizationDialogProps = {
   organization: Organization;
@@ -45,8 +45,8 @@ export function EditOrganizationDialog({
           </DialogDescription>
         </DialogHeader>
         <OrganizationForm
-          initialData={organization}
           clusters={clusters}
+          defaultClusterId={organization.cluster_id || ''}
           onSuccess={() => setOpen(false)}
           isLoading={isLoading}
           setIsLoading={setIsLoading}

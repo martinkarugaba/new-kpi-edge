@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Organization } from "@/features/organizations/types";
-import { Cluster } from "@/features/clusters/components/clusters-table";
-import { ActionsCell } from "./ActionsCell";
+import { ColumnDef } from '@tanstack/react-table';
+import { Organization } from '@/features/organizations/types';
+import { Cluster } from '@/features/clusters/components/clusters-table';
+import { ActionsCell } from './ActionsCell';
 
 interface GetOrganizationTableColumnsProps {
   clusters: Cluster[];
@@ -16,32 +16,32 @@ export function getOrganizationTableColumns({
 }: GetOrganizationTableColumnsProps): ColumnDef<Organization>[] {
   return [
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: 'name',
+      header: 'Name',
     },
     {
-      accessorKey: "acronym",
-      header: "Acronym",
+      accessorKey: 'acronym',
+      header: 'Acronym',
     },
     {
-      accessorKey: "cluster_id",
-      header: "Cluster",
+      accessorKey: 'cluster_id',
+      header: 'Cluster',
       cell: ({ row }) => {
         const clusterId = row.original.cluster_id;
-        const cluster = clusters.find((c) => c.id === clusterId);
-        return cluster?.name || "N/A";
+        const cluster = clusters.find(c => c.id === clusterId);
+        return cluster?.name || 'N/A';
       },
     },
     {
-      accessorKey: "country",
-      header: "Country",
+      accessorKey: 'country',
+      header: 'Country',
     },
     {
-      accessorKey: "district",
-      header: "District",
+      accessorKey: 'district',
+      header: 'District',
     },
     {
-      id: "actions",
+      id: 'actions',
       cell: ({ row }) => (
         <ActionsCell
           organization={row.original}

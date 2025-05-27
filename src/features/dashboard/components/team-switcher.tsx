@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { ChevronsUpDown, Plus, Building2, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { setCurrentOrganization } from "@/features/auth/actions/set-organization";
+import * as React from 'react';
+import { ChevronsUpDown, Plus, Building2, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { setCurrentOrganization } from '@/features/auth/actions/set-organization';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,19 +15,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { getOrganizationId } from "@/features/auth/actions";
+} from '@/components/ui/sidebar';
+import { getOrganizationId } from '@/features/auth/actions';
 import {
   getCurrentOrganizationWithCluster,
   getOrganizationsByCluster,
-} from "@/features/organizations/actions/organizations";
-import { getCurrentUserClusterOrganizations } from "@/features/clusters/actions/cluster-users";
+} from '@/features/organizations/actions/organizations';
+import { getCurrentUserClusterOrganizations } from '@/features/clusters/actions/cluster-users';
 
 interface Organization {
   id: string;
@@ -37,7 +37,8 @@ interface Organization {
   project_id: string | null;
   country: string;
   district: string;
-  sub_county: string[]; // Changed from string to string[]
+  sub_county_id: string; // Updated to match schema
+  operation_sub_counties?: string[]; // Areas of operation (multiple)
   parish: string;
   village: string;
   address: string;
@@ -66,78 +67,106 @@ export function TeamSwitcher() {
   const { isMobile } = useSidebar();
 
   const { data: organizationId, isLoading: isLoadingOrgId } = useQuery({
-    queryKey: ["organizationId"],
-    queryFn: getOrganizationId,
+    queryKey: ['organizationId'],
+    queryFn: async () => {
+      console.log('Fetching organization ID...');
+      const result = await getOrganizationId();
+      console.log('Got organization ID result:', result);
+      return result;
+    },
   });
 
   const { data: organizationsData, isLoading: isLoadingOrgs } =
     useQuery<OrganizationsData | null>({
-      queryKey: ["organizations", organizationId],
+      queryKey: ['organizations', organizationId],
       queryFn: async (): Promise<OrganizationsData | null> => {
-        if (!organizationId) return null;
+        console.log(
+          'Starting organizations query with organization ID:',
+          organizationId
+        );
+        if (!organizationId) {
+          console.log('No organization ID available, returning null');
+          return null;
+        }
 
-        // Fetch the current organization with its cluster
+        console.log('Fetching current organization with cluster...');
         const currentOrgResult =
           await getCurrentOrganizationWithCluster(organizationId);
-        if (!currentOrgResult.success || !currentOrgResult.data) return null;
+        console.log('Current org result:', currentOrgResult);
+        if (!currentOrgResult.success || !currentOrgResult.data) {
+          console.log(
+            'Failed to get current organization:',
+            currentOrgResult.error
+          );
+          return null;
+        }
 
         const currentOrg = currentOrgResult.data;
+        console.log('Current organization:', currentOrg);
 
-        // Fetch organizations from the cluster members table - these are the ones
-        // explicitly connected via the cluster_members table
+        // Fetch organizations from the cluster members table
         let clusterOrgs: Organization[] = [];
         let userClusterOrgs: Organization[] = [];
         let isClustered = false;
 
         // Get organizations from the current org's cluster if it belongs to one
         if (currentOrg.cluster_id) {
-          const orgsResult = await getOrganizationsByCluster(
-            currentOrg.cluster_id,
+          console.log(
+            'Organization belongs to cluster:',
+            currentOrg.cluster_id
           );
+          const orgsResult = await getOrganizationsByCluster(
+            currentOrg.cluster_id
+          );
+          console.log('Cluster organizations result:', orgsResult);
           if (orgsResult.success && orgsResult.data) {
             clusterOrgs = orgsResult.data;
             isClustered = true;
           }
+        } else {
+          console.log('Organization does not belong to any cluster');
         }
 
-        // Get organizations from clusters the user belongs to through the cluster_users table
+        // Get organizations from clusters the user belongs to
+        console.log('Fetching user cluster organizations...');
         const userOrgsResult = await getCurrentUserClusterOrganizations();
+        console.log('User cluster organizations result:', userOrgsResult);
         if (
           userOrgsResult.success === true &&
-          "data" in userOrgsResult &&
+          'data' in userOrgsResult &&
           userOrgsResult.data
         ) {
           userClusterOrgs = userOrgsResult.data;
           isClustered = isClustered || userClusterOrgs.length > 0;
         }
 
-        // Combine and deduplicate organizations from both sources
+        // Combine and deduplicate organizations
         const combinedOrgs = [...clusterOrgs];
 
         // Add organizations from user's clusters if not already included
         for (const org of userClusterOrgs) {
-          if (!combinedOrgs.find((existingOrg) => existingOrg.id === org.id)) {
+          if (!combinedOrgs.find(existingOrg => existingOrg.id === org.id)) {
             combinedOrgs.push(org);
           }
         }
 
         // Always include the current organization
-        if (!combinedOrgs.find((org) => org.id === currentOrg.id)) {
+        if (!combinedOrgs.find(org => org.id === currentOrg.id)) {
           combinedOrgs.push(currentOrg);
         }
 
-        return {
+        const result = {
           currentOrg,
           organizations: combinedOrgs,
           isClustered,
         };
+
+        console.log('Final organizations data:', result);
+        return result;
       },
       enabled: !!organizationId,
-      // Refetch when the window regains focus to ensure fresh data
       refetchOnWindowFocus: true,
-      // Cache for a short time to avoid excessive requests (10 seconds)
       staleTime: 10 * 1000,
-      // Set up a refresh interval to periodically check for changes (30 seconds)
       refetchInterval: 30 * 1000,
     });
 
@@ -178,7 +207,7 @@ export function TeamSwitcher() {
                 <span className="truncate text-xs text-muted-foreground">
                   {currentOrg.cluster?.name
                     ? `${currentOrg.cluster.name} | `
-                    : ""}
+                    : ''}
                   {currentOrg.district}, {currentOrg.country}
                 </span>
               </div>
@@ -188,7 +217,7 @@ export function TeamSwitcher() {
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             align="start"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
@@ -205,11 +234,11 @@ export function TeamSwitcher() {
                       setOpen(false);
                     } else {
                       toast.error(
-                        result.error || "Failed to switch organization",
+                        result.error || 'Failed to switch organization'
                       );
                     }
                   } catch (error) {
-                    toast.error("Failed to switch organization");
+                    toast.error('Failed to switch organization');
                     console.error(error);
                   }
                 }}

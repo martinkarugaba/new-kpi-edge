@@ -1,30 +1,30 @@
-import { Container } from "@/components/ui/container";
+import { Container } from '@/components/ui/container';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 const testimonials = [
   {
     quote:
       "This KPI tracking tool has transformed how we monitor our business performance. The insights we've gained have directly contributed to a 25% increase in our core metrics.",
-    author: "Sarah Johnson",
-    role: "CEO, TechInnovate",
+    author: 'Sarah Johnson',
+    role: 'CEO, TechInnovate',
   },
   {
     quote:
       "The custom dashboards and real-time analytics have made it so easy to keep our entire team aligned on our most important metrics. I can't imagine running our business without it now.",
-    author: "Michael Chen",
-    role: "Operations Director, GrowthFast",
+    author: 'Michael Chen',
+    role: 'Operations Director, GrowthFast',
   },
   {
     quote:
-      "The automated reporting feature alone has saved our team countless hours each month. Now we can focus on acting on insights rather than gathering data.",
-    author: "Alex Rivera",
-    role: "Marketing Lead, BrandPulse",
+      'The automated reporting feature alone has saved our team countless hours each month. Now we can focus on acting on insights rather than gathering data.',
+    author: 'Alex Rivera',
+    role: 'Marketing Lead, BrandPulse',
   },
 ];
 
@@ -47,7 +47,7 @@ export function TestimonialsSection() {
             <Card key={index} className="border border-border/40">
               <CardHeader className="pb-2">
                 <div className="flex justify-start space-x-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
+                  {[1, 2, 3, 4, 5].map(star => (
                     <svg
                       key={star}
                       xmlns="http://www.w3.org/2000/svg"

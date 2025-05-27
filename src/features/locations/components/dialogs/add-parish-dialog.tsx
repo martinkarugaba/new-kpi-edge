@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,11 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -21,18 +21,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { addParish } from "@/features/locations/actions/parishes";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/form';
+import { addParish } from '@/features/locations/actions/parishes';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  code: z.string().min(1, "Code is required"),
-  subCountyId: z.string().min(1, "Sub County is required"),
-  districtId: z.string().min(1, "District is required"),
-  countyId: z.string().min(1, "County is required"),
-  countryId: z.string().min(1, "Country is required"),
+  name: z.string().min(1, 'Name is required'),
+  code: z.string().min(1, 'Code is required'),
+  subCountyId: z.string().min(1, 'Sub County is required'),
+  districtId: z.string().min(1, 'District is required'),
+  countyId: z.string().min(1, 'County is required'),
+  countryId: z.string().min(1, 'Country is required'),
 });
 
 interface AddParishDialogProps {
@@ -44,12 +44,12 @@ export function AddParishDialog({ children }: AddParishDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      code: "",
-      subCountyId: "",
-      districtId: "",
-      countyId: "",
-      countryId: "",
+      name: '',
+      code: '',
+      subCountyId: '',
+      districtId: '',
+      countyId: '',
+      countryId: '',
     },
   });
 
@@ -57,10 +57,10 @@ export function AddParishDialog({ children }: AddParishDialogProps) {
     try {
       await addParish(values);
       form.reset();
-      toast.success("Parish added successfully");
+      toast.success('Parish added successfully');
       router.refresh();
     } catch {
-      toast.error("Failed to add parish");
+      toast.error('Failed to add parish');
     }
   }
 

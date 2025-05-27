@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { CountriesTable } from "../countries-table";
-import { useEffect, useState } from "react";
-import { countries } from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { getCountries } from "@/features/locations/actions/locations";
+import { CountriesTable } from '../countries-table';
+import { useEffect, useState } from 'react';
+import { countries } from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { getCountries } from '@/features/locations/actions/locations';
 
 type Country = InferSelectModel<typeof countries>;
 

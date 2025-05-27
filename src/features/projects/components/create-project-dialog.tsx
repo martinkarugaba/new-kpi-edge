@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { ProjectForm } from "./project-form";
-import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Modal } from "@/components/ui/modal";
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { ProjectForm } from './project-form';
+import { useState } from 'react';
+import { Plus } from 'lucide-react';
+import { Modal } from '@/components/ui/modal';
 
 type CreateProjectDialogProps = {
   children?: React.ReactNode;

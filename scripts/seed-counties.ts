@@ -1,55 +1,55 @@
-import { db } from "../src/lib/db";
-import { sql } from "drizzle-orm";
-import { counties, districts, countries } from "../src/lib/db/schema";
-import countiesData from "ug-locale/counties.json";
-import districtsData from "ug-locale/districts.json";
-import * as dotenv from "dotenv";
-import path from "path";
+import { db } from '../src/lib/db';
+import { sql } from 'drizzle-orm';
+import { counties, districts, countries } from '../src/lib/db/schema';
+import countiesData from 'ug-locale/counties.json';
+import districtsData from 'ug-locale/districts.json';
+import * as dotenv from 'dotenv';
+import path from 'path';
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 function normalizeDistrictName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, "");
+  const base = name.toLowerCase().replace(/[^a-z]/g, '');
 
   // Create variations by removing common district suffixes/prefixes
   const variations = [
     base,
-    base.replace("district", ""),
-    base.replace("municipality", ""),
-    base.replace("city", ""),
-    base.replace("county", ""),
-    base.replace("tc", ""),
-    base.replace("towncounty", ""),
+    base.replace('district', ''),
+    base.replace('municipality', ''),
+    base.replace('city', ''),
+    base.replace('county', ''),
+    base.replace('tc', ''),
+    base.replace('towncounty', ''),
   ];
 
   // Special cases for district name variations
-  if (base.includes("kampala")) variations.push("kcca");
-  if (base.includes("fortportal")) variations.push("kabarole");
-  if (base.includes("fortportal")) variations.push("fortportalcity");
-  if (base.includes("arua")) variations.push("aruacity");
-  if (base.includes("gulu")) variations.push("gulucity");
-  if (base.includes("jinja")) variations.push("jinjacity");
-  if (base.includes("lira")) variations.push("liracity");
-  if (base.includes("masaka")) variations.push("masakacity");
-  if (base.includes("mbale")) variations.push("mbalecity");
-  if (base.includes("mbarara")) variations.push("mbararacity");
-  if (base.includes("soroti")) variations.push("soroticity");
+  if (base.includes('kampala')) variations.push('kcca');
+  if (base.includes('fortportal')) variations.push('kabarole');
+  if (base.includes('fortportal')) variations.push('fortportalcity');
+  if (base.includes('arua')) variations.push('aruacity');
+  if (base.includes('gulu')) variations.push('gulucity');
+  if (base.includes('jinja')) variations.push('jinjacity');
+  if (base.includes('lira')) variations.push('liracity');
+  if (base.includes('masaka')) variations.push('masakacity');
+  if (base.includes('mbale')) variations.push('mbalecity');
+  if (base.includes('mbarara')) variations.push('mbararacity');
+  if (base.includes('soroti')) variations.push('soroticity');
 
   // Filter out duplicates and empty strings
-  return [...new Set(variations.filter((v) => v))];
+  return [...new Set(variations.filter(v => v))];
 }
 
 function generateCountyCode(districtCode: string, name: string): string {
   // Remove "County" suffix if present
   let cleanName = name;
-  if (cleanName.toLowerCase().endsWith(" county")) {
+  if (cleanName.toLowerCase().endsWith(' county')) {
     cleanName = cleanName.slice(0, -7);
   }
 
   // Clean name for code generation (remove spaces and special characters)
-  const cleanedName = cleanName.replace(/[^a-zA-Z]/g, "");
+  const cleanedName = cleanName.replace(/[^a-zA-Z]/g, '');
 
   // Get first 3 letters for code generation
   const namePrefix = cleanedName.slice(0, 3).toUpperCase();
@@ -59,7 +59,7 @@ function generateCountyCode(districtCode: string, name: string): string {
 
 async function seedCounties() {
   try {
-    console.log("Starting counties seeding...");
+    console.log('Starting counties seeding...');
 
     // First, get the Uganda country ID
     const [uganda] = await db
@@ -69,25 +69,25 @@ async function seedCounties() {
 
     if (!uganda) {
       throw new Error(
-        "Uganda country record not found. Please seed countries first.",
+        'Uganda country record not found. Please seed countries first.'
       );
     }
 
-    console.log("Found Uganda country record");
+    console.log('Found Uganda country record');
 
     // Get all districts
     const districtRecords = await db.select().from(districts);
     if (districtRecords.length === 0) {
-      throw new Error("No districts found. Please seed districts first.");
+      throw new Error('No districts found. Please seed districts first.');
     }
 
     console.log(`Found ${districtRecords.length} district records`);
 
     // Create mapping with normalized names
     const districtMap = new Map();
-    districtRecords.forEach((district) => {
+    districtRecords.forEach(district => {
       const variations = normalizeDistrictName(district.name);
-      variations.forEach((variant) => {
+      variations.forEach(variant => {
         districtMap.set(variant, district);
       });
     });
@@ -110,7 +110,7 @@ async function seedCounties() {
         const districtData = districtDataById.get(county.district);
         if (!districtData) {
           console.warn(
-            `District ID ${county.district} not found for county ${county.name}`,
+            `District ID ${county.district} not found for county ${county.name}`
           );
           return null;
         }
@@ -126,14 +126,14 @@ async function seedCounties() {
 
         if (!district) {
           console.warn(
-            `District not found in database for county: ${county.name}, district: ${districtData.name}`,
+            `District not found in database for county: ${county.name}, district: ${districtData.name}`
           );
           return null;
         }
 
         // Remove the word "County" from the end if present and format name properly
         let cleanName = county.name;
-        if (cleanName.toLowerCase().endsWith(" county")) {
+        if (cleanName.toLowerCase().endsWith(' county')) {
           cleanName = cleanName.slice(0, -7); // Remove " County" from the end
           console.log(`Renaming "${county.name}" to "${cleanName}"`);
         }
@@ -141,9 +141,9 @@ async function seedCounties() {
         // Format county name properly (first letter of each word uppercase, rest lowercase)
         const formattedName = cleanName
           .toLowerCase()
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 
         // Generate a code using district code + first 3 letters of county name
         let baseCode = generateCountyCode(district.code, county.name);
@@ -155,7 +155,7 @@ async function seedCounties() {
         // If this is not the first occurrence or code is already used, modify the code
         if (count > 1 || usedCodes.has(baseCode)) {
           // Clean name for code generation
-          const cleanedName = county.name.replace(/[^a-zA-Z]/g, "");
+          const cleanedName = county.name.replace(/[^a-zA-Z]/g, '');
 
           // Try different combinations of letters from the name
           let found = false;
@@ -173,7 +173,7 @@ async function seedCounties() {
             let counter = 1;
             while (
               usedCodes.has(
-                `${district.code}-${cleanedName.slice(0, 2).toUpperCase()}${counter}`,
+                `${district.code}-${cleanedName.slice(0, 2).toUpperCase()}${counter}`
               )
             ) {
               counter++;
@@ -193,7 +193,7 @@ async function seedCounties() {
       .filter((item): item is NonNullable<typeof item> => item !== null);
 
     console.log(
-      `Prepared ${countiesDataForInsertion.length} counties for insertion`,
+      `Prepared ${countiesDataForInsertion.length} counties for insertion`
     );
 
     // Insert counties in batches to avoid overwhelming the database
@@ -213,9 +213,9 @@ async function seedCounties() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log("Counties seeding completed successfully");
+    console.log('Counties seeding completed successfully');
   } catch (error) {
-    console.error("Error seeding counties:", error);
+    console.error('Error seeding counties:', error);
     throw error;
   }
 }
@@ -224,11 +224,11 @@ async function seedCounties() {
 if (require.main === module) {
   seedCounties()
     .then(() => {
-      console.log("Counties seeding completed");
+      console.log('Counties seeding completed');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("Counties seeding failed:", error);
+    .catch(error => {
+      console.error('Counties seeding failed:', error);
       process.exit(1);
     });
 }

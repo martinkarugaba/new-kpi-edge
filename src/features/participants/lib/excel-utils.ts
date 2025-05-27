@@ -1,38 +1,38 @@
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 
 export function downloadTemplate() {
   // Sample data with expected format
   const sampleData = [
     {
-      firstName: "John",
-      lastName: "Doe",
-      sex: "male", // Accepted values: male, female, other
-      age: "25",
-      contact: "+256700000000",
-      isPWD: "no", // yes or no
-      isMother: "no", // yes or no
-      isRefugee: "no", // yes or no
-      project_id: "", // Required: Project ID from your system
-      cluster_id: "", // Required: Cluster ID from your system
-      organization_id: "", // Required: Organization ID from your system
-      country: "Uganda",
-      district: "Sample District",
-      subCounty: "Sample Sub County",
-      parish: "Sample Parish",
-      village: "Sample Village",
-      designation: "Farmer",
-      enterprise: "Agriculture",
-      noOfTrainings: "0",
-      isActive: "yes", // yes or no
+      firstName: 'John',
+      lastName: 'Doe',
+      sex: 'male', // Accepted values: male, female, other
+      age: '25',
+      contact: '+256700000000',
+      isPWD: 'no', // yes or no
+      isMother: 'no', // yes or no
+      isRefugee: 'no', // yes or no
+      project_id: '', // Required: Project ID from your system
+      cluster_id: '', // Required: Cluster ID from your system
+      organization_id: '', // Required: Organization ID from your system
+      country: 'Uganda',
+      district: 'Sample District',
+      subCounty: 'Sample Sub County',
+      parish: 'Sample Parish',
+      village: 'Sample Village',
+      designation: 'Farmer',
+      enterprise: 'Agriculture',
+      noOfTrainings: '0',
+      isActive: 'yes', // yes or no
     },
   ];
 
   const ws = XLSX.utils.json_to_sheet(sampleData);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Participants");
+  XLSX.utils.book_append_sheet(wb, ws, 'Participants');
 
   // Add column widths for better readability
-  ws["!cols"] = [
+  ws['!cols'] = [
     { wch: 15 }, // firstName
     { wch: 15 }, // lastName
     { wch: 8 }, // sex
@@ -55,5 +55,5 @@ export function downloadTemplate() {
     { wch: 8 }, // isActive
   ];
 
-  XLSX.writeFile(wb, "participants-template.xlsx");
+  XLSX.writeFile(wb, 'participants-template.xlsx');
 }

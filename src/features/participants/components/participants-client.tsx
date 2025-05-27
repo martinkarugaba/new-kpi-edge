@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ParticipantsTable } from "./participants-table";
-import { toast } from "sonner";
-import { type Project } from "@/features/projects/types";
-import { type Participant } from "../types/types";
-import { type ParticipantFormValues } from "./participant-form";
+import { useState } from 'react';
+import { ParticipantsTable } from './participants-table';
+import { toast } from 'sonner';
+import { type Project } from '@/features/projects/types';
+import { type Participant } from '../types/types';
+import { type ParticipantFormValues } from './participant-form';
 import {
   useParticipants,
   useCreateParticipant,
   useUpdateParticipant,
   useDeleteParticipant,
   useBulkCreateParticipants,
-} from "../hooks/use-participants";
-import { Card, CardContent } from "@/components/ui/card";
+} from '../hooks/use-participants';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ParticipantsClientProps {
   clusterId: string;
@@ -35,18 +35,18 @@ export function ParticipantsClient({
   const [editingParticipant, setEditingParticipant] =
     useState<Participant | null>(null);
   const [filters, setFilters] = useState({
-    cluster: "",
-    project: "",
-    district: "",
-    sex: "",
-    isPWD: "",
+    cluster: '',
+    project: '',
+    district: '',
+    sex: '',
+    isPWD: '',
   });
 
   const handleImportParticipants = async (data: ParticipantFormValues[]) => {
     setIsLoading(true);
     const toastId = toast.loading(`Importing ${data.length} participants...`);
     try {
-      const transformedData = data.map((participant) => ({
+      const transformedData = data.map(participant => ({
         firstName: participant.firstName,
         lastName: participant.lastName,
         country: participant.country,
@@ -61,49 +61,49 @@ export function ParticipantsClient({
         cluster_id: clusterId,
         project_id: participant.project_id,
         organization_id: participant.organization_id,
-        sex: participant.sex as "male" | "female" | "other",
+        sex: participant.sex as 'male' | 'female' | 'other',
         age: participant.age,
-        noOfTrainings: participant.noOfTrainings || "0",
-        numberOfChildren: participant.numberOfChildren || "0",
-        monthlyIncome: participant.monthlyIncome || "0",
-        isPWD: (participant.isPWD === "yes" ? "yes" : "no") as "yes" | "no",
-        isMother: (participant.isMother === "yes" ? "yes" : "no") as
-          | "yes"
-          | "no",
-        isRefugee: (participant.isRefugee === "yes" ? "yes" : "no") as
-          | "yes"
-          | "no",
-        isActive: (participant.isActive === "yes" ? "yes" : "no") as
-          | "yes"
-          | "no",
-        isPermanentResident: (participant.isPermanentResident === "yes"
-          ? "yes"
-          : "no") as "yes" | "no",
-        areParentsAlive: (participant.areParentsAlive === "yes"
-          ? "yes"
-          : "no") as "yes" | "no",
+        noOfTrainings: participant.noOfTrainings || '0',
+        numberOfChildren: participant.numberOfChildren || '0',
+        monthlyIncome: participant.monthlyIncome || '0',
+        isPWD: (participant.isPWD === 'yes' ? 'yes' : 'no') as 'yes' | 'no',
+        isMother: (participant.isMother === 'yes' ? 'yes' : 'no') as
+          | 'yes'
+          | 'no',
+        isRefugee: (participant.isRefugee === 'yes' ? 'yes' : 'no') as
+          | 'yes'
+          | 'no',
+        isActive: (participant.isActive === 'yes' ? 'yes' : 'no') as
+          | 'yes'
+          | 'no',
+        isPermanentResident: (participant.isPermanentResident === 'yes'
+          ? 'yes'
+          : 'no') as 'yes' | 'no',
+        areParentsAlive: (participant.areParentsAlive === 'yes'
+          ? 'yes'
+          : 'no') as 'yes' | 'no',
         mainChallenge: participant.mainChallenge || undefined,
         skillOfInterest: participant.skillOfInterest || undefined,
         expectedImpact: participant.expectedImpact || undefined,
-        isWillingToParticipate: (participant.isWillingToParticipate === "yes"
-          ? "yes"
-          : "no") as "yes" | "no",
+        isWillingToParticipate: (participant.isWillingToParticipate === 'yes'
+          ? 'yes'
+          : 'no') as 'yes' | 'no',
       }));
 
       const result = await bulkCreateParticipants.mutateAsync(transformedData);
       if (!result.success) {
-        throw new Error(result.error || "Failed to import participants");
+        throw new Error(result.error || 'Failed to import participants');
       }
       toast.success(`Successfully imported ${data.length} participants`, {
         id: toastId,
       });
     } catch (error) {
-      console.error("Import error:", error);
+      console.error('Import error:', error);
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to import participants",
-        { id: toastId },
+          : 'Failed to import participants',
+        { id: toastId }
       );
     } finally {
       setIsLoading(false);
@@ -118,24 +118,25 @@ export function ParticipantsClient({
   const deleteParticipant = useDeleteParticipant(clusterId);
 
   // Get the current cluster's organizations
-  const currentCluster = clusters.find((c) => c.id === clusterId);
+  const currentCluster = clusters.find(c => c.id === clusterId);
   const clusterOrganizations =
-    currentCluster?.organizations?.map((org) => ({
+    currentCluster?.organizations?.map(org => ({
       id: org.id,
       name: org.name,
       acronym: org.name
-        .split(" ")
-        .map((word) => word[0])
-        .join("")
+        .split(' ')
+        .map(word => word[0])
+        .join('')
         .toUpperCase(),
       cluster_id: clusterId,
       project_id: null,
-      country: "",
-      district: "",
-      sub_county: [] as string[], // Changed from string to string[]
-      parish: "",
-      village: "",
-      address: "",
+      country: '',
+      district: '',
+      sub_county_id: '',
+      operation_sub_counties: [],
+      parish: '',
+      village: '',
+      address: '',
       created_at: null,
       updated_at: null,
       cluster: currentCluster
@@ -155,11 +156,11 @@ export function ParticipantsClient({
     subCounty: string;
     parish: string;
     village: string;
-    sex: "male" | "female" | "other";
+    sex: 'male' | 'female' | 'other';
     age: string;
-    isPWD: "yes" | "no";
-    isMother: "yes" | "no";
-    isRefugee: "yes" | "no";
+    isPWD: 'yes' | 'no';
+    isMother: 'yes' | 'no';
+    isRefugee: 'yes' | 'no';
     designation: string;
     enterprise: string;
     contact: string;
@@ -167,38 +168,38 @@ export function ParticipantsClient({
     cluster_id: string;
     organization_id: string;
     noOfTrainings: string;
-    isActive: "yes" | "no";
-    isPermanentResident: "yes" | "no";
-    areParentsAlive: "yes" | "no";
+    isActive: 'yes' | 'no';
+    isPermanentResident: 'yes' | 'no';
+    areParentsAlive: 'yes' | 'no';
     numberOfChildren: string;
     employmentStatus: string;
     monthlyIncome: string;
     mainChallenge?: string;
     skillOfInterest?: string;
     expectedImpact?: string;
-    isWillingToParticipate: "yes" | "no";
+    isWillingToParticipate: 'yes' | 'no';
   }) => {
     try {
       // Transform form data to match database types
       const data = {
         ...formData,
         age: parseInt(formData.age, 10) || 18,
-        noOfTrainings: parseInt(formData.noOfTrainings || "0", 10) || 0,
-        numberOfChildren: parseInt(formData.numberOfChildren || "0", 10) || 0,
-        monthlyIncome: parseInt(formData.monthlyIncome || "0", 10) || 0,
-        isActive: formData.isActive === "yes",
-        isPermanentResident: formData.isPermanentResident === "yes",
-        areParentsAlive: formData.areParentsAlive === "yes",
-        isPWD: formData.isPWD === "yes",
-        isMother: formData.isMother === "yes",
-        isRefugee: formData.isRefugee === "yes",
-        isWillingToParticipate: formData.isWillingToParticipate === "yes",
+        noOfTrainings: parseInt(formData.noOfTrainings || '0', 10) || 0,
+        numberOfChildren: parseInt(formData.numberOfChildren || '0', 10) || 0,
+        monthlyIncome: parseInt(formData.monthlyIncome || '0', 10) || 0,
+        isActive: formData.isActive === 'yes',
+        isPermanentResident: formData.isPermanentResident === 'yes',
+        areParentsAlive: formData.areParentsAlive === 'yes',
+        isPWD: formData.isPWD === 'yes',
+        isMother: formData.isMother === 'yes',
+        isRefugee: formData.isRefugee === 'yes',
+        isWillingToParticipate: formData.isWillingToParticipate === 'yes',
       };
 
       if (editingParticipant) {
         // Make sure we have a cluster ID
         if (!clusterId) {
-          toast.error("Cluster ID is required");
+          toast.error('Cluster ID is required');
           return;
         }
 
@@ -216,34 +217,34 @@ export function ParticipantsClient({
             village: data.village,
             sex: data.sex,
             age: data.age,
-            isPWD: data.isPWD ? "yes" : "no",
-            isMother: data.isMother ? "yes" : "no",
-            isRefugee: data.isRefugee ? "yes" : "no",
+            isPWD: data.isPWD ? 'yes' : 'no',
+            isMother: data.isMother ? 'yes' : 'no',
+            isRefugee: data.isRefugee ? 'yes' : 'no',
             designation: data.designation,
             enterprise: data.enterprise,
             contact: data.contact,
             organization_id: data.organization_id,
             noOfTrainings: data.noOfTrainings,
-            isActive: data.isActive ? "yes" : "no",
-            isPermanentResident: data.isPermanentResident ? "yes" : "no",
-            areParentsAlive: data.areParentsAlive ? "yes" : "no",
+            isActive: data.isActive ? 'yes' : 'no',
+            isPermanentResident: data.isPermanentResident ? 'yes' : 'no',
+            areParentsAlive: data.areParentsAlive ? 'yes' : 'no',
             numberOfChildren: data.numberOfChildren,
             employmentStatus: data.employmentStatus,
             monthlyIncome: data.monthlyIncome,
             mainChallenge: data.mainChallenge || null,
             skillOfInterest: data.skillOfInterest || null,
             expectedImpact: data.expectedImpact || null,
-            isWillingToParticipate: data.isWillingToParticipate ? "yes" : "no",
+            isWillingToParticipate: data.isWillingToParticipate ? 'yes' : 'no',
           },
         });
         if (!result.success) {
-          throw new Error(result.error || "Failed to update participant");
+          throw new Error(result.error || 'Failed to update participant');
         }
-        toast.success("Participant updated successfully");
+        toast.success('Participant updated successfully');
       } else {
         // Make sure we have a cluster ID
         if (!clusterId) {
-          toast.error("Cluster ID is required");
+          toast.error('Cluster ID is required');
           return;
         }
         const result = await createParticipant.mutateAsync({
@@ -258,35 +259,35 @@ export function ParticipantsClient({
           village: data.village,
           sex: data.sex,
           age: data.age,
-          isPWD: data.isPWD ? "yes" : "no",
-          isMother: data.isMother ? "yes" : "no",
-          isRefugee: data.isRefugee ? "yes" : "no",
+          isPWD: data.isPWD ? 'yes' : 'no',
+          isMother: data.isMother ? 'yes' : 'no',
+          isRefugee: data.isRefugee ? 'yes' : 'no',
           designation: data.designation,
           enterprise: data.enterprise,
           contact: data.contact,
           organization_id: data.organization_id,
           noOfTrainings: data.noOfTrainings,
-          isActive: data.isActive ? "yes" : "no",
-          isPermanentResident: data.isPermanentResident ? "yes" : "no",
-          areParentsAlive: data.areParentsAlive ? "yes" : "no",
+          isActive: data.isActive ? 'yes' : 'no',
+          isPermanentResident: data.isPermanentResident ? 'yes' : 'no',
+          areParentsAlive: data.areParentsAlive ? 'yes' : 'no',
           numberOfChildren: data.numberOfChildren,
           employmentStatus: data.employmentStatus,
           monthlyIncome: data.monthlyIncome,
           mainChallenge: data.mainChallenge || null,
           skillOfInterest: data.skillOfInterest || null,
           expectedImpact: data.expectedImpact || null,
-          isWillingToParticipate: data.isWillingToParticipate ? "yes" : "no",
+          isWillingToParticipate: data.isWillingToParticipate ? 'yes' : 'no',
         });
         if (!result.success) {
-          throw new Error(result.error || "Failed to create participant");
+          throw new Error(result.error || 'Failed to create participant');
         }
-        toast.success("Participant created successfully");
+        toast.success('Participant created successfully');
       }
       setIsOpen(false);
       setEditingParticipant(null);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error ? error.message : 'Something went wrong'
       );
     }
   };
@@ -302,12 +303,12 @@ export function ParticipantsClient({
         id: participant.id,
       });
       if (!result.success) {
-        throw new Error(result.error || "Failed to delete participant");
+        throw new Error(result.error || 'Failed to delete participant');
       }
-      toast.success("Participant deleted successfully");
+      toast.success('Participant deleted successfully');
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error ? error.message : 'Something went wrong'
       );
     }
   };
@@ -335,13 +336,13 @@ export function ParticipantsClient({
 
   // Extract unique values for filters from participants data
   const districts = Array.from(
-    new Set((participantsResult?.data || []).map((p) => p.district)),
+    new Set((participantsResult?.data || []).map(p => p.district))
   )
     .filter(Boolean)
     .sort();
 
   const sexOptions = Array.from(
-    new Set((participantsResult?.data || []).map((p) => p.sex)),
+    new Set((participantsResult?.data || []).map(p => p.sex))
   ).filter(Boolean);
 
   // Apply filters to the data

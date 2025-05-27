@@ -1,18 +1,6 @@
-"use server";
+'use server';
 
-import { db } from "@/lib/db";
-
-export async function getCountries() {
-  try {
-    const data = await db.query.countries.findMany({
-      orderBy: (countries, { asc }) => [asc(countries.name)],
-    });
-    return { success: true, data };
-  } catch (error) {
-    console.error("Error fetching countries:", error);
-    return { success: false, error: "Failed to fetch countries" };
-  }
-}
+import { db } from '@/lib/db';
 
 export async function getDistricts() {
   try {
@@ -24,8 +12,8 @@ export async function getDistricts() {
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching districts:", error);
-    return { success: false, error: "Failed to fetch districts" };
+    console.error('Error fetching districts:', error);
+    return { success: false, error: 'Failed to fetch districts' };
   }
 }
 
@@ -34,11 +22,38 @@ export async function getDistrictsByCountry(countryId: string) {
     const data = await db.query.districts.findMany({
       where: (districts, { eq }) => eq(districts.country_id, countryId),
       orderBy: (districts, { asc }) => [asc(districts.name)],
+      with: {
+        country: true,
+      },
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching districts:", error);
-    return { success: false, error: "Failed to fetch districts" };
+    console.error('Error fetching districts by country:', error);
+    return { success: false, error: 'Failed to fetch districts by country' };
+  }
+}
+
+export async function getCountries() {
+  try {
+    const data = await db.query.countries.findMany({
+      orderBy: (countries, { asc }) => [asc(countries.name)],
+    });
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching countries:', error);
+    return { success: false, error: 'Failed to fetch countries' };
+  }
+}
+
+export async function getCountry(id: string) {
+  try {
+    const data = await db.query.countries.findFirst({
+      where: (countries, { eq }) => eq(countries.id, id),
+    });
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching country:', error);
+    return { success: false, error: 'Failed to fetch country' };
   }
 }
 
@@ -54,8 +69,8 @@ export async function getSubCounties() {
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching sub counties:", error);
-    return { success: false, error: "Failed to fetch sub counties" };
+    console.error('Error fetching sub counties:', error);
+    return { success: false, error: 'Failed to fetch sub counties' };
   }
 }
 
@@ -72,8 +87,8 @@ export async function getParishes() {
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching parishes:", error);
-    return { success: false, error: "Failed to fetch parishes" };
+    console.error('Error fetching parishes:', error);
+    return { success: false, error: 'Failed to fetch parishes' };
   }
 }
 
@@ -91,8 +106,8 @@ export async function getVillages() {
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching villages:", error);
-    return { success: false, error: "Failed to fetch villages" };
+    console.error('Error fetching villages:', error);
+    return { success: false, error: 'Failed to fetch villages' };
   }
 }
 
@@ -106,8 +121,8 @@ export async function getCounties() {
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching counties:", error);
-    return { success: false, error: "Failed to fetch counties" };
+    console.error('Error fetching counties:', error);
+    return { success: false, error: 'Failed to fetch counties' };
   }
 }
 
@@ -119,7 +134,20 @@ export async function getCountiesByDistrict(districtId: string) {
     });
     return { success: true, data };
   } catch (error) {
-    console.error("Error fetching counties:", error);
-    return { success: false, error: "Failed to fetch counties" };
+    console.error('Error fetching counties:', error);
+    return { success: false, error: 'Failed to fetch counties' };
+  }
+}
+
+export async function getSubCountiesByCounty(countyId: string) {
+  try {
+    const data = await db.query.subCounties.findMany({
+      where: (subCounties, { eq }) => eq(subCounties.county_id, countyId),
+      orderBy: (subCounties, { asc }) => [asc(subCounties.name)],
+    });
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching subcounties by county:', error);
+    return { success: false, error: 'Failed to fetch subcounties' };
   }
 }

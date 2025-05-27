@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { type Icon } from "@tabler/icons-react";
+import { type Icon } from '@tabler/icons-react';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
-import Link from "next/link";
+import Link from 'next/link';
 
 export function NavDocuments({
   items,
@@ -24,7 +24,7 @@ export function NavDocuments({
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>KPIs</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {items.map(item => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <Link href={item.url}>

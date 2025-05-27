@@ -1,50 +1,50 @@
-import { db } from "../src/lib/db";
-import { sql } from "drizzle-orm";
-import { districts, subCounties, counties } from "../src/lib/db/schema";
-import subcounties from "ug-locale/subcounties.json";
-import districtsData from "ug-locale/districts.json";
-import countiesData from "ug-locale/counties.json";
-import * as dotenv from "dotenv";
-import path from "path";
+import { db } from '../src/lib/db';
+import { sql } from 'drizzle-orm';
+import { districts, subCounties, counties } from '../src/lib/db/schema';
+import subcounties from 'ug-locale/subcounties.json';
+import districtsData from 'ug-locale/districts.json';
+import countiesData from 'ug-locale/counties.json';
+import * as dotenv from 'dotenv';
+import path from 'path';
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 function normalizeDistrictName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, "");
+  const base = name.toLowerCase().replace(/[^a-z]/g, '');
 
   // Create variations by removing common district suffixes/prefixes
   const variations = [
     base,
-    base.replace("district", ""),
-    base.replace("municipality", ""),
-    base.replace("city", ""),
-    base.replace("subcounty", ""),
-    base.replace("tc", ""),
-    base.replace("towncounty", ""),
+    base.replace('district', ''),
+    base.replace('municipality', ''),
+    base.replace('city', ''),
+    base.replace('subcounty', ''),
+    base.replace('tc', ''),
+    base.replace('towncounty', ''),
   ];
 
   // Special cases for district name variations
-  if (base.includes("kampala")) variations.push("kcca");
-  if (base.includes("fortportal")) variations.push("kabarole");
-  if (base.includes("fortportal")) variations.push("fortportalcity");
-  if (base.includes("arua")) variations.push("aruacity");
-  if (base.includes("gulu")) variations.push("gulucity");
-  if (base.includes("jinja")) variations.push("jinjacity");
-  if (base.includes("lira")) variations.push("liracity");
-  if (base.includes("masaka")) variations.push("masakacity");
-  if (base.includes("mbale")) variations.push("mbalecity");
-  if (base.includes("mbarara")) variations.push("mbararacity");
-  if (base.includes("soroti")) variations.push("soroticity");
+  if (base.includes('kampala')) variations.push('kcca');
+  if (base.includes('fortportal')) variations.push('kabarole');
+  if (base.includes('fortportal')) variations.push('fortportalcity');
+  if (base.includes('arua')) variations.push('aruacity');
+  if (base.includes('gulu')) variations.push('gulucity');
+  if (base.includes('jinja')) variations.push('jinjacity');
+  if (base.includes('lira')) variations.push('liracity');
+  if (base.includes('masaka')) variations.push('masakacity');
+  if (base.includes('mbale')) variations.push('mbalecity');
+  if (base.includes('mbarara')) variations.push('mbararacity');
+  if (base.includes('soroti')) variations.push('soroticity');
 
   // Filter out duplicates and empty strings
-  return [...new Set(variations.filter((v) => v))];
+  return [...new Set(variations.filter(v => v))];
 }
 
 async function seedSubCounties() {
   try {
-    console.log("Starting subcounties seeding...");
+    console.log('Starting subcounties seeding...');
 
     // Get all districts first
     const districtRecords = await db.select().from(districts);
@@ -61,26 +61,26 @@ async function seedSubCounties() {
 
     // Create a map of county database records by name for code lookup
     const countyDbRecordsByName = new Map();
-    countyRecords.forEach((county) => {
+    countyRecords.forEach(county => {
       countyDbRecordsByName.set(county.name.toLowerCase(), county);
     });
 
     // Create mapping with normalized names
     const districtMap = new Map();
-    districtRecords.forEach((district) => {
+    districtRecords.forEach(district => {
       const variations = normalizeDistrictName(district.name);
-      variations.forEach((variant) => {
+      variations.forEach(variant => {
         districtMap.set(variant, district);
       });
     });
 
     console.log(
-      "Available districts:",
-      Array.from(districtMap.keys()).sort().join(", "),
+      'Available districts:',
+      Array.from(districtMap.keys()).sort().join(', ')
     );
 
     // Log some sample subcounties to debug
-    console.log("Sample subcounties:", subcounties.slice(0, 5));
+    console.log('Sample subcounties:', subcounties.slice(0, 5));
 
     console.log(`Found ${districtRecords.length} district records`);
 
@@ -114,7 +114,7 @@ async function seedSubCounties() {
     });
 
     console.log(
-      `Created combined mapping of ${districtNameByCountyId.size} counties to district names`,
+      `Created combined mapping of ${districtNameByCountyId.size} counties to district names`
     );
 
     const subCountiesData = subcounties
@@ -123,7 +123,7 @@ async function seedSubCounties() {
         const county = countyMap.get(subcounty.county);
         if (!county) {
           console.warn(
-            `County ID ${subcounty.county} not found for subcounty ${subcounty.name}`,
+            `County ID ${subcounty.county} not found for subcounty ${subcounty.name}`
           );
           return null;
         }
@@ -132,7 +132,7 @@ async function seedSubCounties() {
         const districtName = districtNameByCountyId.get(subcounty.county);
         if (!districtName) {
           console.warn(
-            `District name not found for county ID ${subcounty.county}, subcounty ${subcounty.name}`,
+            `District name not found for county ID ${subcounty.county}, subcounty ${subcounty.name}`
           );
           return null;
         }
@@ -154,7 +154,7 @@ async function seedSubCounties() {
         if (!district) {
           console.warn(`District not found for subcounty: ${subcounty.name}`);
           console.warn(
-            `Looking for normalized name: "${normalizedDistrictName}"`,
+            `Looking for normalized name: "${normalizedDistrictName}"`
           );
           return null;
         }
@@ -164,7 +164,7 @@ async function seedSubCounties() {
         let countyRecord = countyDbRecordsByName.get(county.name.toLowerCase());
 
         // If county name with "County" suffix doesn't match, try without suffix
-        if (!countyRecord && county.name.toLowerCase().endsWith(" county")) {
+        if (!countyRecord && county.name.toLowerCase().endsWith(' county')) {
           const nameWithoutCounty = county.name.slice(0, -7).toLowerCase();
           countyRecord = countyDbRecordsByName.get(nameWithoutCounty);
         }
@@ -185,12 +185,12 @@ async function seedSubCounties() {
         // Format subcounty name properly (first letter of each word uppercase, rest lowercase)
         const formattedName = subcounty.name
           .toLowerCase()
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 
         // Clean name for code generation (remove spaces and special characters)
-        const cleanedName = subcounty.name.replace(/[^a-zA-Z]/g, "");
+        const cleanedName = subcounty.name.replace(/[^a-zA-Z]/g, '');
 
         // Get first, last, and middle letter for the code
         const firstLetter = cleanedName[0];
@@ -201,7 +201,7 @@ async function seedSubCounties() {
         // We must use the county code as the base - fail if we don't have a county record
         if (!countyRecord) {
           console.warn(
-            `County record not found for subcounty ${subcounty.name}, skipping`,
+            `County record not found for subcounty ${subcounty.name}, skipping`
           );
           return null;
         }
@@ -235,7 +235,7 @@ async function seedSubCounties() {
             let counter = 1;
             while (
               usedCodes.has(
-                `${baseCodePrefix}-${firstLetter}${counter}${lastLetter}`,
+                `${baseCodePrefix}-${firstLetter}${counter}${lastLetter}`
               )
             ) {
               counter++;
@@ -274,9 +274,9 @@ async function seedSubCounties() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log("Subcounties seeding completed successfully");
+    console.log('Subcounties seeding completed successfully');
   } catch (error) {
-    console.error("Error seeding subcounties:", error);
+    console.error('Error seeding subcounties:', error);
     throw error;
   }
 }
@@ -285,11 +285,11 @@ async function seedSubCounties() {
 if (require.main === module) {
   seedSubCounties()
     .then(() => {
-      console.log("Subcounties seeding completed");
+      console.log('Subcounties seeding completed');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("Subcounties seeding failed:", error);
+    .catch(error => {
+      console.error('Subcounties seeding failed:', error);
       process.exit(1);
     });
 }

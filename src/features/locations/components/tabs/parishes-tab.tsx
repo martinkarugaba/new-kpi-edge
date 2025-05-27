@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { ParishesTable } from "../parishes-table";
-import { useEffect, useState } from "react";
+import { ParishesTable } from '../parishes-table';
+import { useEffect, useState } from 'react';
 import {
   parishes,
   countries,
   counties,
   districts,
   subCounties,
-} from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { getParishes } from "@/features/locations/actions/locations";
+} from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { getParishes } from '@/features/locations/actions/locations';
 
 type Parish = InferSelectModel<typeof parishes> & {
   subCounty?: InferSelectModel<typeof subCounties>;

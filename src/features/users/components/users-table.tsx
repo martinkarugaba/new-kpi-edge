@@ -1,78 +1,42 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { User } from "../types";
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
+import * as React from 'react';
+import { Button } from '@/components/ui/button';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+import { User } from '../types';
+import { ColumnDef } from '@tanstack/react-table';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-// import { format } from "date-fns";
-// import { toast } from "sonner";
-// import { updateUser } from "../actions/users";
-// import { userRole } from "@/lib/db/schema";
-import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { MoreHorizontal, Pencil, Trash2, ChevronDown } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
+
+import { userRole } from '@/lib/db/schema';
 
 interface UsersTableProps {
   users: User[];
   onEdit?: (user: User) => void;
   onDelete?: (user: User) => void;
+  onRoleChange?: (
+    user: User,
+    newRole: (typeof userRole.enumValues)[number]
+  ) => void;
 }
 
-// Component for handling role selection
-// function RoleSelect({ user }: { user: User }) {
-//   const [isPending, startTransition] = React.useTransition();
-
-//   const handleRoleChange = async (
-//     newRole: (typeof userRole.enumValues)[number]
-//   ) => {
-//     startTransition(async () => {
-//       try {
-//         const result = await updateUser(user.id, { role: newRole });
-//         if (!result) {
-//           toast.error("Failed to update user role");
-//         } else {
-//           toast.success("Role updated successfully");
-//         }
-//       } catch {
-//         toast.error("Error updating user role");
-//       }
-//     });
-//   };
-
-//   return (
-//     <Select
-//       value={user.role}
-//       onValueChange={handleRoleChange}
-//       disabled={isPending}
-//     >
-//       <SelectTrigger className="w-40">
-//         <SelectValue placeholder="Select role" />
-//       </SelectTrigger>
-//       <SelectContent>
-//         {userRole.enumValues.map((role) => (
-//           <SelectItem key={role} value={role}>
-//             {role
-//               .split("_")
-//               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-//               .join(" ")}
-//           </SelectItem>
-//         ))}
-//       </SelectContent>
-//     </Select>
-//   );
-// }
-
-export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
+export function UsersTable({
+  users,
+  onEdit,
+  onDelete,
+  onRoleChange,
+}: UsersTableProps) {
   const [selectedRows, setSelectedRows] = useState<User[]>([]);
 
   const handleEdit = (user: User) => {
@@ -87,56 +51,105 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
     }
   };
 
+  const handleRoleChange = (
+    user: User,
+    newRole: (typeof userRole.enumValues)[number]
+  ) => {
+    if (onRoleChange) {
+      onRoleChange(user, newRole);
+    }
+  };
+
   const columns: ColumnDef<User>[] = [
     {
-      id: "select",
+      id: 'select',
       header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
+        <div className="flex items-center justify-center">
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+          />
+        </div>
       ),
       cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
+        <div className="flex items-center justify-center">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={value => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        </div>
       ),
       enableSorting: false,
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: 'name',
+      header: 'Name',
     },
     {
-      accessorKey: "email",
-      header: "Email",
+      accessorKey: 'email',
+      header: 'Email',
     },
     {
-      accessorKey: "role",
-      header: "Role",
+      accessorKey: 'role',
+      header: 'Role',
       cell: ({ row }) => {
-        const role = row.original.role;
+        const user = row.original;
+        const role = user.role;
+
+        // Array of available roles from the schema
+        const availableRoles: (typeof userRole.enumValues)[number][] = [
+          'super_admin',
+          'cluster_manager',
+          'organization_admin',
+          'organization_member',
+          'user',
+        ];
+
         return (
-          <Badge variant="outline" className="capitalize">
-            {role.replace(/_/g, " ")}
-          </Badge>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 flex items-center gap-1 px-2 justify-between w-40"
+              >
+                <Badge variant="outline" className="capitalize">
+                  {role.replace(/_/g, ' ')}
+                </Badge>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-40">
+              <DropdownMenuLabel>Change Role</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {availableRoles.map(availableRole => (
+                <DropdownMenuItem
+                  key={availableRole}
+                  onClick={() => handleRoleChange(user, availableRole)}
+                  className={role === availableRole ? 'bg-muted' : ''}
+                >
+                  <span className="capitalize">
+                    {availableRole.replace(/_/g, ' ')}
+                  </span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         );
       },
     },
     {
-      accessorKey: "created_at",
-      header: "Created At",
+      accessorKey: 'created_at',
+      header: 'Created At',
       cell: ({ row }) => {
         const date = new Date(row.original.created_at);
         return date.toLocaleDateString();
       },
     },
     {
-      id: "actions",
+      id: 'actions',
       cell: ({ row }) => {
         const user = row.original;
 

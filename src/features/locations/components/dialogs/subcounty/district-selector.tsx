@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   FormControl,
@@ -6,24 +6,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { UseFormReturn } from "react-hook-form";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form';
+import { UseFormReturn } from 'react-hook-form';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { District, FormValues } from "./schema";
+} from '@/components/ui/popover';
+import { District, FormValues } from './schema';
 
 interface DistrictSelectorProps {
   form: UseFormReturn<FormValues>;
@@ -55,15 +55,14 @@ export function DistrictSelector({
                   role="combobox"
                   disabled={isLoading || disabled}
                   className={cn(
-                    "w-full justify-between",
-                    !field.value && "text-muted-foreground",
+                    'w-full justify-between',
+                    !field.value && 'text-muted-foreground'
                   )}
                 >
                   {field.value
-                    ? districtList.find(
-                        (district) => district.id === field.value,
-                      )?.name
-                    : "Select district"}
+                    ? districtList.find(district => district.id === field.value)
+                        ?.name
+                    : 'Select district'}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -72,10 +71,10 @@ export function DistrictSelector({
               <Command>
                 <CommandInput placeholder="Search district..." />
                 <CommandEmpty>
-                  {isLoading ? "Loading districts..." : "No district found."}
+                  {isLoading ? 'Loading districts...' : 'No district found.'}
                 </CommandEmpty>
                 <CommandGroup className="max-h-[200px] overflow-y-auto">
-                  {districtList.map((district) => (
+                  {districtList.map(district => (
                     <CommandItem
                       value={district.name}
                       key={district.id}
@@ -86,10 +85,10 @@ export function DistrictSelector({
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          'mr-2 h-4 w-4',
                           district.id === field.value
-                            ? "opacity-100"
-                            : "opacity-0",
+                            ? 'opacity-100'
+                            : 'opacity-0'
                         )}
                       />
                       {district.name}

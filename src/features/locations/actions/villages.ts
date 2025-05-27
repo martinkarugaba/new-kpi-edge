@@ -1,19 +1,19 @@
-"use server";
+'use server';
 
-import { z } from "zod";
-import { villages } from "@/lib/db/schema";
-import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { z } from 'zod';
+import { villages } from '@/lib/db/schema';
+import { db } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
+import { eq } from 'drizzle-orm';
 
 const createVillageSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  code: z.string().min(1, "Code is required"),
-  parishId: z.string().min(1, "Parish is required"),
-  subCountyId: z.string().min(1, "Sub County is required"),
-  countyId: z.string().min(1, "County is required"),
-  districtId: z.string().min(1, "District is required"),
-  countryId: z.string().min(1, "Country is required"),
+  name: z.string().min(1, 'Name is required'),
+  code: z.string().min(1, 'Code is required'),
+  parishId: z.string().min(1, 'Parish is required'),
+  subCountyId: z.string().min(1, 'Sub County is required'),
+  countyId: z.string().min(1, 'County is required'),
+  districtId: z.string().min(1, 'District is required'),
+  countryId: z.string().min(1, 'Country is required'),
 });
 
 export async function addVillage(data: z.infer<typeof createVillageSchema>) {
@@ -37,19 +37,19 @@ export async function addVillage(data: z.infer<typeof createVillageSchema>) {
       country_id: countryId,
     });
 
-    revalidatePath("/dashboard/locations");
+    revalidatePath('/dashboard/locations');
     return { success: true };
   } catch {
-    return { error: "Failed to create village" };
+    return { error: 'Failed to create village' };
   }
 }
 
 export async function deleteVillage(id: string) {
   try {
     await db.delete(villages).where(eq(villages.id, id));
-    revalidatePath("/dashboard/locations");
+    revalidatePath('/dashboard/locations');
     return { success: true };
   } catch {
-    return { error: "Failed to delete village" };
+    return { error: 'Failed to delete village' };
   }
 }

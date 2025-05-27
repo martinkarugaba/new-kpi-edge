@@ -1,4 +1,4 @@
-import { type ParticipantFormValues } from "../participant-form";
+import { type ParticipantFormValues } from '../participant-form';
 
 export interface ParsedData {
   data: ParticipantFormValues[];

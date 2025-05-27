@@ -1,25 +1,25 @@
-import { db } from "../src/lib/db";
-import { districts } from "../src/lib/db/schema";
-import { eq, like } from "drizzle-orm";
+import { db } from '../src/lib/db';
+import { districts } from '../src/lib/db/schema';
+import { eq, like } from 'drizzle-orm';
 
 async function main() {
-  console.log("🚀 Starting district name update process...");
+  console.log('🚀 Starting district name update process...');
 
   try {
     // First, get all districts with names ending in 'District'
     const districtsToUpdate = await db.query.districts.findMany({
-      where: like(districts.name, "% District"),
+      where: like(districts.name, '% District'),
     });
 
     console.log(
-      `Found ${districtsToUpdate.length} districts with 'District' suffix to update`,
+      `Found ${districtsToUpdate.length} districts with 'District' suffix to update`
     );
 
     // Loop through each district and update it
     let successCount = 0;
     for (const district of districtsToUpdate) {
       // Remove ' District' from the end of the name
-      const newName = district.name.replace(/ District$/, "");
+      const newName = district.name.replace(/ District$/, '');
 
       // Update the district name in the database
       await db
@@ -32,20 +32,20 @@ async function main() {
     }
 
     console.log(
-      `\n✨ District names update completed! Updated ${successCount} districts.`,
+      `\n✨ District names update completed! Updated ${successCount} districts.`
     );
   } catch (error) {
-    console.error("❌ Error updating district names:", error);
+    console.error('❌ Error updating district names:', error);
     process.exit(1);
   }
 }
 
 main()
-  .catch((e) => {
-    console.error("Error:", e);
+  .catch(e => {
+    console.error('Error:', e);
     process.exit(1);
   })
   .finally(async () => {
-    console.log("Closing database connection...");
+    console.log('Closing database connection...');
     process.exit(0);
   });

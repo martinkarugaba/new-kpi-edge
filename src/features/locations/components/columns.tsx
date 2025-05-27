@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
-import { toast } from "sonner";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { toast } from 'sonner';
 
 // Available location types
 export type LocationType =
-  | "country"
-  | "district"
-  | "subcounty"
-  | "parish"
-  | "village";
+  | 'country'
+  | 'district'
+  | 'subcounty'
+  | 'parish'
+  | 'village';
 
 // Location data with proper typing
 export interface LocationData {
@@ -51,7 +51,7 @@ function LocationActions({ location, onEdit, onDelete }: LocationActionsProps) {
             if (onEdit) {
               onEdit(location);
             } else {
-              toast.info("Edit functionality coming soon");
+              toast.info('Edit functionality coming soon');
             }
           }}
         >
@@ -64,7 +64,7 @@ function LocationActions({ location, onEdit, onDelete }: LocationActionsProps) {
             if (onDelete) {
               onDelete(location);
             } else {
-              toast.info("Delete functionality coming soon");
+              toast.info('Delete functionality coming soon');
             }
           }}
         >
@@ -78,27 +78,27 @@ function LocationActions({ location, onEdit, onDelete }: LocationActionsProps) {
 
 export const columns: ColumnDef<LocationData>[] = [
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: 'code',
+    header: 'Code',
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: 'type',
+    header: 'Type',
     cell: ({ row }) => {
-      const type = row.getValue("type") as LocationType;
+      const type = row.getValue('type') as LocationType;
       return type.charAt(0).toUpperCase() + type.slice(1);
     },
   },
   {
-    accessorKey: "parentName",
-    header: "Parent",
+    accessorKey: 'parentName',
+    header: 'Parent',
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: ({ row }) => <LocationActions location={row.original} />,
   },
 ];

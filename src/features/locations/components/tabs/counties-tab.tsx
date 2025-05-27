@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { CountiesTable } from "../counties-table";
-import { useEffect, useState } from "react";
-import { counties, districts } from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { getCounties } from "@/features/locations/actions/locations";
+import { CountiesTable } from '../counties-table';
+import { useEffect, useState } from 'react';
+import { counties, districts } from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { getCounties } from '@/features/locations/actions/locations';
 
 type District = InferSelectModel<typeof districts>;
 

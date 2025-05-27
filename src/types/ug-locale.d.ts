@@ -1,4 +1,4 @@
-declare module "ug-locale" {
+declare module 'ug-locale' {
   interface UgDistrict {
     name: string;
     region: string;

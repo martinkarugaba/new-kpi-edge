@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { columns } from "@/features/locations/components/data-table/parishes-columns";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { columns } from '@/features/locations/components/data-table/parishes-columns';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
 import {
   parishes,
   countries,
   counties,
   districts,
   subCounties,
-} from "@/lib/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
-import { AddParishDialog } from "@/features/locations/components/dialogs/add-parish-dialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+} from '@/lib/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import { AddParishDialog } from '@/features/locations/components/dialogs/add-parish-dialog';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 type Parish = InferSelectModel<typeof parishes> & {
   subCounty?: InferSelectModel<typeof subCounties>;

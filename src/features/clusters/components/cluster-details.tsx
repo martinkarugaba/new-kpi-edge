@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ClusterMembersTab } from "./cluster-members-tab";
-import { ClusterUsersTab } from "./cluster-users-tab";
+} from '@/components/ui/card';
+import { ClusterMembersTab } from './cluster-members-tab';
+import { ClusterUsersTab } from './cluster-users-tab';
 
 interface ClusterDetailsProps {
   cluster: {
@@ -62,8 +62,8 @@ export function ClusterDetails({ cluster }: ClusterDetailsProps) {
                   </h3>
                   <p className="text-base">
                     {cluster.districts && cluster.districts.length > 0
-                      ? cluster.districts.join(", ")
-                      : "No districts specified"}
+                      ? cluster.districts.join(', ')
+                      : 'No districts specified'}
                   </p>
                 </div>
                 <div>
