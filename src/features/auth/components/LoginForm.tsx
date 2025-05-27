@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { login } from "@/features/auth/actions/auth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import toast from "react-hot-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { login } from '@/features/auth/actions/auth';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
+import toast from 'react-hot-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import {
   Form,
   FormControl,
@@ -17,12 +17,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import Link from "next/link";
+} from '@/components/ui/form';
+import Link from 'next/link';
 
 export const LoginFormSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 type FormValues = z.infer<typeof LoginFormSchema>;
@@ -34,8 +34,8 @@ export function LoginForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -46,14 +46,14 @@ export function LoginForm() {
       const result = await login(values.email, values.password);
 
       if (result.success) {
-        toast.success("You have been logged in successfully.");
-        router.push("/dashboard");
+        toast.success('You have been logged in successfully.');
+        router.push('/dashboard');
         router.refresh();
       } else {
-        toast.error(result.error || "Failed to log in. Please try again.");
+        toast.error(result.error || 'Failed to log in. Please try again.');
       }
     } catch {
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }

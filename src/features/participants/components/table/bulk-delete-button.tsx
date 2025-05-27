@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
-import { type Participant } from "../../types";
+import { Button } from '@/components/ui/button';
+import { Trash } from 'lucide-react';
+import { type Participant } from '../../types/types';
 
 interface BulkDeleteButtonProps {
   selectedRows: Participant[];
@@ -17,7 +17,7 @@ export function BulkDeleteButton({
 }: BulkDeleteButtonProps) {
   const handleBulkDelete = () => {
     if (selectedRows.length === 0) return;
-    selectedRows.forEach((participant) => onDelete(participant));
+    selectedRows.forEach(participant => onDelete(participant));
     onClearSelection();
   };
 

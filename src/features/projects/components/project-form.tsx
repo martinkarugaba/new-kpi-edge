@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -8,30 +8,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { createProject, updateProject } from "../actions/projects";
-import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
-import { Loader2 } from "lucide-react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { createProject, updateProject } from '../actions/projects';
+import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Project } from "../types";
-import { DatePicker } from "@/components/ui/date-picker";
+} from '@/components/ui/select';
+import { Project } from '../types';
+import { DatePicker } from '@/components/ui/date-picker';
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  acronym: z.string().min(1, "Acronym is required"),
+  name: z.string().min(1, 'Name is required'),
+  acronym: z.string().min(1, 'Acronym is required'),
   description: z.string().nullable(),
-  status: z.enum(["active", "completed", "on-hold"]),
+  status: z.enum(['active', 'completed', 'on-hold']),
   startDate: z.date().nullable(),
   endDate: z.date().nullable(),
 });
@@ -56,10 +56,10 @@ export function ProjectForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      acronym: initialData?.acronym || "",
+      name: initialData?.name || '',
+      acronym: initialData?.acronym || '',
       description: initialData?.description || null,
-      status: initialData?.status || "active",
+      status: initialData?.status || 'active',
       startDate: initialData?.startDate
         ? new Date(initialData.startDate)
         : null,
@@ -74,17 +74,17 @@ export function ProjectForm({
       if (initialData) {
         const result = await updateProject(initialData.id, values);
         if (!result.success) throw new Error(result.error);
-        toast.success("Project updated successfully");
+        toast.success('Project updated successfully');
       } else {
         const result = await createProject(values);
         if (!result.success) throw new Error(result.error);
-        toast.success("Project created successfully");
+        toast.success('Project created successfully');
       }
 
       router.refresh();
       onSuccess?.();
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
       console.error(error);
     } finally {
       if (setIsLoading) setIsLoading(false);
@@ -146,8 +146,8 @@ export function ProjectForm({
                   <Input
                     placeholder="Enter project description (optional)"
                     {...field}
-                    value={field.value || ""}
-                    onChange={(e) => field.onChange(e.target.value || null)}
+                    value={field.value || ''}
+                    onChange={e => field.onChange(e.target.value || null)}
                     disabled={isLoading}
                     className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
                   />
@@ -196,9 +196,9 @@ export function ProjectForm({
                   <FormControl>
                     <DatePicker
                       date={field.value}
-                      setDate={(date) => {
+                      setDate={date => {
                         field.onChange(date);
-                        form.setValue("startDate", date);
+                        form.setValue('startDate', date);
                       }}
                       disabled={isLoading}
                     />
@@ -219,9 +219,9 @@ export function ProjectForm({
                   <FormControl>
                     <DatePicker
                       date={field.value}
-                      setDate={(date) => {
+                      setDate={date => {
                         field.onChange(date);
-                        form.setValue("endDate", date);
+                        form.setValue('endDate', date);
                       }}
                       disabled={isLoading}
                     />
@@ -241,12 +241,12 @@ export function ProjectForm({
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {initialData ? "Updating..." : "Creating..."}
+                  {initialData ? 'Updating...' : 'Creating...'}
                 </>
               ) : initialData ? (
-                "Update Project"
+                'Update Project'
               ) : (
-                "Create Project"
+                'Create Project'
               )}
             </Button>
           </div>

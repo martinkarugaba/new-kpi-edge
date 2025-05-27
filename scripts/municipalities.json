@@ -1,0 +1,184 @@
+[
+  {
+    "name": "Gulu",
+    "district": "Gulu",
+    "county": "Gulu",
+    "subcounty": "Gulu",
+    "country": "Uganda"
+  },
+  {
+    "name": "Lira",
+    "district": "Lira",
+    "county": "Lira",
+    "subcounty": "Lira",
+    "country": "Uganda"
+  },
+  {
+    "name": "Kitgum",
+    "district": "Kitgum",
+    "county": "Kitgum",
+    "subcounty": "Kitgum"
+  },
+  {
+    "name": "Arua",
+    "district": "Arua",
+    "county": "Arua",
+    "subcounty": "Arua"
+  },
+  {
+    "name": "Moroto",
+    "district": "Moroto",
+    "county": "Moroto",
+    "subcounty": "Moroto"
+  },
+  {
+    "name": "Nebbi",
+    "district": "Nebbi",
+    "county": "Nebbi",
+    "subcounty": "Nebbi"
+  },
+  {
+    "name": "Jinja",
+    "district": "Jinja",
+    "county": "Jinja",
+    "subcounty": "Jinja"
+  },
+  {
+    "name": "Kapchorwa",
+    "district": "Kapchorwa",
+    "county": "Kapchorwa",
+    "subcounty": "Kapchorwa"
+  },
+  {
+    "name": "Pallisa",
+    "district": "Pallisa",
+    "county": "Pallisa",
+    "subcounty": "Pallisa"
+  },
+  {
+    "name": "Kamuli",
+    "district": "Kamuli",
+    "county": "Bugabula",
+    "subcounty": "Kamuli"
+  },
+  {
+    "name": "Nakasongola",
+    "district": "Nakasongola",
+    "county": "Nakasongola",
+    "subcounty": "Nakasongola"
+  },
+  {
+    "name": "Kayunga",
+    "district": "Kayunga",
+    "county": "Kayunga",
+    "subcounty": "Kayunga"
+  },
+  {
+    "name": "Rakai",
+    "district": "Rakai",
+    "county": "Rakai",
+    "subcounty": "Rakai"
+  },
+  {
+    "name": "Kiboga",
+    "district": "Kiboga",
+    "county": "Kiboga",
+    "subcounty": "Kiboga"
+  },
+  {
+    "name": "Rukungiri",
+    "district": "Rukungiri",
+    "county": "Rukungiri",
+    "subcounty": "Rukungiri"
+  },
+  {
+    "name": "Kanungu",
+    "district": "Kanungu",
+    "county": "Kanungu",
+    "subcounty": "Kanungu"
+  },
+  {
+    "name": "Kyenjojo",
+    "district": "Kyenjojo",
+    "county": "Kyenjojo",
+    "subcounty": "Kyenjojo"
+  },
+  {
+    "name": "Kibaale",
+    "district": "Kibaale",
+    "county": "Kibaale",
+    "subcounty": "Kibaale"
+  },
+  {
+    "name": "Kisoro",
+    "district": "Kisoro",
+    "county": "Kisoro",
+    "subcounty": "Kisoro"
+  },
+  {
+    "name": "Adjumani",
+    "district": "Adjumani",
+    "county": "Adjumani",
+    "subcounty": "Adjumani"
+  },
+  {
+    "name": "Bundibugyo",
+    "district": "Bundibugyo",
+    "county": "Bundibugyo",
+    "subcounty": "Bundibugyo"
+  },
+  {
+    "name": "Kotido",
+    "district": "Kotido",
+    "county": "Kotido",
+    "subcounty": "Kotido"
+  },
+  {
+    "name": "Dokolo",
+    "district": "Dokolo",
+    "county": "Dokolo",
+    "subcounty": "Dokolo"
+  },
+  {
+    "name": "Amuria",
+    "district": "Amuria",
+    "county": "Amuria",
+    "subcounty": "Amuria"
+  },
+  {
+    "name": "Katakwi",
+    "district": "Katakwi",
+    "county": "Katakwi",
+    "subcounty": "Katakwi"
+  },
+  {
+    "name": "Yumbe",
+    "district": "Yumbe",
+    "county": "Yumbe",
+    "subcounty": "Yumbe"
+  },
+  {
+    "name": "Butaleja",
+    "district": "Butaleja",
+    "county": "Butaleja",
+    "subcounty": "Butaleja"
+  },
+  {
+    "name": "Namutumba",
+    "district": "Namutumba",
+    "county": "Namutumba",
+    "subcounty": "Namutumba"
+  },
+  {
+    "name": "Mbale",
+    "district": "Mbale",
+    "county": "Bungokho",
+    "subcounty": "Industrial Division"
+  },
+  {
+    "name": "Ntungamo",
+    "district": "Ntungamo",
+    "county": "Ntungamo",
+    "subcounty": "Ntungamo"
+  }
+]

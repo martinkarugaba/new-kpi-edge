@@ -1,18 +1,18 @@
-import { Container } from "@/components/ui/container";
+import { Container } from '@/components/ui/container';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import * as motion from "motion/react-client";
+} from '@/components/ui/card';
+import * as motion from 'motion/react-client';
 
 const features = [
   {
-    title: "Custom Dashboards",
+    title: 'Custom Dashboards',
     description:
-      "Create personalized dashboards with drag-and-drop simplicity to visualize the metrics that matter most to your business.",
+      'Create personalized dashboards with drag-and-drop simplicity to visualize the metrics that matter most to your business.',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -32,9 +32,9 @@ const features = [
     ),
   },
   {
-    title: "Real-time Analytics",
+    title: 'Real-time Analytics',
     description:
-      "Monitor your KPIs in real-time with automatic data syncing, ensuring you always have the latest insights.",
+      'Monitor your KPIs in real-time with automatic data syncing, ensuring you always have the latest insights.',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -53,9 +53,9 @@ const features = [
     ),
   },
   {
-    title: "Goal Tracking",
+    title: 'Goal Tracking',
     description:
-      "Set targets for your KPIs and track progress over time, with alerts when goals are met or missed.",
+      'Set targets for your KPIs and track progress over time, with alerts when goals are met or missed.',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -78,9 +78,9 @@ const features = [
     ),
   },
   {
-    title: "Data Integration",
+    title: 'Data Integration',
     description:
-      "Connect to your existing tools and data sources to automatically pull in metrics from across your organization.",
+      'Connect to your existing tools and data sources to automatically pull in metrics from across your organization.',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -101,9 +101,9 @@ const features = [
     ),
   },
   {
-    title: "Automated Reporting",
+    title: 'Automated Reporting',
     description:
-      "Schedule and distribute reports automatically to keep stakeholders informed without manual effort.",
+      'Schedule and distribute reports automatically to keep stakeholders informed without manual effort.',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -126,9 +126,9 @@ const features = [
     ),
   },
   {
-    title: "Customizable Alerts",
+    title: 'Customizable Alerts',
     description:
-      "Configure alerts for critical changes in your KPIs, delivered via email, SMS, or integrated notifications.",
+      'Configure alerts for critical changes in your KPIs, delivered via email, SMS, or integrated notifications.',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

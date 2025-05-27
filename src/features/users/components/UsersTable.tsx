@@ -1,4 +1,4 @@
-import { User } from "../types";
+import { User } from '../types';
 import {
   Table,
   TableBody,
@@ -6,10 +6,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Edit, Trash } from "lucide-react";
-import { format } from "date-fns";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Edit, Trash } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface UsersTableProps {
   users: User[];
@@ -38,13 +38,13 @@ export function UsersTable({ users }: UsersTableProps) {
             </TableCell>
           </TableRow>
         ) : (
-          users.map((user) => (
+          users.map(user => (
             <TableRow key={user.id}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
-                {format(new Date(user.created_at), "MMM d, yyyy")}
+                {format(new Date(user.created_at), 'MMM d, yyyy')}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

@@ -1,19 +1,19 @@
-"use server";
+'use server';
 
-import { signIn } from "@/features/auth/auth";
-import { db } from "@/lib/db";
-import { users, passwordResetTokens } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { hash } from "bcryptjs";
-import { nanoid } from "nanoid";
-import { createTransport } from "nodemailer";
+import { signIn } from '@/features/auth/auth';
+import { db } from '@/lib/db';
+import { users, passwordResetTokens } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { hash } from 'bcryptjs';
+import { nanoid } from 'nanoid';
+import { createTransport } from 'nodemailer';
 
 // Email configuration
 const transporter = createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
-  secure: process.env.SMTP_SECURE === "true",
+  secure: process.env.SMTP_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -25,26 +25,36 @@ const transporter = createTransport({
 
 export async function login(email: string, password: string) {
   try {
-    const result = await signIn("credentials", {
+    const result = await signIn('credentials', {
       email,
       password,
       redirect: false,
     });
 
     if (result?.error) {
-      // Check for specific credential errors
-      if (result.error.includes("CredentialsSignin")) {
-        return { success: false, error: "Invalid email or password" };
+      // Handle specific error messages
+      if (result.error.includes('Incorrect password')) {
+        return {
+          success: false,
+          error: 'The password you entered is incorrect',
+        };
+      }
+      if (result.error.includes('User not found')) {
+        return { success: false, error: 'No account found with this email' };
+      }
+      // Handle other credential errors
+      if (result.error.includes('credentials')) {
+        return { success: false, error: 'Invalid email or password' };
       }
       return { success: false, error: result.error };
     }
 
     return { success: true };
   } catch (error) {
-    console.error("Login error:", error);
+    console.error('Login error:', error);
     return {
       success: false,
-      error: "An unexpected error occurred during login",
+      error: 'An unexpected error occurred during login',
     };
   }
 }
@@ -63,7 +73,7 @@ export async function register(data: {
     if (existingUser) {
       return {
         success: false,
-        error: "A user with this email already exists",
+        error: 'A user with this email already exists',
       };
     }
 
@@ -81,17 +91,17 @@ export async function register(data: {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        role: "user",
+        role: 'user',
       })
       .returning();
 
-    revalidatePath("/auth/login");
+    revalidatePath('/auth/login');
     return { success: true, data: user };
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error('Registration error:', error);
     return {
       success: false,
-      error: "An unexpected error occurred during registration",
+      error: 'An unexpected error occurred during registration',
     };
   }
 }
@@ -126,7 +136,7 @@ export async function requestPasswordReset(email: string) {
       await transporter.sendMail({
         from: `"KPI Tracking" <${process.env.SMTP_FROM}>`,
         to: email,
-        subject: "Reset your KPI Tracking password",
+        subject: 'Reset your KPI Tracking password',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
             <h2 style="color: #333;">Password Reset Request</h2>
@@ -148,19 +158,19 @@ export async function requestPasswordReset(email: string) {
 
       return { success: true };
     } catch (emailError) {
-      console.error("Error sending reset email:", emailError);
+      console.error('Error sending reset email:', emailError);
       // Return the token so it can be displayed to the user
       return {
         success: false,
-        error: "Failed to send reset email",
+        error: 'Failed to send reset email',
         token,
       };
     }
   } catch (error) {
-    console.error("Error requesting password reset:", error);
+    console.error('Error requesting password reset:', error);
     return {
       success: false,
-      error: "Failed to request password reset",
+      error: 'Failed to request password reset',
     };
   }
 }
@@ -186,7 +196,7 @@ export async function verifyResetToken(token: string) {
 
     return true;
   } catch (error) {
-    console.error("Error verifying reset token:", error);
+    console.error('Error verifying reset token:', error);
     return false;
   }
 }
@@ -201,7 +211,7 @@ export async function resetPassword(token: string, newPassword: string) {
     if (!resetToken || new Date() > resetToken.expires) {
       return {
         success: false,
-        error: "Invalid or expired reset token",
+        error: 'Invalid or expired reset token',
       };
     }
 
@@ -221,10 +231,10 @@ export async function resetPassword(token: string, newPassword: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error resetting password:", error);
+    console.error('Error resetting password:', error);
     return {
       success: false,
-      error: "Failed to reset password",
+      error: 'Failed to reset password',
     };
   }
 }

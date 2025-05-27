@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { XIcon } from "lucide-react";
+import * as React from 'react';
+import { XIcon } from 'lucide-react';
 
 import {
   Dialog,
@@ -10,9 +10,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export interface ModalProps {
   open: boolean;
@@ -39,7 +39,7 @@ export function Modal({
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("sm:max-w-[500px]", className)}>
+      <DialogContent className={cn('sm:max-w-[500px]', className)}>
         {(title || description) && (
           <DialogHeader>
             {title && <DialogTitle>{title}</DialogTitle>}
@@ -49,7 +49,7 @@ export function Modal({
           </DialogHeader>
         )}
 
-        <div className={cn("py-4", contentClassName)}>{children}</div>
+        <div className={cn('py-4', contentClassName)}>{children}</div>
 
         {footer && <DialogFooter>{footer}</DialogFooter>}
 

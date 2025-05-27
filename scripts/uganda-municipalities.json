@@ -1,0 +1,402 @@
+[
+  {
+    "name": "Kampala Capital City",
+    "code": "UG-MUN-KCC-001",
+    "country": "Uganda",
+    "district": "Kampala",
+    "county": "Kampala",
+    "subcounty": "Central Division"
+  },
+  {
+    "name": "Gulu Municipality",
+    "code": "UG-MUN-GUL-002",
+    "country": "Uganda",
+    "district": "Gulu",
+    "county": "Gulu",
+    "subcounty": "Gulu"
+  },
+  {
+    "name": "Lira Municipality",
+    "code": "UG-MUN-LIR-003",
+    "country": "Uganda",
+    "district": "Lira",
+    "county": "Lira",
+    "subcounty": "Lira"
+  },
+  {
+    "name": "Arua Municipality",
+    "code": "UG-MUN-ARU-004",
+    "country": "Uganda",
+    "district": "Arua",
+    "county": "Arua",
+    "subcounty": "Arua"
+  },
+  {
+    "name": "Mbarara Municipality",
+    "code": "UG-MUN-MBA-005",
+    "country": "Uganda",
+    "district": "Mbarara",
+    "county": "Kashari",
+    "subcounty": "Kakoba"
+  },
+  {
+    "name": "Jinja Municipality",
+    "code": "UG-MUN-JIN-006",
+    "country": "Uganda",
+    "district": "Jinja",
+    "county": "Jinja",
+    "subcounty": "Jinja"
+  },
+  {
+    "name": "Mbale Municipality",
+    "code": "UG-MUN-MBL-007",
+    "country": "Uganda",
+    "district": "Mbale",
+    "county": "Bungokho",
+    "subcounty": "Industrial Division"
+  },
+  {
+    "name": "Kasese Municipality",
+    "code": "UG-MUN-KAS-008",
+    "country": "Uganda",
+    "district": "Kasese",
+    "county": "Kasese",
+    "subcounty": "Kasese"
+  },
+  {
+    "name": "Kabale Municipality",
+    "code": "UG-MUN-KAB-009",
+    "country": "Uganda",
+    "district": "Kabale",
+    "county": "Kabale",
+    "subcounty": "Kabale"
+  },
+  {
+    "name": "Fort Portal Municipality",
+    "code": "UG-MUN-FTP-010",
+    "country": "Uganda",
+    "district": "Kabarole",
+    "county": "Fort Portal",
+    "subcounty": "Fort Portal"
+  },
+  {
+    "name": "Hoima Municipality",
+    "code": "UG-MUN-HOI-011",
+    "country": "Uganda",
+    "district": "Hoima",
+    "county": "Hoima",
+    "subcounty": "Hoima"
+  },
+  {
+    "name": "Masaka Municipality",
+    "code": "UG-MUN-MAS-012",
+    "country": "Uganda",
+    "district": "Masaka",
+    "county": "Masaka",
+    "subcounty": "Masaka"
+  },
+  {
+    "name": "Soroti Municipality",
+    "code": "UG-MUN-SOR-013",
+    "country": "Uganda",
+    "district": "Soroti",
+    "county": "Soroti",
+    "subcounty": "Soroti"
+  },
+  {
+    "name": "Kitgum Municipality",
+    "code": "UG-MUN-KIT-014",
+    "country": "Uganda",
+    "district": "Kitgum",
+    "county": "Kitgum",
+    "subcounty": "Kitgum"
+  },
+  {
+    "name": "Moroto Municipality",
+    "code": "UG-MUN-MOR-015",
+    "country": "Uganda",
+    "district": "Moroto",
+    "county": "Moroto",
+    "subcounty": "Moroto"
+  },
+  {
+    "name": "Nebbi Municipality",
+    "code": "UG-MUN-NEB-016",
+    "country": "Uganda",
+    "district": "Nebbi",
+    "county": "Nebbi",
+    "subcounty": "Nebbi"
+  },
+  {
+    "name": "Entebbe Municipality",
+    "code": "UG-MUN-ENT-017",
+    "country": "Uganda",
+    "district": "Wakiso",
+    "county": "Entebbe",
+    "subcounty": "Entebbe"
+  },
+  {
+    "name": "Mukono Municipality",
+    "code": "UG-MUN-MUK-018",
+    "country": "Uganda",
+    "district": "Mukono",
+    "county": "Mukono",
+    "subcounty": "Mukono"
+  },
+  {
+    "name": "Iganga Municipality",
+    "code": "UG-MUN-IGA-019",
+    "country": "Uganda",
+    "district": "Iganga",
+    "county": "Kigulu",
+    "subcounty": "Iganga"
+  },
+  {
+    "name": "Tororo Municipality",
+    "code": "UG-MUN-TOR-020",
+    "country": "Uganda",
+    "district": "Tororo",
+    "county": "Tororo",
+    "subcounty": "Tororo"
+  },
+  {
+    "name": "Busia Municipality",
+    "code": "UG-MUN-BUS-021",
+    "country": "Uganda",
+    "district": "Busia",
+    "county": "Samia Bugwe",
+    "subcounty": "Busia"
+  },
+  {
+    "name": "Masindi Municipality",
+    "code": "UG-MUN-MSI-022",
+    "country": "Uganda",
+    "district": "Masindi",
+    "county": "Masindi",
+    "subcounty": "Masindi"
+  },
+  {
+    "name": "Mityana Municipality",
+    "code": "UG-MUN-MIT-023",
+    "country": "Uganda",
+    "district": "Mityana",
+    "county": "Mityana",
+    "subcounty": "Mityana"
+  },
+  {
+    "name": "Mubende Municipality",
+    "code": "UG-MUN-MUB-024",
+    "country": "Uganda",
+    "district": "Mubende",
+    "county": "Mubende",
+    "subcounty": "Mubende"
+  },
+  {
+    "name": "Lugazi Municipality",
+    "code": "UG-MUN-LUG-025",
+    "country": "Uganda",
+    "district": "Buikwe",
+    "county": "Buikwe",
+    "subcounty": "Lugazi"
+  },
+  {
+    "name": "Bushenyi-Ishaka Municipality",
+    "code": "UG-MUN-BSH-026",
+    "country": "Uganda",
+    "district": "Bushenyi",
+    "county": "Bushenyi",
+    "subcounty": "Ishaka"
+  },
+  {
+    "name": "Ntungamo Municipality",
+    "code": "UG-MUN-NTU-027",
+    "country": "Uganda",
+    "district": "Ntungamo",
+    "county": "Ntungamo",
+    "subcounty": "Ntungamo"
+  },
+  {
+    "name": "Ibanda Municipality",
+    "code": "UG-MUN-IBA-028",
+    "country": "Uganda",
+    "district": "Ibanda",
+    "county": "Ibanda",
+    "subcounty": "Ibanda"
+  },
+  {
+    "name": "Kumi Municipality",
+    "code": "UG-MUN-KUM-029",
+    "country": "Uganda",
+    "district": "Kumi",
+    "county": "Kumi",
+    "subcounty": "Kumi"
+  },
+  {
+    "name": "Kapchorwa Municipality",
+    "code": "UG-MUN-KAP-030",
+    "country": "Uganda",
+    "district": "Kapchorwa",
+    "county": "Kapchorwa",
+    "subcounty": "Kapchorwa"
+  },
+  {
+    "name": "Pallisa Municipality",
+    "code": "UG-MUN-PAL-031",
+    "country": "Uganda",
+    "district": "Pallisa",
+    "county": "Pallisa",
+    "subcounty": "Pallisa"
+  },
+  {
+    "name": "Kamuli Municipality",
+    "code": "UG-MUN-KAM-032",
+    "country": "Uganda",
+    "district": "Kamuli",
+    "county": "Bugabula",
+    "subcounty": "Kamuli"
+  },
+  {
+    "name": "Nakasongola Municipality",
+    "code": "UG-MUN-NAK-033",
+    "country": "Uganda",
+    "district": "Nakasongola",
+    "county": "Nakasongola",
+    "subcounty": "Nakasongola"
+  },
+  {
+    "name": "Kayunga Municipality",
+    "code": "UG-MUN-KAY-034",
+    "country": "Uganda",
+    "district": "Kayunga",
+    "county": "Kayunga",
+    "subcounty": "Kayunga"
+  },
+  {
+    "name": "Rakai Municipality",
+    "code": "UG-MUN-RAK-035",
+    "country": "Uganda",
+    "district": "Rakai",
+    "county": "Rakai",
+    "subcounty": "Rakai"
+  },
+  {
+    "name": "Kiboga Municipality",
+    "code": "UG-MUN-KIB-036",
+    "country": "Uganda",
+    "district": "Kiboga",
+    "county": "Kiboga",
+    "subcounty": "Kiboga"
+  },
+  {
+    "name": "Rukungiri Municipality",
+    "code": "UG-MUN-RUK-037",
+    "country": "Uganda",
+    "district": "Rukungiri",
+    "county": "Rukungiri",
+    "subcounty": "Rukungiri"
+  },
+  {
+    "name": "Kanungu Municipality",
+    "code": "UG-MUN-KAN-038",
+    "country": "Uganda",
+    "district": "Kanungu",
+    "county": "Kanungu",
+    "subcounty": "Kanungu"
+  },
+  {
+    "name": "Kyenjojo Municipality",
+    "code": "UG-MUN-KYE-039",
+    "country": "Uganda",
+    "district": "Kyenjojo",
+    "county": "Kyenjojo",
+    "subcounty": "Kyenjojo"
+  },
+  {
+    "name": "Kibaale Municipality",
+    "code": "UG-MUN-KBA-040",
+    "country": "Uganda",
+    "district": "Kibaale",
+    "county": "Kibaale",
+    "subcounty": "Kibaale"
+  },
+  {
+    "name": "Kisoro Municipality",
+    "code": "UG-MUN-KIS-041",
+    "country": "Uganda",
+    "district": "Kisoro",
+    "county": "Kisoro",
+    "subcounty": "Kisoro"
+  },
+  {
+    "name": "Adjumani Municipality",
+    "code": "UG-MUN-ADJ-042",
+    "country": "Uganda",
+    "district": "Adjumani",
+    "county": "Adjumani",
+    "subcounty": "Adjumani"
+  },
+  {
+    "name": "Bundibugyo Municipality",
+    "code": "UG-MUN-BUN-043",
+    "country": "Uganda",
+    "district": "Bundibugyo",
+    "county": "Bundibugyo",
+    "subcounty": "Bundibugyo"
+  },
+  {
+    "name": "Kotido Municipality",
+    "code": "UG-MUN-KOT-044",
+    "country": "Uganda",
+    "district": "Kotido",
+    "county": "Kotido",
+    "subcounty": "Kotido"
+  },
+  {
+    "name": "Dokolo Municipality",
+    "code": "UG-MUN-DOK-045",
+    "country": "Uganda",
+    "district": "Dokolo",
+    "county": "Dokolo",
+    "subcounty": "Dokolo"
+  },
+  {
+    "name": "Amuria Municipality",
+    "code": "UG-MUN-AMU-046",
+    "country": "Uganda",
+    "district": "Amuria",
+    "county": "Amuria",
+    "subcounty": "Amuria"
+  },
+  {
+    "name": "Katakwi Municipality",
+    "code": "UG-MUN-KAT-047",
+    "country": "Uganda",
+    "district": "Katakwi",
+    "county": "Katakwi",
+    "subcounty": "Katakwi"
+  },
+  {
+    "name": "Yumbe Municipality",
+    "code": "UG-MUN-YUM-048",
+    "country": "Uganda",
+    "district": "Yumbe",
+    "county": "Yumbe",
+    "subcounty": "Yumbe"
+  },
+  {
+    "name": "Butaleja Municipality",
+    "code": "UG-MUN-BUT-049",
+    "country": "Uganda",
+    "district": "Butaleja",
+    "county": "Butaleja",
+    "subcounty": "Butaleja"
+  },
+  {
+    "name": "Namutumba Municipality",
+    "code": "UG-MUN-NAM-050",
+    "country": "Uganda",
+    "district": "Namutumba",
+    "county": "Namutumba",
+    "subcounty": "Namutumba"
+  }
+]

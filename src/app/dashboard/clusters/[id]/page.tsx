@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { SiteHeader } from "@/features/dashboard/components/site-header";
-import { ClusterDetails } from "@/features/clusters/components/cluster-details";
-import { getClusterById } from "@/features/clusters/actions/clusters";
+import { notFound } from 'next/navigation';
+import { SiteHeader } from '@/features/dashboard/components/site-header';
+import { ClusterDetails } from '@/features/clusters/components/cluster-details';
+import { getClusterById } from '@/features/clusters/actions/clusters';
 
 export default async function ClusterDetailsPage({
   params,
@@ -25,11 +25,7 @@ export default async function ClusterDetailsPage({
 
   return (
     <>
-      <SiteHeader title={result.data.name}>
-        <h2 className="text-sm text-muted-foreground">
-          Manage cluster details and members
-        </h2>
-      </SiteHeader>
+      <SiteHeader title={result.data.name} />
       <ClusterDetails cluster={clusterWithValidDates} />
     </>
   );

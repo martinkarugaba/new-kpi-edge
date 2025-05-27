@@ -1,17 +1,19 @@
-"use client";
+'use client';
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { type ParticipantFormValues } from '../components/participant-form';
 import {
   getParticipants,
   createParticipant,
   updateParticipant,
   deleteParticipant,
-} from "../actions";
-import { type NewParticipant } from "../types";
+} from '../actions';
+import { importParticipants } from '../actions/import-participants';
+import { type NewParticipant } from '../types/types';
 
 export function useParticipants(clusterId: string) {
   return useQuery({
-    queryKey: ["participants", clusterId],
+    queryKey: ['participants', clusterId],
     queryFn: () => getParticipants(clusterId),
   });
 }
@@ -23,7 +25,7 @@ export function useCreateParticipant() {
     mutationFn: (data: NewParticipant) => createParticipant(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.cluster_id],
+        queryKey: ['participants', variables.cluster_id],
       });
     },
   });
@@ -37,22 +39,43 @@ export function useUpdateParticipant() {
       updateParticipant(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.data.cluster_id],
+        queryKey: ['participants', variables.data.cluster_id],
       });
     },
   });
 }
 
-export function useDeleteParticipant() {
+export function useDeleteParticipant(clusterId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, clusterId }: { id: string; clusterId: string }) =>
-      deleteParticipant(id, clusterId),
-    onSuccess: (_, variables) => {
+    mutationFn: ({ id }: { id: string }) => deleteParticipant(id),
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["participants", variables.clusterId],
+        queryKey: ['participants', clusterId],
       });
+    },
+  });
+}
+
+export function useBulkCreateParticipants() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (participants: ParticipantFormValues[]) => {
+      const result = await importParticipants(participants);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to import participants');
+      }
+      return result;
+    },
+    onSuccess: (_, variables) => {
+      // Assuming all participants are for the same cluster
+      if (variables[0]) {
+        queryClient.invalidateQueries({
+          queryKey: ['participants', variables[0].cluster_id],
+        });
+      }
     },
   });
 }

@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import * as motion from "motion/react-client";
+import Link from 'next/link';
+import { Container } from '@/components/ui/container';
+import { Button } from '@/components/ui/button';
+import * as motion from 'motion/react-client';
 
 export function HeroSection() {
   return (
@@ -22,7 +22,7 @@ export function HeroSection() {
               Now with AI-powered insights
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-              Track Your KPIs with{" "}
+              Track Your KPIs with{' '}
               <span className="relative">
                 <span className="relative z-10 text-primary">Precision</span>
                 <span className="absolute bottom-0 left-0 w-full h-3 bg-primary/20 -z-10"></span>

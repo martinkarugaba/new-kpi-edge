@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { Container } from '@/components/ui/container';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,62 +8,62 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
 const tiers = [
   {
-    name: "Free",
-    price: "$0",
-    period: "/month",
-    description: "Perfect for trying out our KPI tracking features",
+    name: 'Free',
+    price: '$0',
+    period: '/month',
+    description: 'Perfect for trying out our KPI tracking features',
     features: [
-      "Up to 3 KPIs",
-      "Basic analytics",
-      "Daily data updates",
-      "Email support",
-      "Single user",
+      'Up to 3 KPIs',
+      'Basic analytics',
+      'Daily data updates',
+      'Email support',
+      'Single user',
     ],
-    cta: "Start Free",
-    ctaLink: "/signup?plan=free",
+    cta: 'Start Free',
+    ctaLink: '/signup?plan=free',
     featured: false,
   },
   {
-    name: "Pro",
-    price: "$49",
-    period: "/month",
-    description: "Best for growing businesses tracking multiple KPIs",
+    name: 'Pro',
+    price: '$49',
+    period: '/month',
+    description: 'Best for growing businesses tracking multiple KPIs',
     features: [
-      "Unlimited KPIs",
-      "Advanced analytics",
-      "Real-time updates",
-      "Priority support",
-      "Custom dashboards",
-      "API access",
-      "Data export",
-      "Up to 10 team members",
+      'Unlimited KPIs',
+      'Advanced analytics',
+      'Real-time updates',
+      'Priority support',
+      'Custom dashboards',
+      'API access',
+      'Data export',
+      'Up to 10 team members',
     ],
-    cta: "Start Free Trial",
-    ctaLink: "/signup?plan=pro",
+    cta: 'Start Free Trial',
+    ctaLink: '/signup?plan=pro',
     featured: true,
   },
   {
-    name: "Enterprise",
-    price: "$99",
-    period: "/month",
+    name: 'Enterprise',
+    price: '$99',
+    period: '/month',
     description:
-      "For organizations with advanced needs and multiple departments",
+      'For organizations with advanced needs and multiple departments',
     features: [
-      "Unlimited KPIs",
-      "White-labeled dashboards",
-      "Real-time data updates",
-      "Advanced analytics",
-      "API access",
-      "Custom integrations",
-      "Dedicated account manager",
-      "Unlimited team members",
+      'Unlimited KPIs',
+      'White-labeled dashboards',
+      'Real-time data updates',
+      'Advanced analytics',
+      'API access',
+      'Custom integrations',
+      'Dedicated account manager',
+      'Unlimited team members',
     ],
-    cta: "Contact Sales",
-    ctaLink: "mailto:enterprise@kpitracker.com",
+    cta: 'Contact Sales',
+    ctaLink: 'mailto:enterprise@kpitracker.com',
     featured: false,
   },
 ];
@@ -85,7 +85,7 @@ export function PricingSection() {
           {tiers.map((tier, index) => (
             <Card
               key={index}
-              className={`border ${tier.featured ? "border-primary shadow-lg relative" : "border-border/40"} flex flex-col`}
+              className={`border ${tier.featured ? 'border-primary shadow-lg relative' : 'border-border/40'} flex flex-col`}
             >
               {tier.featured && (
                 <div className="absolute -top-4 left-0 right-0 flex justify-center">
@@ -133,7 +133,7 @@ export function PricingSection() {
                 <Button
                   asChild
                   className="w-full"
-                  variant={tier.featured ? "default" : "outline"}
+                  variant={tier.featured ? 'default' : 'outline'}
                 >
                   <Link href={tier.ctaLink}>{tier.cta}</Link>
                 </Button>

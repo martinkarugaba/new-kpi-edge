@@ -1,9 +1,9 @@
-"use server";
+'use server';
 
-import { db } from "@/lib/db";
-import { clusters, clusterMembers, organizations } from "@/lib/db/schema";
-import { eq, and, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { db } from '@/lib/db';
+import { clusters, clusterMembers, organizations } from '@/lib/db/schema';
+import { eq, and, sql } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 
 // Get all clusters
 export async function getClusters() {
@@ -11,8 +11,8 @@ export async function getClusters() {
     const clustersList = await db.select().from(clusters);
     return { success: true, data: clustersList };
   } catch (error) {
-    console.error("Error fetching clusters:", error);
-    return { success: false, error: "Failed to fetch clusters" };
+    console.error('Error fetching clusters:', error);
+    return { success: false, error: 'Failed to fetch clusters' };
   }
 }
 
@@ -25,13 +25,13 @@ export async function getClusterById(id: string) {
       .where(eq(clusters.id, id));
 
     if (!cluster) {
-      return { success: false, error: "Cluster not found" };
+      return { success: false, error: 'Cluster not found' };
     }
 
     return { success: true, data: cluster };
   } catch (error) {
-    console.error("Error fetching cluster:", error);
-    return { success: false, error: "Failed to fetch cluster" };
+    console.error('Error fetching cluster:', error);
+    return { success: false, error: 'Failed to fetch cluster' };
   }
 }
 
@@ -51,21 +51,21 @@ export async function getClusterMembers(clusterId: string) {
       .from(clusterMembers)
       .innerJoin(
         organizations,
-        eq(clusterMembers.organization_id, organizations.id),
+        eq(clusterMembers.organization_id, organizations.id)
       )
       .where(eq(clusterMembers.cluster_id, clusterId));
 
     return { success: true, data: members };
   } catch (error) {
-    console.error("Error fetching cluster members:", error);
-    return { success: false, error: "Failed to fetch cluster members" };
+    console.error('Error fetching cluster members:', error);
+    return { success: false, error: 'Failed to fetch cluster members' };
   }
 }
 
 // Add organization to cluster
 export async function addClusterMember(
   clusterId: string,
-  organizationId: string,
+  organizationId: string
 ) {
   try {
     // Check if the membership already exists
@@ -75,14 +75,14 @@ export async function addClusterMember(
       .where(
         and(
           eq(clusterMembers.cluster_id, clusterId),
-          eq(clusterMembers.organization_id, organizationId),
-        ),
+          eq(clusterMembers.organization_id, organizationId)
+        )
       );
 
     if (existingMember.length > 0) {
       return {
         success: false,
-        error: "Organization is already a member of this cluster",
+        error: 'Organization is already a member of this cluster',
       };
     }
 
@@ -98,15 +98,15 @@ export async function addClusterMember(
     revalidatePath(`/dashboard/clusters/${clusterId}`);
     return { success: true, data: member };
   } catch (error) {
-    console.error("Error adding cluster member:", error);
-    return { success: false, error: "Failed to add organization to cluster" };
+    console.error('Error adding cluster member:', error);
+    return { success: false, error: 'Failed to add organization to cluster' };
   }
 }
 
 // Remove organization from cluster
 export async function removeClusterMember(
   membershipId: string,
-  clusterId: string,
+  clusterId: string
 ) {
   try {
     await db.delete(clusterMembers).where(eq(clusterMembers.id, membershipId));
@@ -114,10 +114,10 @@ export async function removeClusterMember(
     revalidatePath(`/dashboard/clusters/${clusterId}`);
     return { success: true };
   } catch (error) {
-    console.error("Error removing cluster member:", error);
+    console.error('Error removing cluster member:', error);
     return {
       success: false,
-      error: "Failed to remove organization from cluster",
+      error: 'Failed to remove organization from cluster',
     };
   }
 }
@@ -137,8 +137,8 @@ export async function getNonMemberOrganizations(clusterId: string) {
 
     return { success: true, data: nonMembers.rows };
   } catch (error) {
-    console.error("Error fetching non-member organizations:", error);
-    return { success: false, error: "Failed to fetch available organizations" };
+    console.error('Error fetching non-member organizations:', error);
+    return { success: false, error: 'Failed to fetch available organizations' };
   }
 }
 
@@ -160,11 +160,11 @@ export async function createCluster(data: {
       })
       .returning();
 
-    revalidatePath("/dashboard/clusters");
+    revalidatePath('/dashboard/clusters');
     return { success: true, data: newCluster };
   } catch (error) {
-    console.error("Error creating cluster:", error);
-    return { success: false, error: "Failed to create cluster" };
+    console.error('Error creating cluster:', error);
+    return { success: false, error: 'Failed to create cluster' };
   }
 }
 
@@ -189,14 +189,14 @@ export async function updateCluster(data: {
       .returning();
 
     if (!updatedCluster) {
-      return { success: false, error: "Cluster not found" };
+      return { success: false, error: 'Cluster not found' };
     }
 
     revalidatePath(`/dashboard/clusters/${data.id}`);
     return { success: true, data: updatedCluster };
   } catch (error) {
-    console.error("Error updating cluster:", error);
-    return { success: false, error: "Failed to update cluster" };
+    console.error('Error updating cluster:', error);
+    return { success: false, error: 'Failed to update cluster' };
   }
 }
 
@@ -210,7 +210,7 @@ export async function deleteCluster(id: string) {
       .where(eq(clusters.id, id));
 
     if (!existingCluster) {
-      return { success: false, error: "Cluster not found" };
+      return { success: false, error: 'Cluster not found' };
     }
 
     // Delete related cluster members first to avoid foreign key constraints
@@ -219,10 +219,10 @@ export async function deleteCluster(id: string) {
     // Delete the cluster
     await db.delete(clusters).where(eq(clusters.id, id));
 
-    revalidatePath("/dashboard/clusters");
+    revalidatePath('/dashboard/clusters');
     return { success: true };
   } catch (error) {
-    console.error("Error deleting cluster:", error);
-    return { success: false, error: "Failed to delete cluster" };
+    console.error('Error deleting cluster:', error);
+    return { success: false, error: 'Failed to delete cluster' };
   }
 }

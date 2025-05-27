@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { THEMES } from "../lib/themes";
-import { useThemeConfig } from "./active-theme";
+import { THEMES } from '../lib/themes';
+import { useThemeConfig } from './active-theme';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 export function ThemeSelector() {
   const { activeTheme, setActiveTheme } = useThemeConfig();
@@ -22,7 +22,7 @@ export function ThemeSelector() {
         <SelectValue placeholder="Select a theme" />
       </SelectTrigger>
       <SelectContent align="end">
-        {THEMES.map((theme) => (
+        {THEMES.map(theme => (
           <SelectItem key={theme.name} value={theme.value}>
             {theme.name}
           </SelectItem>

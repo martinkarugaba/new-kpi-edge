@@ -1,10 +1,10 @@
-import { SiteHeader } from "@/features/dashboard/components/site-header";
-import { OrganizationsTable } from "@/features/organizations/components/organizations-table";
-import { Card, CardContent } from "@/components/ui/card";
-import { getOrganizations } from "@/features/organizations/actions/organizations";
-import { getClusters } from "@/features/clusters/actions/clusters";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SiteHeader } from '@/features/dashboard/components/site-header';
+import { OrganizationsTable } from '@/features/organizations/components/organizations-table';
+import { Card, CardContent } from '@/components/ui/card';
+import { getOrganizations } from '@/features/organizations/actions/organizations';
+import { getClusters } from '@/features/clusters/actions/clusters';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function OrganizationsTableSkeleton() {
   return (
@@ -37,7 +37,7 @@ export default async function Page() {
                     {!organizationsResult.success &&
                       organizationsResult.error && (
                         <span>
-                          Error loading organizations:{" "}
+                          Error loading organizations:{' '}
                           {organizationsResult.error}
                         </span>
                       )}

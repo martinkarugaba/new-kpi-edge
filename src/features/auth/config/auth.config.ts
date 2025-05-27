@@ -1,23 +1,23 @@
-import type { NextAuthConfig } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { z } from "zod";
-import type { User } from "next-auth";
-import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
+import type { NextAuthConfig } from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import { z } from 'zod';
+import type { User } from 'next-auth';
+import { db } from '@/lib/db';
+import { users } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcryptjs';
 
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: "/auth/login",
-    error: "/auth/error",
+    signIn: '/auth/login',
+    error: '/auth/error',
   },
   callbacks: {
     async signIn() {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith("/dashboard")) {
+      if (url.startsWith('/dashboard')) {
         return url;
       }
       return baseUrl;
@@ -31,30 +31,38 @@ export const authConfig: NextAuthConfig = {
       session.user.role = token.role as string;
       session.accessToken = token.accessToken as string;
 
-      // Check if user exists in database
       try {
-        const user = await db.query.users.findFirst({
-          where: eq(users.id, session.user.id),
-        });
+        // Check if user exists in database - wrap in try/catch to handle Edge runtime failures gracefully
+        try {
+          const user = await db.query.users.findFirst({
+            where: eq(users.id, session.user.id),
+          });
 
-        // If user doesn't exist, return the session without modifications
-        if (!user) {
-          console.log(
-            `User ${session.user.id} not found in database during session creation`,
+          // If user doesn't exist, return the session without modifications
+          if (!user) {
+            console.log(
+              `User ${session.user.id} not found in database during session creation`
+            );
+            return session;
+          }
+
+          // Update session with latest user data
+          session.user.role = user.role;
+        } catch (dbError) {
+          // Database connection error, log but proceed with session
+          console.error(
+            'Database connection error in session callback:',
+            dbError
           );
-          return session;
         }
-
-        // Update session with latest user data
-        session.user.role = user.role;
-        return session;
       } catch (error) {
-        console.error("Error checking user existence in database:", error);
-        return session;
+        console.error('Error in session callback:', error);
       }
+
+      return session;
     },
     async jwt({ token, user }) {
-      if (user && "id" in user && "role" in user) {
+      if (user && 'id' in user && 'role' in user) {
         token.id = user.id;
         token.role = user.role;
         token.accessToken = user.accessToken;
@@ -64,19 +72,18 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [
     Credentials({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials): Promise<User | null> {
-        // Add schema validation
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
 
         if (!parsedCredentials.success) {
-          return null;
+          throw new Error('Invalid credentials');
         }
 
         const { email, password } = parsedCredentials.data;
@@ -88,28 +95,27 @@ export const authConfig: NextAuthConfig = {
           });
 
           if (!user || !user.password) {
-            return null;
+            throw new Error('User not found');
           }
 
           // Verify password
           const isValidPassword = await bcrypt.compare(password, user.password);
 
           if (!isValidPassword) {
-            return null;
+            throw new Error('Incorrect password');
           }
 
           // Return user without password
           return {
             id: user.id,
-            name: user.name || "",
+            name: user.name || '',
             email: user.email,
             role: user.role,
-            // Generate an access token or remove if not needed
-            accessToken: `token_${user.id}`, // Simple token generation, replace with actual token if needed
+            accessToken: `token_${user.id}`,
           };
         } catch (error) {
-          console.error("Error during authentication:", error);
-          return null;
+          console.error('Error during authentication:', error);
+          throw error; // Re-throw to preserve the error message
         }
       },
     }),

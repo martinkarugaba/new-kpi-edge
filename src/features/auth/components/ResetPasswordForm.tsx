@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/components/ui/password-input";
-import toast from "react-hot-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { PasswordInput } from '@/components/ui/password-input';
+import toast from 'react-hot-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import {
   Form,
   FormControl,
@@ -15,23 +15,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { resetPassword } from "../actions/auth";
+} from '@/components/ui/form';
+import { resetPassword } from '../actions/auth';
 
 const ResetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters")
+      .min(8, 'Password must be at least 8 characters')
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+        'Password must contain at least one uppercase letter, one lowercase letter, and one number'
       ),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"],
+    path: ['confirmPassword'],
   });
 
 type FormValues = z.infer<typeof ResetPasswordSchema>;
@@ -48,8 +48,8 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -61,17 +61,17 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
       if (result.success) {
         setIsSubmitted(true);
-        toast.success("Your password has been reset successfully.");
+        toast.success('Your password has been reset successfully.');
         setTimeout(() => {
-          router.push("/auth/login");
+          router.push('/auth/login');
         }, 2000);
       } else {
         toast.error(
-          result.error || "Failed to reset password. Please try again.",
+          result.error || 'Failed to reset password. Please try again.'
         );
       }
     } catch {
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }

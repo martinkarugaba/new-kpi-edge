@@ -1,9 +1,9 @@
-import { Metadata } from "next";
-import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
+import { Metadata } from 'next';
+import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm';
 
 export const metadata: Metadata = {
-  title: "Forgot Password | KPI Tracking",
-  description: "Reset your password",
+  title: 'Forgot Password | KPI Tracking',
+  description: 'Reset your password',
 };
 
 export default function ForgotPasswordPage() {

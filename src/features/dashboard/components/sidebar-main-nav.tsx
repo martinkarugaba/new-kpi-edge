@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { navigationData } from "../data/navigation";
-import { NavMain } from "./nav-main";
-import { NavDocuments } from "./nav-kpis";
-import { NavSecondary } from "./nav-secondary";
+import { navigationData } from '../data/sidebar-navigation';
+import { NavMain } from './nav-main';
+import { NavDocuments } from './nav-kpis';
+import { NavSecondary } from './nav-secondary';
 
 export function SidebarMainNav() {
   return (

@@ -1,15 +1,18 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
-import * as schema from "./schema";
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import * as schema from './schema';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is not set");
+// Ensure this code only runs on the server
+if (typeof window === 'undefined') {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL environment variable is not set');
+  }
 }
 
-// Configure the Neon client
-const sql = neon(process.env.DATABASE_URL, {
+// Configure the Neon client with proper fetch options for Edge compatibility
+const sql = neon(process.env.DATABASE_URL!, {
   fetchOptions: {
-    next: { revalidate: 0 },
+    cache: 'no-store',
   },
 });
 
@@ -18,11 +21,11 @@ export const db = drizzle(sql, {
   schema,
   // Add logger for debugging
   logger:
-    process.env.NODE_ENV === "development"
+    process.env.NODE_ENV === 'development'
       ? {
           logQuery: (query, params) => {
-            console.log("Query:", query);
-            console.log("Params:", params);
+            console.log('Query:', query);
+            console.log('Params:', params);
           },
         }
       : false,

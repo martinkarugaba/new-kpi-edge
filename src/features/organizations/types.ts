@@ -6,7 +6,8 @@ export interface Organization {
   project_id: string | null;
   country: string;
   district: string;
-  sub_county: string;
+  sub_county_id: string; // Main location subcounty
+  operation_sub_counties: string[]; // Subcounties of operation
   parish: string;
   village: string;
   address: string;

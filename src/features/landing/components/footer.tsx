@@ -1,41 +1,41 @@
-import Link from "next/link";
-import { Container } from "@/components/ui/container";
-import { Separator } from "@/components/ui/separator";
+import Link from 'next/link';
+import { Container } from '@/components/ui/container';
+import { Separator } from '@/components/ui/separator';
 
 const footerLinks = [
   {
-    title: "Product",
+    title: 'Product',
     links: [
-      { name: "Features", href: "#features" },
-      { name: "Pricing", href: "#pricing" },
-      { name: "Integrations", href: "#integrations" },
-      { name: "Changelog", href: "/changelog" },
+      { name: 'Features', href: '#features' },
+      { name: 'Pricing', href: '#pricing' },
+      { name: 'Integrations', href: '#integrations' },
+      { name: 'Changelog', href: '/changelog' },
     ],
   },
   {
-    title: "Company",
+    title: 'Company',
     links: [
-      { name: "About", href: "/about" },
-      { name: "Blog", href: "/blog" },
-      { name: "Careers", href: "/careers" },
+      { name: 'About', href: '/about' },
+      { name: 'Blog', href: '/blog' },
+      { name: 'Careers', href: '/careers' },
     ],
   },
   {
-    title: "Resources",
+    title: 'Resources',
     links: [
-      { name: "Documentation", href: "/docs" },
-      { name: "Support", href: "/support" },
-      { name: "API", href: "/api" },
-      { name: "Community", href: "/community" },
+      { name: 'Documentation', href: '/docs' },
+      { name: 'Support', href: '/support' },
+      { name: 'API', href: '/api' },
+      { name: 'Community', href: '/community' },
     ],
   },
   {
-    title: "Legal",
+    title: 'Legal',
     links: [
-      { name: "Privacy", href: "/privacy" },
-      { name: "Terms", href: "/terms" },
-      { name: "Security", href: "/security" },
-      { name: "Cookies", href: "/cookies" },
+      { name: 'Privacy', href: '/privacy' },
+      { name: 'Terms', href: '/terms' },
+      { name: 'Security', href: '/security' },
+      { name: 'Cookies', href: '/cookies' },
     ],
   },
 ];
@@ -46,11 +46,11 @@ export function Footer() {
       <Container>
         <div className="py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {footerLinks.map((section) => (
+            {footerLinks.map(section => (
               <div key={section.title} className="space-y-4">
                 <h3 className="text-sm font-medium">{section.title}</h3>
                 <ul className="space-y-2">
-                  {section.links.map((link) => (
+                  {section.links.map(link => (
                     <li key={link.name}>
                       <Link
                         href={link.href}

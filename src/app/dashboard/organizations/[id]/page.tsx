@@ -1,13 +1,13 @@
-import { notFound, redirect } from "next/navigation";
-import { getOrganization } from "@/features/organizations/actions/organizations";
-import { getOrganizationMembers } from "@/features/organizations/actions/organization-members";
-import { auth } from "@/features/auth/auth";
-import { SiteHeader } from "@/features/dashboard/components/site-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Pencil, Users } from "lucide-react";
-import Link from "next/link";
-import { OrganizationMembers } from "@/features/organizations/components/members";
+import { notFound, redirect } from 'next/navigation';
+import { getOrganization } from '@/features/organizations/actions/organizations';
+import { getOrganizationMembers } from '@/features/organizations/actions/organization-members';
+import { auth } from '@/features/auth/auth';
+import { SiteHeader } from '@/features/dashboard/components/site-header';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Pencil, Users } from 'lucide-react';
+import Link from 'next/link';
+import { OrganizationMembers } from '@/features/organizations/components/members';
 
 interface OrganizationDetailsPageProps {
   params: Promise<{ id: string }>; // Correctly type params as a Promise
@@ -28,11 +28,11 @@ export default async function OrganizationDetailsPage({
   // Check authentication
   const session = await auth();
   if (!session?.user) {
-    redirect("/auth/login");
+    redirect('/auth/login');
   }
 
-  // Await params to get the id
-  const { id } = await params; // Properly await the Promise
+  // Unwrap params using React.use to get the id
+  const { id } = await params;
 
   const organizationResult = await getOrganization(id);
   const membersResult = await getOrganizationMembers(id);
@@ -56,7 +56,7 @@ export default async function OrganizationDetailsPage({
                   {organization.name}
                 </h1>
                 <p className="text-muted-foreground">
-                  {organization.acronym} • {organization.district},{" "}
+                  {organization.acronym} • {organization.district},{' '}
                   {organization.country}
                 </p>
               </div>
@@ -125,7 +125,7 @@ export default async function OrganizationDetailsPage({
                           Sub-county
                         </span>
                         <span className="font-medium">
-                          {organization.sub_county}
+                          {organization.sub_county_id}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -171,7 +171,7 @@ export default async function OrganizationDetailsPage({
                       ? membersResult.data
                           .filter(
                             (member: Member | null): member is Member =>
-                              member !== null,
+                              member !== null
                           )
                           .map((member: Member) => ({
                             id: member.id,

@@ -1,10 +1,10 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { RegisterForm } from '@/features/auth/components/RegisterForm';
 
 export const metadata: Metadata = {
-  title: "Register | KPI Tracking",
-  description: "Create a new account",
+  title: 'Register | KPI Tracking',
+  description: 'Create a new account',
 };
 
 export default function RegisterPage() {

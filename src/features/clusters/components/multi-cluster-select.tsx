@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Check, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Check, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Cluster } from "@/features/clusters/types";
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { Cluster } from '@/features/clusters/types';
 
 interface MultiClusterSelectProps {
   clusters: Cluster[];
@@ -36,14 +36,14 @@ export function MultiClusterSelect({
 
   const toggleCluster = (clusterId: string) => {
     if (selectedClusterIds.includes(clusterId)) {
-      onChange(selectedClusterIds.filter((id) => id !== clusterId));
+      onChange(selectedClusterIds.filter(id => id !== clusterId));
     } else {
       onChange([...selectedClusterIds, clusterId]);
     }
   };
 
   const removeCluster = (clusterId: string) => {
-    onChange(selectedClusterIds.filter((id) => id !== clusterId));
+    onChange(selectedClusterIds.filter(id => id !== clusterId));
   };
 
   return (
@@ -55,8 +55,8 @@ export function MultiClusterSelect({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "h-12 w-full justify-between text-base rounded-lg border-gray-300 focus:border-black focus:ring-black",
-              !selectedClusterIds.length && "text-muted-foreground",
+              'h-12 w-full justify-between text-base rounded-lg border-gray-300 focus:border-black focus:ring-black',
+              !selectedClusterIds.length && 'text-muted-foreground'
             )}
             disabled={disabled}
           >
@@ -71,7 +71,7 @@ export function MultiClusterSelect({
             <CommandInput placeholder="Search clusters..." />
             <CommandEmpty>No clusters found.</CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
-              {clusters.map((cluster) => (
+              {clusters.map(cluster => (
                 <CommandItem
                   key={cluster.id}
                   value={cluster.name}
@@ -91,8 +91,8 @@ export function MultiClusterSelect({
 
       {selectedClusterIds.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
-          {selectedClusterIds.map((clusterId) => {
-            const cluster = clusters.find((c) => c.id === clusterId);
+          {selectedClusterIds.map(clusterId => {
+            const cluster = clusters.find(c => c.id === clusterId);
             return (
               cluster && (
                 <Badge

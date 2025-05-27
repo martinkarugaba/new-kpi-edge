@@ -1,16 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { type Project } from "@/features/projects/types";
-import { type Participant } from "../types";
-import { type ParticipantFormValues } from "./participant-form";
+import { useState } from 'react';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+import { type Project } from '@/features/projects/types';
+import { type Organization } from '@/features/organizations/types';
+import { type Participant } from '../types/types';
+import { type ParticipantFormValues } from './participant-form';
 import {
   AddParticipantDialog,
   BulkDeleteButton,
   getColumns,
   ParticipantTableFilters,
-} from "./table";
+} from './table';
+import { ImportParticipants } from './import/import-participants';
 
 interface ParticipantsTableProps {
   data: Participant[];
@@ -21,34 +23,11 @@ interface ParticipantsTableProps {
   setIsOpen: (isOpen: boolean) => void;
   editingParticipant: Participant | null;
   handleSubmit: (data: ParticipantFormValues) => Promise<void>;
+  onImportParticipants: (data: ParticipantFormValues[]) => Promise<void>;
   isLoading: boolean;
   projects: Project[];
   // Add filter-related props
-  clusterId: string;
-  organizations: {
-    id: string;
-    name: string;
-    acronym: string;
-    cluster_id: string | null;
-    project_id: string | null;
-    country: string;
-    district: string;
-    sub_county: string;
-    parish: string;
-    village: string;
-    address: string;
-    created_at: Date | null;
-    updated_at: Date | null;
-    cluster: {
-      id: string;
-      name: string;
-    } | null;
-    project: {
-      id: string;
-      name: string;
-      acronym: string;
-    } | null;
-  }[];
+  organizations: Organization[];
   clusters: { id: string; name: string }[];
   districts: string[];
   sexOptions: string[];
@@ -78,6 +57,7 @@ export function ParticipantsTable({
   setIsOpen,
   editingParticipant,
   handleSubmit,
+  onImportParticipants,
   isLoading,
   projects,
   // Add filter props
@@ -122,15 +102,22 @@ export function ParticipantsTable({
           pageSize={10}
           onRowSelectionChange={setSelectedRows}
           customActions={
-            <AddParticipantDialog
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              editingParticipant={editingParticipant}
-              handleSubmit={handleSubmit}
-              isLoading={isLoading}
-              projects={projects}
-              clusters={clusters}
-            />
+            <div className="flex items-center gap-2">
+              <ImportParticipants
+                onImport={onImportParticipants}
+                clusterId={clusters[0]?.id || ''}
+                projects={projects}
+              />
+              <AddParticipantDialog
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                editingParticipant={editingParticipant}
+                handleSubmit={handleSubmit}
+                isLoading={isLoading}
+                projects={projects}
+                clusters={clusters}
+              />
+            </div>
           }
         />
       </div>

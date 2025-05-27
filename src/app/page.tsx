@@ -8,7 +8,7 @@ import {
   FaqSection,
   ContactSection,
   Footer,
-} from "@/features/landing";
+} from '@/features/landing';
 
 export default function Home() {
   return (

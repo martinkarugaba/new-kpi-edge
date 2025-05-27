@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm/relations";
+import { relations } from 'drizzle-orm/relations';
 import {
   users,
   passwordResetTokens,
@@ -8,7 +8,7 @@ import {
   kpis,
   organizationMembers,
   participants,
-} from "./schema";
+} from './schema';
 
 export const passwordResetTokensRelations = relations(
   passwordResetTokens,
@@ -17,7 +17,7 @@ export const passwordResetTokensRelations = relations(
       fields: [passwordResetTokens.userId],
       references: [users.id],
     }),
-  }),
+  })
 );
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -38,7 +38,7 @@ export const organizationsRelations = relations(
     kpis: many(kpis),
     organizationMembers: many(organizationMembers),
     participants: many(participants),
-  }),
+  })
 );
 
 export const clustersRelations = relations(clusters, ({ many }) => ({
@@ -64,7 +64,7 @@ export const organizationMembersRelations = relations(
       fields: [organizationMembers.organizationId],
       references: [organizations.id],
     }),
-  }),
+  })
 );
 
 export const participantsRelations = relations(participants, ({ one }) => ({

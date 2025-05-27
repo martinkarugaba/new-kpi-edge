@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -16,23 +16,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { OrganizationMember } from "../../types";
-import { Loader2, Plus } from "lucide-react";
-import { getAllUsers } from "../../actions/organization-members";
+} from '@/components/ui/select';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { OrganizationMember } from '../../types';
+import { Loader2, Plus } from 'lucide-react';
+import { getAllUsers } from '../../actions/organization-members';
 
 const formSchema = z.object({
-  user_id: z.string().min(1, "Please select a user"),
+  user_id: z.string().min(1, 'Please select a user'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -66,7 +66,7 @@ export function AddMemberDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user_id: "",
+      user_id: '',
     },
   });
 
@@ -78,16 +78,16 @@ export function AddMemberDialog({
         const result = await getAllUsers();
         if (result.success && result.data) {
           // Filter out users who are already members
-          const existingMemberIds = members.map((member) => member.id);
+          const existingMemberIds = members.map(member => member.id);
           const availableUsers = result.data.filter(
-            (user) => !existingMemberIds.includes(user.id),
+            user => !existingMemberIds.includes(user.id)
           ) as User[];
           setUsers(availableUsers);
         } else {
-          setError(result.error || "Failed to fetch users");
+          setError(result.error || 'Failed to fetch users');
         }
       } catch (err) {
-        setError("An error occurred while fetching users");
+        setError('An error occurred while fetching users');
         console.error(err);
       } finally {
         setIsLoadingUsers(false);
@@ -142,9 +142,9 @@ export function AddMemberDialog({
                           No available users found
                         </div>
                       ) : (
-                        users.map((user) => (
+                        users.map(user => (
                           <SelectItem key={user.id} value={user.id}>
-                            {user.name || "Unknown User"} ({user.email})
+                            {user.name || 'Unknown User'} ({user.email})
                           </SelectItem>
                         ))
                       )}

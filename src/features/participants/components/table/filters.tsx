@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { type Project } from "@/features/projects/types";
+import { type Project } from '@/features/projects/types';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 interface TableFiltersProps {
   organizations: { id: string; name: string }[];
@@ -58,11 +58,11 @@ export function ParticipantTableFilters({
 
         {/* Cluster filter */}
         <Select
-          value={filters.cluster || "all"}
-          onValueChange={(value) =>
-            setFilters((prev) => ({
+          value={filters.cluster || 'all'}
+          onValueChange={value =>
+            setFilters(prev => ({
               ...prev,
-              cluster: value === "all" ? "" : value,
+              cluster: value === 'all' ? '' : value,
             }))
           }
         >
@@ -71,7 +71,7 @@ export function ParticipantTableFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Clusters</SelectItem>
-            {organizations.map((org) => (
+            {organizations.map(org => (
               <SelectItem key={org.id} value={org.id}>
                 {org.name}
               </SelectItem>
@@ -81,11 +81,11 @@ export function ParticipantTableFilters({
 
         {/* Project filter */}
         <Select
-          value={filters.project || "all"}
-          onValueChange={(value) =>
-            setFilters((prev) => ({
+          value={filters.project || 'all'}
+          onValueChange={value =>
+            setFilters(prev => ({
               ...prev,
-              project: value === "all" ? "" : value,
+              project: value === 'all' ? '' : value,
             }))
           }
         >
@@ -94,7 +94,7 @@ export function ParticipantTableFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Projects</SelectItem>
-            {projects.map((project) => (
+            {projects.map(project => (
               <SelectItem key={project.id} value={project.id}>
                 {project.acronym}
               </SelectItem>
@@ -104,11 +104,11 @@ export function ParticipantTableFilters({
 
         {/* District filter */}
         <Select
-          value={filters.district || "all"}
-          onValueChange={(value) =>
-            setFilters((prev) => ({
+          value={filters.district || 'all'}
+          onValueChange={value =>
+            setFilters(prev => ({
               ...prev,
-              district: value === "all" ? "" : value,
+              district: value === 'all' ? '' : value,
             }))
           }
         >
@@ -117,7 +117,7 @@ export function ParticipantTableFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Districts</SelectItem>
-            {districts.map((district) => (
+            {districts.map(district => (
               <SelectItem key={district} value={district}>
                 {district}
               </SelectItem>
@@ -127,11 +127,11 @@ export function ParticipantTableFilters({
 
         {/* Gender filter */}
         <Select
-          value={filters.sex || "all"}
-          onValueChange={(value) =>
-            setFilters((prev) => ({
+          value={filters.sex || 'all'}
+          onValueChange={value =>
+            setFilters(prev => ({
               ...prev,
-              sex: value === "all" ? "" : value,
+              sex: value === 'all' ? '' : value,
             }))
           }
         >
@@ -140,7 +140,7 @@ export function ParticipantTableFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Genders</SelectItem>
-            {sexOptions.map((sex) => (
+            {sexOptions.map(sex => (
               <SelectItem key={sex} value={sex}>
                 {sex.charAt(0).toUpperCase() + sex.slice(1)}
               </SelectItem>

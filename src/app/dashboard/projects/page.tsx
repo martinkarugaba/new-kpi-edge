@@ -1,10 +1,10 @@
-import { SiteHeader } from "@/features/dashboard/components/site-header";
-import { ProjectsTable } from "@/features/projects/components/projects-table";
-import { Card, CardContent } from "@/components/ui/card";
-import { getProjects } from "@/features/projects/actions/projects";
-import { getClusters } from "@/features/clusters/actions/clusters";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SiteHeader } from '@/features/dashboard/components/site-header';
+import { ProjectsTable } from '@/features/projects/components/projects-table';
+import { Card, CardContent } from '@/components/ui/card';
+import { getProjects } from '@/features/projects/actions/projects';
+import { getClusters } from '@/features/clusters/actions/clusters';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function ProjectsTableSkeleton() {
   return (
@@ -16,7 +16,7 @@ function ProjectsTableSkeleton() {
 }
 
 export default async function Page() {
-  const organizationId = "default-organization-id"; // Replace with actual logic to fetch organizationId
+  const organizationId = 'default-organization-id'; // Replace with actual logic to fetch organizationId
   const clustersResult = await getClusters();
   const projectsResult = await getProjects(organizationId);
 

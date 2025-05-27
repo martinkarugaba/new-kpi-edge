@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,12 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { OrganizationForm } from "./organization-form";
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Cluster } from "@/features/clusters/components/clusters-table";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/dialog';
+import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Cluster } from '@/features/clusters/components/clusters-table';
+import { OrganizationForm } from './organization-form/organization-form';
 
 type CreateOrganizationDialogProps = {
   clusters: Cluster[];
@@ -27,30 +26,30 @@ export function CreateOrganizationDialog({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
-  const selected_cluster_id = searchParams.get("clusterId");
+  const selected_cluster_id = searchParams.get('clusterId');
 
-  console.log("Clusters in dialog:", clusters);
-  console.log("Selected cluster ID:", selected_cluster_id);
+  console.log('Clusters in dialog:', clusters);
+  console.log('Selected cluster ID:', selected_cluster_id);
 
   // Find the selected cluster or use the first one
   const selectedCluster =
-    clusters.find((c) => c.id === selected_cluster_id) || clusters[0];
+    clusters.find(c => c.id === selected_cluster_id) || clusters[0];
 
-  console.log("Selected cluster:", selectedCluster);
+  console.log('Selected cluster:', selectedCluster);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children || <Button className="h-10">New Organization</Button>}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-x-hidden">
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl text-center font-semibold">
             Create Organization
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground"></DialogDescription>
         </DialogHeader>
-        <Separator />
+        {/* <Separator /> */}
         <OrganizationForm
           clusters={clusters}
           defaultClusterId={selectedCluster?.id}

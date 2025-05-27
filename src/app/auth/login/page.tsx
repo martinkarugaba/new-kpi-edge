@@ -1,10 +1,10 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { LoginForm } from "@/features/auth/components/LoginForm";
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { LoginForm } from '@/features/auth/components/LoginForm';
 
 export const metadata: Metadata = {
-  title: "Login | KPI Tracking",
-  description: "Login to your account",
+  title: 'Login | KPI Tracking',
+  description: 'Login to your account',
 };
 
 export default function LoginPage() {

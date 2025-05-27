@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
@@ -24,22 +24,22 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { PlusCircle, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+} from '@/components/ui/card';
+import { PlusCircle, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   getClusterMembers,
   getNonMemberOrganizations,
   addClusterMember,
   removeClusterMember,
-} from "../actions/clusters";
+} from '../actions/clusters';
 
 interface ClusterMembersTabProps {
   clusterId: string;
@@ -69,7 +69,7 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
     Organization[]
   >([]);
   const [selectedOrganizationId, setSelectedOrganizationId] =
-    useState<string>("");
+    useState<string>('');
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [isRemoving, setIsRemoving] = useState<{ [key: string]: boolean }>({});
 
@@ -80,10 +80,10 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
       if (result.success && result.data) {
         setMembers(result.data);
       } else {
-        toast.error(result.error || "Failed to load cluster members");
+        toast.error(result.error || 'Failed to load cluster members');
       }
     } catch {
-      toast.error("An error occurred while fetching cluster members");
+      toast.error('An error occurred while fetching cluster members');
     } finally {
       setLoading(false);
     }
@@ -93,17 +93,17 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
     try {
       const result = await getNonMemberOrganizations(clusterId);
       if (result.success && result.data) {
-        const organizations = result.data.map((org) => ({
+        const organizations = result.data.map(org => ({
           id: org.id as string,
           name: org.name as string,
           acronym: org.acronym as string,
         }));
         setAvailableOrganizations(organizations);
       } else {
-        toast.error(result.error || "Failed to load available organizations");
+        toast.error(result.error || 'Failed to load available organizations');
       }
     } catch {
-      toast.error("An error occurred while fetching available organizations");
+      toast.error('An error occurred while fetching available organizations');
     }
   };
 
@@ -118,7 +118,7 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
 
   const handleAddMember = async () => {
     if (!selectedOrganizationId) {
-      toast.error("Please select an organization to add");
+      toast.error('Please select an organization to add');
       return;
     }
 
@@ -126,36 +126,36 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
     try {
       const result = await addClusterMember(clusterId, selectedOrganizationId);
       if (result.success) {
-        toast.success("Organization added to cluster successfully");
+        toast.success('Organization added to cluster successfully');
         fetchMembers(); // Refresh the member list
         setIsAddDialogOpen(false);
-        setSelectedOrganizationId("");
+        setSelectedOrganizationId('');
       } else {
-        toast.error(result.error || "Failed to add organization to cluster");
+        toast.error(result.error || 'Failed to add organization to cluster');
       }
     } catch {
-      toast.error("An error occurred while adding organization to cluster");
+      toast.error('An error occurred while adding organization to cluster');
     } finally {
       setIsAddingMember(false);
     }
   };
 
   const handleRemoveMember = async (memberId: string) => {
-    setIsRemoving((prev) => ({ ...prev, [memberId]: true }));
+    setIsRemoving(prev => ({ ...prev, [memberId]: true }));
     try {
       const result = await removeClusterMember(memberId, clusterId);
       if (result.success) {
-        toast.success("Organization removed from cluster successfully");
+        toast.success('Organization removed from cluster successfully');
         fetchMembers(); // Refresh the member list
       } else {
         toast.error(
-          result.error || "Failed to remove organization from cluster",
+          result.error || 'Failed to remove organization from cluster'
         );
       }
     } catch {
-      toast.error("An error occurred while removing organization from cluster");
+      toast.error('An error occurred while removing organization from cluster');
     } finally {
-      setIsRemoving((prev) => ({ ...prev, [memberId]: false }));
+      setIsRemoving(prev => ({ ...prev, [memberId]: false }));
     }
   };
 
@@ -195,14 +195,14 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((member) => (
+              {members.map(member => (
                 <TableRow key={member.id}>
                   <TableCell>{member.organization.name}</TableCell>
                   <TableCell>{member.organization.acronym}</TableCell>
                   <TableCell>
                     {member.created_at
                       ? new Date(member.created_at).toLocaleDateString()
-                      : "N/A"}
+                      : 'N/A'}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -250,7 +250,7 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
                         No available organizations
                       </SelectItem>
                     ) : (
-                      availableOrganizations.map((org) => (
+                      availableOrganizations.map(org => (
                         <SelectItem key={org.id} value={org.id}>
                           {org.name} ({org.acronym})
                         </SelectItem>
@@ -271,7 +271,7 @@ export function ClusterMembersTab({ clusterId }: ClusterMembersTabProps) {
                 onClick={handleAddMember}
                 disabled={isAddingMember || !selectedOrganizationId}
               >
-                {isAddingMember ? "Adding..." : "Add Organization"}
+                {isAddingMember ? 'Adding...' : 'Add Organization'}
               </Button>
             </div>
           </div>

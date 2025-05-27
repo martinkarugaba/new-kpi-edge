@@ -1,17 +1,17 @@
-"use server";
+'use server';
 
-import { db } from "@/lib/db";
-import { projects, organizations } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import { Project } from "../types";
+import { db } from '@/lib/db';
+import { projects, organizations } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { Project } from '../types';
 
 const createProjectSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  acronym: z.string().min(1, "Acronym is required"),
+  name: z.string().min(1, 'Name is required'),
+  acronym: z.string().min(1, 'Acronym is required'),
   description: z.string().nullable(),
-  status: z.enum(["active", "completed", "on-hold"]).default("active"),
+  status: z.enum(['active', 'completed', 'on-hold']).default('active'),
   startDate: z.date().nullable(),
   endDate: z.date().nullable(),
 });
@@ -30,20 +30,20 @@ export async function createProject(data: CreateProjectInput) {
     // Cast the status field to the expected type
     const typedProject: Project = {
       ...project,
-      status: project.status as "active" | "completed" | "on-hold",
+      status: project.status as 'active' | 'completed' | 'on-hold',
     };
 
-    revalidatePath("/dashboard/projects");
+    revalidatePath('/dashboard/projects');
     return { success: true, data: typedProject };
   } catch (error) {
-    console.error("Error creating project:", error);
-    return { success: false, error: "Failed to create project" };
+    console.error('Error creating project:', error);
+    return { success: false, error: 'Failed to create project' };
   }
 }
 
 export async function updateProject(
   id: string,
-  data: Partial<CreateProjectInput>,
+  data: Partial<CreateProjectInput>
 ) {
   try {
     const validatedData = createProjectSchema.partial().parse(data);
@@ -57,25 +57,25 @@ export async function updateProject(
     // Cast the status field to the expected type
     const typedProject: Project = {
       ...project,
-      status: project.status as "active" | "completed" | "on-hold",
+      status: project.status as 'active' | 'completed' | 'on-hold',
     };
 
-    revalidatePath("/dashboard/projects");
+    revalidatePath('/dashboard/projects');
     return { success: true, data: typedProject };
   } catch (error) {
-    console.error("Error updating project:", error);
-    return { success: false, error: "Failed to update project" };
+    console.error('Error updating project:', error);
+    return { success: false, error: 'Failed to update project' };
   }
 }
 
 export async function deleteProject(id: string) {
   try {
     await db.delete(projects).where(eq(projects.id, id));
-    revalidatePath("/dashboard/projects");
+    revalidatePath('/dashboard/projects');
     return { success: true };
   } catch (error) {
-    console.error("Error deleting project:", error);
-    return { success: false, error: "Failed to delete project" };
+    console.error('Error deleting project:', error);
+    return { success: false, error: 'Failed to delete project' };
   }
 }
 
@@ -102,9 +102,9 @@ export async function getProjects(organizationId?: string) {
           .from(projects)
           .where(eq(projects.id, org.project_id));
 
-        const typedProjects = projectsList.map((project) => ({
+        const typedProjects = projectsList.map(project => ({
           ...project,
-          status: project.status as "active" | "completed" | "on-hold",
+          status: project.status as 'active' | 'completed' | 'on-hold',
         }));
 
         return { success: true, data: typedProjects };
@@ -117,15 +117,15 @@ export async function getProjects(organizationId?: string) {
     // If no organizationId provided, fetch all projects
     const projectsList = await db.select().from(projects);
 
-    const typedProjects = projectsList.map((project) => ({
+    const typedProjects = projectsList.map(project => ({
       ...project,
-      status: project.status as "active" | "completed" | "on-hold",
+      status: project.status as 'active' | 'completed' | 'on-hold',
     }));
 
     return { success: true, data: typedProjects };
   } catch (error) {
-    console.error("Error fetching projects:", error);
-    return { success: false, error: "Failed to fetch projects" };
+    console.error('Error fetching projects:', error);
+    return { success: false, error: 'Failed to fetch projects' };
   }
 }
 
@@ -137,18 +137,18 @@ export async function getProject(id: string) {
       .where(eq(projects.id, id));
 
     if (!project) {
-      return { success: false, error: "Project not found" };
+      return { success: false, error: 'Project not found' };
     }
 
     // Cast the status field to the expected type
     const typedProject: Project = {
       ...project,
-      status: project.status as "active" | "completed" | "on-hold",
+      status: project.status as 'active' | 'completed' | 'on-hold',
     };
 
     return { success: true, data: typedProject };
   } catch (error) {
-    console.error("Error fetching project:", error);
-    return { success: false, error: "Failed to fetch project" };
+    console.error('Error fetching project:', error);
+    return { success: false, error: 'Failed to fetch project' };
   }
 }

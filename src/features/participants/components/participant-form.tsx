@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,45 +13,51 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { toast } from "sonner";
-import { type Project } from "@/features/projects/types";
-import { useQuery } from "@tanstack/react-query";
-import { getOrganizationId } from "@/features/auth/actions";
-import {
-  getCurrentOrganizationWithCluster,
-  getOrganizationsByCluster,
-} from "@/features/organizations/actions/organizations";
-import { getCurrentUserClusterOrganizations } from "@/features/clusters/actions/cluster-users";
+} from '@/components/ui/select';
+import toast from 'react-hot-toast';
+import { type Project } from '@/features/projects/types';
+import { useQuery } from '@tanstack/react-query';
+import { getOrganizationId } from '@/features/auth/actions';
+import { getCurrentOrganizationWithCluster } from '@/features/organizations/actions/organizations';
 
 const formSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
-  country: z.string().min(2, "Country is required"),
-  district: z.string().min(2, "District is required"),
-  subCounty: z.string().min(2, "Sub-county is required"),
-  parish: z.string().min(2, "Parish is required"),
-  village: z.string().min(2, "Village is required"),
-  sex: z.enum(["male", "female", "other"]),
-  age: z.string().min(1, "Age is required"),
-  isPWD: z.enum(["yes", "no"]),
-  isMother: z.enum(["yes", "no"]),
-  isRefugee: z.enum(["yes", "no"]),
-  noOfTrainings: z.string().min(1, "Number of trainings is required"),
-  isActive: z.enum(["yes", "no"]),
-  designation: z.string().min(2, "Designation is required"),
-  enterprise: z.string().min(2, "Enterprise is required"),
-  contact: z.string().min(10, "Contact must be at least 10 characters"),
-  project_id: z.string().min(1, "Project is required"),
-  organization_id: z.string().min(1, "Organization is required"),
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+  country: z.string().min(2, 'Country is required'),
+  district: z.string().min(2, 'District is required'),
+  subCounty: z.string().min(2, 'Sub-county is required'), // We keep this as a single string for the form
+  parish: z.string().min(2, 'Parish is required'),
+  village: z.string().min(2, 'Village is required'),
+  sex: z.enum(['male', 'female', 'other']),
+  age: z.string().min(1, 'Age is required'),
+  isPWD: z.enum(['yes', 'no']),
+  isMother: z.enum(['yes', 'no']),
+  isRefugee: z.enum(['yes', 'no']),
+  designation: z.string().min(2, 'Designation is required'),
+  enterprise: z.string().min(2, 'Enterprise is required'),
+  contact: z.string().min(10, 'Contact must be at least 10 characters'),
+  project_id: z.string().min(1, 'Project is required'),
+  cluster_id: z.string().min(1, 'Cluster is required'),
+  organization_id: z.string().min(1, 'Organization is required'),
+  noOfTrainings: z.string().min(0),
+  isActive: z.enum(['yes', 'no']),
+  isPermanentResident: z.enum(['yes', 'no']),
+  areParentsAlive: z.enum(['yes', 'no']),
+  numberOfChildren: z.string().min(0),
+  employmentStatus: z.string(),
+  monthlyIncome: z.string(),
+  mainChallenge: z.string().optional(),
+  skillOfInterest: z.string().optional(),
+  expectedImpact: z.string().optional(),
+  isWillingToParticipate: z.enum(['yes', 'no']),
 });
 
 export type ParticipantFormValues = z.infer<typeof formSchema>;
@@ -70,7 +78,7 @@ export function ParticipantForm({
   clusterId: propClusterId,
 }: ParticipantFormProps) {
   const { data: organizationId } = useQuery({
-    queryKey: ["organizationId"],
+    queryKey: ['organizationId'],
     queryFn: getOrganizationId,
   });
 
@@ -83,7 +91,8 @@ export function ParticipantForm({
     project_id: string | null;
     country: string;
     district: string;
-    sub_county: string;
+    sub_county_id: string;
+    operation_sub_counties?: string[];
     parish: string;
     village: string;
     address: string;
@@ -100,65 +109,42 @@ export function ParticipantForm({
     } | null;
   }
 
-  // Add type for API response
-  interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    error?: string;
-  }
-
-  const { data: organizationsData } = useQuery({
-    queryKey: ["organizations", organizationId],
+  const { data: organizationData } = useQuery({
+    queryKey: ['organization', organizationId],
     queryFn: async () => {
       if (!organizationId) return null;
 
-      // Fetch the current organization with its cluster
+      // Fetch only the current organization with its cluster
       const currentOrgResult =
         await getCurrentOrganizationWithCluster(organizationId);
       if (!currentOrgResult.success || !currentOrgResult.data) {
-        console.error("Failed to fetch organization:", currentOrgResult.error);
+        console.error('Failed to fetch organization:', currentOrgResult.error);
         return null;
       }
 
-      const currentOrg = currentOrgResult.data as Organization;
-
-      // Fetch organizations from both sources
-      let clusterOrgs: Organization[] = [];
-      let userClusterOrgs: Organization[] = [];
-
-      // Get organizations from the current org's cluster if it belongs to one
-      if (currentOrg.cluster_id) {
-        const orgsResult = (await getOrganizationsByCluster(
-          currentOrg.cluster_id,
-        )) as ApiResponse<Organization[]>;
-        if (orgsResult.success && orgsResult.data) {
-          clusterOrgs = orgsResult.data;
-        }
-      }
-
-      // Get organizations from clusters the user belongs to
-      const userOrgsResult =
-        (await getCurrentUserClusterOrganizations()) as ApiResponse<
-          Organization[]
-        >;
-      if (userOrgsResult.success && userOrgsResult.data) {
-        userClusterOrgs = userOrgsResult.data;
-      }
-
-      // Combine and deduplicate organizations
-      const availableOrgs: Organization[] = [...clusterOrgs];
-      for (const org of userClusterOrgs) {
-        if (!availableOrgs.find((existingOrg) => existingOrg.id === org.id)) {
-          availableOrgs.push(org);
-        }
-      }
-      if (!availableOrgs.find((org) => org.id === currentOrg.id)) {
-        availableOrgs.push(currentOrg);
-      }
+      // Convert to our local Organization type
+      const orgData = currentOrgResult.data;
+      const currentOrg: Organization = {
+        id: orgData.id,
+        name: orgData.name,
+        acronym: orgData.acronym,
+        cluster_id: orgData.cluster_id,
+        project_id: orgData.project_id,
+        country: orgData.country,
+        district: orgData.district,
+        sub_county_id: orgData.sub_county_id,
+        operation_sub_counties: orgData.operation_sub_counties,
+        parish: orgData.parish,
+        village: orgData.village,
+        address: orgData.address,
+        created_at: orgData.created_at,
+        updated_at: orgData.updated_at,
+        cluster: orgData.cluster,
+        project: orgData.project,
+      };
 
       return {
         currentOrg,
-        organizations: availableOrgs,
         currentClusterId: currentOrg.cluster_id || propClusterId,
       };
     },
@@ -168,29 +154,50 @@ export function ParticipantForm({
   const form = useForm<ParticipantFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      firstName: "",
-      lastName: "",
-      country: "",
-      district: "",
-      subCounty: "",
-      parish: "",
-      village: "",
-      sex: "male",
-      age: "",
-      isPWD: "no",
-      isMother: "no",
-      isRefugee: "no",
-      noOfTrainings: "0",
-      isActive: "yes",
-      designation: "",
-      enterprise: "",
-      contact: "",
-      project_id: "",
-      organization_id: "",
+      firstName: '',
+      lastName: '',
+      country: '',
+      district: '',
+      subCounty: '',
+      parish: '',
+      village: '',
+      sex: 'male',
+      age: '',
+      isPWD: 'no',
+      isMother: 'no',
+      isRefugee: 'no',
+      noOfTrainings: '0',
+      isActive: 'yes',
+      designation: '',
+      enterprise: '',
+      contact: '',
+      project_id: '',
+      organization_id: '',
+      // Add defaults for new fields
+      isPermanentResident: 'no',
+      areParentsAlive: 'no',
+      numberOfChildren: '0',
+      employmentStatus: 'unemployed',
+      monthlyIncome: '0',
+      mainChallenge: '',
+      skillOfInterest: '',
+      expectedImpact: '',
+      isWillingToParticipate: 'yes',
     },
   });
 
+  // Set organization_id and cluster_id when organization data is available
+  useEffect(() => {
+    if (organizationData?.currentOrg) {
+      form.setValue('organization_id', organizationData.currentOrg.id);
+      if (organizationData.currentOrg.cluster_id) {
+        form.setValue('cluster_id', organizationData.currentOrg.cluster_id);
+      }
+    }
+  }, [organizationData, form]);
+
   const handleSubmit = async (data: ParticipantFormValues) => {
+    const toastId = toast.loading('Processing...');
     try {
       await onSubmit(data);
       if (!initialData) {
@@ -198,11 +205,12 @@ export function ParticipantForm({
       }
       toast.success(
         initialData
-          ? "Participant updated successfully"
-          : "Participant created successfully",
+          ? 'Participant updated successfully'
+          : 'Participant created successfully',
+        { id: toastId }
       );
     } catch {
-      toast.error("Something went wrong");
+      toast.error('Something went wrong', { id: toastId });
     }
   };
 
@@ -213,37 +221,34 @@ export function ParticipantForm({
           <FormField
             control={form.control}
             name="organization_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Organization</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+            render={({ field }) => {
+              // Directly set values based on current data instead of useEffect
+              if (organizationData?.currentOrg && !field.value) {
+                // Use setTimeout to defer the state update
+                setTimeout(() => {
+                  field.onChange(organizationData.currentOrg.id);
+                  if (organizationData.currentOrg.cluster_id) {
+                    form.setValue(
+                      'cluster_id',
+                      organizationData.currentOrg.cluster_id
+                    );
+                  }
+                }, 0);
+              }
+
+              return (
+                <FormItem>
+                  <FormLabel>Organization</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select organization" />
-                    </SelectTrigger>
+                    <Input
+                      value={organizationData?.currentOrg?.name || 'Loading...'}
+                      disabled
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {organizationsData?.organizations &&
-                    organizationsData.organizations.length > 0 ? (
-                      organizationsData.organizations.map((org) => (
-                        <SelectItem key={org.id} value={org.id}>
-                          {org.acronym || org.name}
-                          {org.cluster?.name ? ` (${org.cluster.name})` : ""}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <div className="py-2 px-2 text-sm text-muted-foreground">
-                        No organizations available
-                      </div>
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}
@@ -261,7 +266,7 @@ export function ParticipantForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {projects.map((project) => (
+                    {projects.map(project => (
                       <SelectItem key={project.id} value={project.id}>
                         {project.acronym}
                       </SelectItem>
@@ -553,6 +558,178 @@ export function ParticipantForm({
               </FormItem>
             )}
           />
+          {/* New fields */}
+          <FormField
+            control={form.control}
+            name="isPermanentResident"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Permanent Resident</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="areParentsAlive"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Both Parents Alive</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="numberOfChildren"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Number of Children</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Number of children"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="employmentStatus"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Employment Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="employed">Employed</SelectItem>
+                    <SelectItem value="self-employed">Self-employed</SelectItem>
+                    <SelectItem value="unemployed">Unemployed</SelectItem>
+                    <SelectItem value="student">Student</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="monthlyIncome"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Monthly Income (UGX)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Monthly income"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="mainChallenge"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Main Challenge</FormLabel>
+                <FormControl>
+                  <Input placeholder="Main challenge" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="skillOfInterest"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Skill of Interest</FormLabel>
+                <FormControl>
+                  <Input placeholder="Skill of interest" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="expectedImpact"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Expected Impact</FormLabel>
+                <FormControl>
+                  <Input placeholder="Expected impact" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isWillingToParticipate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Willing to Participate</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <Button
           type="submit"
@@ -560,10 +737,10 @@ export function ParticipantForm({
           disabled={isLoading}
         >
           {isLoading
-            ? "Loading..."
+            ? 'Submitting...'
             : initialData
-              ? "Update Participant"
-              : "Add Participant"}
+              ? 'Update Participant'
+              : 'Add Participant'}
         </Button>
       </form>
     </Form>

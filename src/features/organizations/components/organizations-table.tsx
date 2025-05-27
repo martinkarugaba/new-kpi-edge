@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Organization } from "@/features/organizations/types";
-import { CreateOrganizationDialog } from "./create-organization-dialog";
-import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Button } from '@/components/ui/button';
+import { Organization } from '@/features/organizations/types';
+import { CreateOrganizationDialog } from './create-organization-dialog';
+import { Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Cluster } from "@/features/clusters/components/clusters-table";
-import { ReusableDataTable } from "@/components/ui/reusable-data-table";
-import { deleteOrganizations } from "@/features/organizations/actions/organizations";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { getOrganizationTableColumns } from "./organization-table-columns";
+} from '@/components/ui/select';
+import { Cluster } from '@/features/clusters/components/clusters-table';
+import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+import { deleteOrganizations } from '@/features/organizations/actions/organizations';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { getOrganizationTableColumns } from './organization-table-columns';
 
 interface OrganizationsTableProps {
   organizations: Organization[];
@@ -33,42 +33,40 @@ export function OrganizationsTable({
   const router = useRouter();
   const [selectedRows, setSelectedRows] = useState<Organization[]>([]);
 
-  const handleDelete = async (id: string) => {
-    try {
-      const result = await deleteOrganizations([id]);
-      if (result.success) {
-        toast.success("Organization deleted successfully");
-        router.refresh();
-      } else {
-        toast.error(result.error || "Failed to delete organization");
-      }
-    } catch (error) {
-      toast.error("Failed to delete organization");
-    }
-  };
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     const result = await deleteOrganizations([id]);
+  //     if (result.success) {
+  //       toast.success("Organization deleted successfully");
+  //       router.refresh();
+  //     } else {
+  //       toast.error(result.error || "Failed to delete organization");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to delete organization");
+  //   }
+  // };
 
   const handleBulkDelete = async () => {
     if (selectedRows.length === 0) return;
 
     try {
-      const result = await deleteOrganizations(
-        selectedRows.map((row) => row.id),
-      );
+      const result = await deleteOrganizations(selectedRows.map(row => row.id));
       if (result.success) {
-        toast.success("Organizations deleted successfully");
+        toast.success('Organizations deleted successfully');
         setSelectedRows([]);
         router.refresh();
       } else {
-        toast.error(result.error || "Failed to delete organizations");
+        toast.error(result.error || 'Failed to delete organizations');
       }
     } catch (error) {
-      toast.error("Failed to delete organizations");
+      toast.error('Failed to delete organizations');
     }
   };
 
   const handleOrganizationSelect = (org: Organization | null) => {
     if (org) {
-      setSelectedRows((prev) => [...prev, org]);
+      setSelectedRows(prev => [...prev, org]);
     }
   };
 

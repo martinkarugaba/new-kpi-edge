@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   IconCreditCard,
@@ -6,10 +6,10 @@ import {
   IconLogout,
   IconNotification,
   IconUserCircle,
-} from "@tabler/icons-react";
-import { useSession, signOut } from "next-auth/react";
+} from '@tabler/icons-react';
+import { useSession, signOut } from 'next-auth/react';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,13 +18,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -41,19 +41,19 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage
-                  src={session?.user?.image || ""}
-                  alt={session?.user?.name || ""}
+                  src={session?.user?.image || ''}
+                  alt={session?.user?.name || ''}
                 />
                 <AvatarFallback className="rounded-lg">
-                  {session?.user?.name ? session.user.name.charAt(0) : "U"}
+                  {session?.user?.name ? session.user.name.charAt(0) : 'U'}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {session?.user?.name || "User"}
+                  {session?.user?.name || 'User'}
                 </span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {session?.user?.email || ""}
+                  {session?.user?.email || ''}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -61,7 +61,7 @@ export function NavUser() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >
@@ -69,19 +69,19 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={session?.user?.image || ""}
-                    alt={session?.user?.name || ""}
+                    src={session?.user?.image || ''}
+                    alt={session?.user?.name || ''}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {session?.user?.name ? session.user.name.charAt(0) : "U"}
+                    {session?.user?.name ? session.user.name.charAt(0) : 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {session?.user?.name || "User"}
+                    {session?.user?.name || 'User'}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {session?.user?.email || ""}
+                    {session?.user?.email || ''}
                   </span>
                 </div>
               </div>
