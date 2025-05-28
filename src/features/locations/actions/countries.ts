@@ -43,15 +43,81 @@ export async function deleteCountry(id: string) {
   }
 }
 
-export async function getCountries() {
+import { count, ilike, asc } from 'drizzle-orm';
+import type { PaginationParams } from '../types/pagination';
+
+export async function getCountries(params: PaginationParams = {}) {
   try {
-    const allCountries = await db
+    const { page = 1, limit = 10, search } = params;
+
+    // Validate and sanitize pagination parameters
+    const validatedPage = Math.max(1, page);
+    const validatedLimit = Math.min(Math.max(1, limit), 100);
+    const offset = (validatedPage - 1) * validatedLimit;
+
+    // Build search condition
+    const searchCondition = search
+      ? ilike(countries.name, `%${search}%`)
+      : undefined;
+
+    // Get total count
+    const [totalResult] = await db
+      .select({ count: count() })
+      .from(countries)
+      .where(searchCondition);
+
+    const total = totalResult.count;
+
+    // Get paginated data
+    const data = await db
       .select()
       .from(countries)
-      .orderBy(countries.name);
-    return { success: true, data: allCountries };
+      .where(searchCondition)
+      .orderBy(asc(countries.name))
+      .limit(validatedLimit)
+      .offset(offset);
+
+    const totalPages = Math.ceil(total / validatedLimit);
+
+    return {
+      success: true,
+      data: {
+        data,
+        pagination: {
+          page: validatedPage,
+          limit: validatedLimit,
+          total,
+          totalPages,
+          hasNext: validatedPage < totalPages,
+          hasPrev: validatedPage > 1,
+        },
+      },
+    };
   } catch (error) {
     console.error('Error fetching countries:', error);
     return { error: 'Failed to fetch countries' };
+  }
+}
+
+export async function getCountryById(id: string) {
+  try {
+    const country = await db.query.countries.findFirst({
+      where: eq(countries.id, id),
+    });
+
+    if (!country) {
+      throw new Error('Country not found');
+    }
+
+    return {
+      success: true as const,
+      data: country,
+    };
+  } catch (error) {
+    console.error('Error fetching country:', error);
+    return {
+      success: false as const,
+      error: error instanceof Error ? error.message : 'Failed to fetch country',
+    };
   }
 }

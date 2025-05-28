@@ -40,8 +40,8 @@ export function AddDistrictDialog({
       const fetchCountries = async () => {
         try {
           const result = await getCountries();
-          if (result.success && result.data) {
-            setCountryList(result.data);
+          if (result.success && result.data?.data) {
+            setCountryList(result.data.data);
           } else {
             toast.error('Failed to load countries');
           }

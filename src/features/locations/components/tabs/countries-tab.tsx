@@ -4,7 +4,7 @@ import { CountriesTable } from '../countries-table';
 import { useEffect, useState } from 'react';
 import { countries } from '@/lib/db/schema';
 import type { InferSelectModel } from 'drizzle-orm';
-import { getCountries } from '@/features/locations/actions/locations';
+import { getCountries } from '@/features/locations/actions/countries';
 
 type Country = InferSelectModel<typeof countries>;
 
@@ -14,17 +14,13 @@ export function CountriesTab() {
   useEffect(() => {
     const fetchData = async () => {
       const result = await getCountries();
-      if (result.success && result.data) {
-        setData(result.data);
+      if (result.success) {
+        setData(result.data.data);
       }
     };
 
     fetchData();
   }, []);
 
-  return (
-    <div className="p-4">
-      <CountriesTable data={data} />
-    </div>
-  );
+  return <CountriesTable data={data} />;
 }

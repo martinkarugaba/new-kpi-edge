@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { parishes } from '@/lib/db/schema';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { eq } from 'drizzle-orm';
+import { eq, and, count, ilike } from 'drizzle-orm';
+import type { PaginationParams } from '../types/pagination';
 
 const createParishSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -49,5 +50,97 @@ export async function deleteParish(id: string) {
     return { success: true };
   } catch {
     return { error: 'Failed to delete parish' };
+  }
+}
+
+export async function getParishes(
+  params: {
+    subCountyId?: string;
+    districtId?: string;
+    countyId?: string;
+    countryId?: string;
+    pagination?: PaginationParams;
+  } = {}
+) {
+  try {
+    const {
+      pagination = {},
+      subCountyId,
+      districtId,
+      countyId,
+      countryId,
+    } = params;
+
+    const { page = 1, limit = 10, search } = pagination;
+
+    // Validate and sanitize pagination parameters
+    const validatedPage = Math.max(1, page);
+    const validatedLimit = Math.min(Math.max(1, limit), 100);
+    const offset = (validatedPage - 1) * validatedLimit;
+
+    // Build where conditions
+    const whereConditions = [];
+
+    if (subCountyId) {
+      whereConditions.push(eq(parishes.sub_county_id, subCountyId));
+    }
+    if (districtId) {
+      whereConditions.push(eq(parishes.district_id, districtId));
+    }
+    if (countyId) {
+      whereConditions.push(eq(parishes.county_id, countyId));
+    }
+    if (countryId) {
+      whereConditions.push(eq(parishes.country_id, countryId));
+    }
+    if (search) {
+      whereConditions.push(ilike(parishes.name, `%${search}%`));
+    }
+
+    // Combine all conditions with AND
+    const finalWhereCondition =
+      whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+    // Get total count
+    const [totalResult] = await db
+      .select({ count: count() })
+      .from(parishes)
+      .where(finalWhereCondition);
+
+    const total = totalResult.count;
+
+    // Get paginated data
+    const data = await db.query.parishes.findMany({
+      where: finalWhereCondition,
+      with: {
+        subCounty: true,
+        district: true,
+        county: true,
+        country: true,
+      },
+      orderBy: (parishes, { asc }) => [asc(parishes.name)],
+      limit: validatedLimit,
+      offset: offset,
+    });
+
+    const totalPages = Math.ceil(total / validatedLimit);
+
+    return {
+      success: true,
+      data: {
+        data,
+        pagination: {
+          page: validatedPage,
+          limit: validatedLimit,
+          total,
+          totalPages,
+          hasNext: validatedPage < totalPages,
+          hasPrev: validatedPage > 1,
+        },
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching parishes:', error);
+    return { success: false, error: 'Failed to fetch parishes' };
   }
 }

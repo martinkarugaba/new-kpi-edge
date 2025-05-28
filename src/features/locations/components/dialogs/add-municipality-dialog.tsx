@@ -16,12 +16,10 @@ import {
 } from '@/components/ui/dialog';
 import { MunicipalityForm } from './municipality/municipality-form';
 import { createMunicipality } from '../../actions/municipalities';
-import {
-  getCountries,
-  getCountiesByDistrict,
-  getDistrictsByCountry,
-  getSubCountiesByCounty,
-} from '../../actions/locations';
+import { getCountries } from '../../actions/countries';
+import { getCounties } from '../../actions/counties';
+import { getDistricts } from '../../actions/districts';
+import { getSubCounties } from '../../actions/subcounties';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -89,10 +87,10 @@ export function AddMunicipalityDialog({
         setIsLoadingCountries(true);
         try {
           const result = await getCountries();
-          if (!result.success || !result.data) {
+          if (!result.success || !result.data?.data) {
             throw new Error(result.error || 'Failed to load countries');
           }
-          setCountryList(result.data);
+          setCountryList(result.data.data);
         } catch (error) {
           const message =
             error instanceof Error ? error.message : 'Failed to load countries';
@@ -113,11 +111,11 @@ export function AddMunicipalityDialog({
       const fetchDistricts = async () => {
         setIsLoadingDistricts(true);
         try {
-          const result = await getDistrictsByCountry(countryId);
-          if (!result.success || !result.data) {
+          const result = await getDistricts({ countryId });
+          if (!result.success || !result.data?.data) {
             throw new Error(result.error || 'Failed to load districts');
           }
-          setDistrictList(result.data);
+          setDistrictList(result.data.data);
         } catch (error) {
           const message =
             error instanceof Error ? error.message : 'Failed to load districts';
@@ -140,11 +138,11 @@ export function AddMunicipalityDialog({
       const fetchCounties = async () => {
         setIsLoadingCounties(true);
         try {
-          const result = await getCountiesByDistrict(districtId);
-          if (!result.success || !result.data) {
+          const result = await getCounties({ districtId });
+          if (!result.success || !result.data?.data) {
             throw new Error(result.error || 'Failed to load counties');
           }
-          setCountyList(result.data);
+          setCountyList(result.data.data);
         } catch (error) {
           const message =
             error instanceof Error ? error.message : 'Failed to load counties';
@@ -167,11 +165,11 @@ export function AddMunicipalityDialog({
       const fetchSubCounties = async () => {
         setIsLoadingSubCounties(true);
         try {
-          const result = await getSubCountiesByCounty(countyId);
-          if (!result.success || !result.data) {
+          const result = await getSubCounties({ countyId });
+          if (!result.success || !result.data?.data) {
             throw new Error(result.error || 'Failed to load sub counties');
           }
-          setSubCountyList(result.data);
+          setSubCountyList(result.data.data);
         } catch (error) {
           const message =
             error instanceof Error

@@ -13,19 +13,23 @@ type Municipality = InferSelectModel<typeof municipalities> & {
   subCounty: { name: string };
 };
 
-export function MunicipalitiesTab() {
+interface MunicipalitiesTabProps {
+  countryId: string;
+}
+
+export function MunicipalitiesTab({ countryId }: MunicipalitiesTabProps) {
   const [data, setData] = useState<Municipality[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getMunicipalities();
-      if (result.success && result.data) {
-        setData(result.data);
+      const result = await getMunicipalities({ countryId });
+      if (result.success && result.data?.data) {
+        setData(result.data.data);
       }
     };
 
     fetchData();
-  }, []);
+  }, [countryId]);
 
   return (
     <div className="p-4">
