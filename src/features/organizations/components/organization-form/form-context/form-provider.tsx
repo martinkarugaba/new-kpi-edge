@@ -19,11 +19,9 @@ import {
 } from './types';
 import { Project } from '@/features/projects/types';
 import { Cluster } from '@/features/clusters/types';
-import {
-  getCountries,
-  getDistricts,
-  getSubCounties,
-} from '@/features/locations/services/locations';
+import { getCountries } from '@/features/locations/actions/countries';
+import { getDistricts } from '@/features/locations/actions/districts';
+import { getSubCounties } from '@/features/locations/actions/subcounties';
 import { getProjects } from '@/features/projects/actions/projects';
 import {
   countriesAtom,
@@ -139,23 +137,25 @@ export function OrganizationFormProvider({
     const fetchInitialData = async () => {
       try {
         // Fetch countries and projects separately to handle type conversion properly
-        const fetchedCountries = await getCountries().catch(
-          (error: unknown) => {
-            console.error('Error fetching countries:', error);
-            return [];
-          }
-        );
+        const result = await getCountries().catch((error: unknown) => {
+          console.error('Error fetching countries:', error);
+          return { success: false, data: { data: [] } };
+        });
+
+        const fetchedCountries = result.data?.data || [];
 
         // Convert to ICountry compatible format
-        const formattedCountries = fetchedCountries.map(country => ({
-          name: country.name,
-          isoCode: country.code,
-          phonecode: '',
-          flag: '',
-          currency: '',
-          latitude: '',
-          longitude: '',
-        }));
+        const formattedCountries = fetchedCountries.map(
+          (country: { name: string; code: string }) => ({
+            name: country.name,
+            isoCode: country.code,
+            phonecode: '',
+            flag: '',
+            currency: '',
+            latitude: '',
+            longitude: '',
+          })
+        );
 
         setCountries(formattedCountries);
 
@@ -191,15 +191,18 @@ export function OrganizationFormProvider({
       setAvailableSubCounties([]);
 
       try {
-        const fetchedDistricts = await getDistricts(countryCode);
+        const result = await getDistricts({ countryId: countryCode });
+        const fetchedDistricts = result.data?.data || [];
 
         // Convert to IState compatible format
-        const formattedDistricts = fetchedDistricts.map(district => ({
-          name: district.name,
-          isoCode: district.code,
-          countryCode: countryCode,
-          stateCode: district.code,
-        }));
+        const formattedDistricts = fetchedDistricts.map(
+          (district: { name: string; code: string }) => ({
+            name: district.name,
+            isoCode: district.code,
+            countryCode: countryCode,
+            stateCode: district.code,
+          })
+        );
 
         setDistricts(formattedDistricts);
       } catch (error: unknown) {
@@ -231,25 +234,29 @@ export function OrganizationFormProvider({
 
       try {
         // Get sub-counties for this district and store them
-        const subCountyData = await getSubCounties(
-          currentCountry.code,
-          districtCode
-        );
+        const result = await getSubCounties({
+          districtId: districtCode,
+        });
+        const subCountyData = result.data?.data || [];
         // Store names for the UI
-        const subCountyNames = subCountyData.map(city => city.name);
+        const subCountyNames = subCountyData.map(
+          (city: { name: string }) => city.name
+        );
         setDistrictSubCounties({
           ...districtSubCounties,
           [districtCode]: subCountyNames,
         });
 
         // Convert to ICity compatible format for the atom
-        const formattedSubCounties = subCountyData.map(sc => ({
-          name: sc.name,
-          stateCode: districtCode,
-          countryCode: currentCountry.code,
-          latitude: '',
-          longitude: '',
-        }));
+        const formattedSubCounties = subCountyData.map(
+          (sc: { name: string }) => ({
+            name: sc.name,
+            stateCode: districtCode,
+            countryCode: currentCountry.code,
+            latitude: '',
+            longitude: '',
+          })
+        );
 
         setAvailableSubCounties(formattedSubCounties);
       } catch (error: unknown) {

@@ -32,17 +32,17 @@ import {
   type districts,
   type subCounties,
 } from '@/lib/db/schema';
+import { getCountries } from '@/features/locations/actions/countries';
+import { getDistricts } from '@/features/locations/actions/districts';
+import { getSubCounties } from '@/features/locations/actions/subcounties';
+import { getVillages } from '@/features/locations/actions/villages';
+import { getMunicipalities } from '@/features/locations/actions/municipalities';
+import { getCities } from '@/features/locations/actions/cities';
+import { getParishes } from '@/features/locations/actions/parishes';
 import {
-  getCountries,
-  getDistricts,
-  getSubCounties,
-  getVillages,
-  getMunicipalities,
-  getCities,
   getWards,
   getDivisions,
-  getParishes,
-} from '@/features/locations/services/locations';
+} from '@/features/locations/actions/administrative-units';
 import { Project } from '@/features/projects/types';
 import { getProjects } from '@/features/projects/actions/projects';
 import { createOrganization } from '@/features/organizations/actions/organizations';
@@ -58,7 +58,9 @@ interface OrganizationFormProps {
 // Add type definitions
 type Country = InferSelectModel<typeof countries>;
 type District = InferSelectModel<typeof districts>;
-type SubCounty = InferSelectModel<typeof subCounties>;
+type SubCounty = InferSelectModel<typeof subCounties> & {
+  type?: 'subcounty' | 'municipality';
+};
 
 // Add type for the option with search value
 // interface SearchableOption extends ComboboxOption {
@@ -84,23 +86,25 @@ export function OrganizationForm({
   const [projects, setProjects] = useState<Project[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
-  const [subCounties, setSubCounties] = useState<
-    (SubCounty & { type?: string })[]
+  const [subCounties, setSubCounties] = useState<SubCounty[]>([]);
+  const [parishes, setParishes] = useState<
+    { id: string; code: string; name: string }[]
   >([]);
-  const [parishes, setParishes] = useState<{ code: string; name: string }[]>(
-    []
-  );
-  const [villages, setVillages] = useState<{ code: string; name: string }[]>(
-    []
-  );
+  const [villages, setVillages] = useState<
+    { id: string; code: string; name: string }[]
+  >([]);
   const [municipalities, setMunicipalities] = useState<
-    { code: string; name: string }[]
+    { id: string; code: string; name: string }[]
   >([]);
-  const [cities, setCities] = useState<{ code: string; name: string }[]>([]);
-  const [wards, setWards] = useState<{ code: string; name: string }[]>([]);
-  const [divisions, setDivisions] = useState<{ code: string; name: string }[]>(
-    []
-  );
+  const [cities, setCities] = useState<
+    { id: string; code: string; name: string }[]
+  >([]);
+  const [wards, setWards] = useState<
+    { id: string; code: string; name: string }[]
+  >([]);
+  const [divisions, setDivisions] = useState<
+    { id: string; code: string; name: string }[]
+  >([]);
   const [loading, setLoading] = useState({
     projects: false,
     locations: false,
@@ -135,9 +139,12 @@ export function OrganizationForm({
     const loadCountries = async () => {
       try {
         setLoading(prev => ({ ...prev, locations: true }));
-        const allCountries = await getCountries();
-        console.log('All countries loaded:', allCountries);
-        setCountries(allCountries);
+        const response = await getCountries();
+        if (response.success && response.data?.data) {
+          setCountries(response.data.data);
+        } else {
+          console.error('Error loading countries:', response.error);
+        }
       } catch (error) {
         console.error('Error fetching countries:', error);
       } finally {
@@ -171,16 +178,13 @@ export function OrganizationForm({
 
       // Load districts for this country
       try {
-        const districtsForCountry = await getDistricts(countryCode);
-        console.log(
-          `Districts returned for ${countryCode}:`,
-          districtsForCountry
-        );
+        const response = await getDistricts({ countryId: countryCode });
+        console.log(`Districts returned for ${countryCode}:`, response);
 
-        if (districtsForCountry && districtsForCountry.length > 0) {
-          setDistricts(districtsForCountry);
+        if (response.success && response.data?.data) {
+          setDistricts(response.data.data);
           console.log(
-            `${districtsForCountry.length} districts set for ${countryCode}`
+            `${response.data.data.length} districts set for ${countryCode}`
           );
         } else {
           console.warn(`No districts found for country ${countryCode}`);
@@ -222,19 +226,30 @@ export function OrganizationForm({
 
     try {
       // Fetch all administrative units for this district
-      const [subCountiesForDistrict, municipalitiesForDistrict] =
-        await Promise.all([
-          getSubCounties(countryCode, districtCode),
-          getMunicipalities(districtCode),
-        ]);
+      const [subCountiesResponse, municipalitiesResponse] = await Promise.all([
+        getSubCounties({
+          countryId: countryCode,
+          districtId: districtCode,
+        }),
+        getMunicipalities({
+          districtId: districtCode,
+        }),
+      ]);
 
       // Combine administrative units into a single array with type information
       const combinedUnits = [
-        ...(subCountiesForDistrict as SubCounty[]).map(unit => ({
+        ...(
+          (subCountiesResponse.success && subCountiesResponse.data?.data) ||
+          []
+        ).map(unit => ({
           ...unit,
           type: 'subcounty' as const,
         })),
-        ...(municipalitiesForDistrict as SubCounty[]).map(unit => ({
+        ...(
+          (municipalitiesResponse.success &&
+            municipalitiesResponse.data?.data) ||
+          []
+        ).map(unit => ({
           ...unit,
           type: 'municipality' as const,
         })),
@@ -286,30 +301,57 @@ export function OrganizationForm({
     try {
       if (unitType === 'subcounty') {
         // For sub-counties, fetch parishes
-        const parishesForSubCounty = await getParishes(unitCode, unitName);
-        setParishes(parishesForSubCounty);
+        const response = await getParishes({ subCountyId: unitCode });
+        if (response.success && response.data?.data) {
+          setParishes(response.data.data);
+        }
       } else if (unitType === 'city') {
         // For cities, fetch wards and divisions
-        const [wardsForCity, divisionsForCity] = await Promise.all([
+        const [wardsResponse, divisionsResponse] = await Promise.all([
           getWards(unitCode),
           getDivisions(unitCode),
         ]);
-        setWards(wardsForCity);
-        setDivisions(divisionsForCity);
+        if (wardsResponse.success && wardsResponse.data) {
+          setWards(
+            wardsResponse.data.map(ward => ({
+              id: ward.id,
+              code: ward.code,
+              name: ward.name,
+            }))
+          );
+        }
+        if (divisionsResponse.success && divisionsResponse.data) {
+          setDivisions(
+            divisionsResponse.data.map(division => ({
+              id: division.id,
+              code: division.code,
+              name: division.name,
+            }))
+          );
+        }
       } else if (unitType === 'municipality') {
         // For municipalities, fetch cities, wards, and divisions
-        const [
-          citiesForMunicipality,
-          wardsForMunicipality,
-          divisionsForMunicipality,
-        ] = await Promise.all([
-          getCities(unitCode),
-          getWards(unitCode),
-          getDivisions(unitCode),
-        ]);
-        setCities(citiesForMunicipality);
-        setWards(wardsForMunicipality);
-        setDivisions(divisionsForMunicipality);
+        const [citiesResponse, wardsResponse, divisionsResponse] =
+          await Promise.all([
+            getCities(unitCode),
+            getWards(unitCode),
+            getDivisions(unitCode),
+          ]);
+        if (citiesResponse.success && citiesResponse.data) {
+          setCities(
+            citiesResponse.data.map(city => ({
+              id: city.id,
+              code: city.code,
+              name: city.name,
+            }))
+          );
+        }
+        if (wardsResponse.success && wardsResponse.data) {
+          setWards(wardsResponse.data);
+        }
+        if (divisionsResponse.success && divisionsResponse.data) {
+          setDivisions(divisionsResponse.data);
+        }
       }
     } catch (error) {
       console.error(`Error fetching data for ${unitType} ${unitCode}:`, error);
@@ -344,13 +386,29 @@ export function OrganizationForm({
       const citiesForMunicipality = await getCities(
         municipalityId // Using the municipality code directly
       );
-      setCities(citiesForMunicipality);
+      if (citiesForMunicipality.success && citiesForMunicipality.data) {
+        setCities(
+          citiesForMunicipality.data.map(city => ({
+            id: city.id,
+            code: city.code,
+            name: city.name,
+          }))
+        );
+      }
 
       // Fetch wards for municipality
       const wardsForMunicipality = await getWards(
         municipalityId // Using the municipality code directly
       );
-      setWards(wardsForMunicipality);
+      if (wardsForMunicipality.success && wardsForMunicipality.data) {
+        setWards(
+          wardsForMunicipality.data.map(ward => ({
+            id: ward.id,
+            code: ward.code,
+            name: ward.name,
+          }))
+        );
+      }
     } catch (error) {
       console.error(
         `Error fetching data for municipality ${municipalityId}:`,
@@ -383,7 +441,15 @@ export function OrganizationForm({
       const wardsForCity = await getWards(
         cityId // Using the city code directly
       );
-      setWards(wardsForCity);
+      if (wardsForCity.success && wardsForCity.data) {
+        setWards(
+          wardsForCity.data.map(ward => ({
+            id: ward.id,
+            code: ward.code,
+            name: ward.name,
+          }))
+        );
+      }
     } catch (error) {
       console.error(`Error fetching data for city ${cityId}:`, error);
     } finally {
@@ -411,7 +477,15 @@ export function OrganizationForm({
       const divisionsForWard = await getDivisions(
         wardId // Using ward code directly - all other params are inferred from this
       );
-      setDivisions(divisionsForWard);
+      if (divisionsForWard.success && divisionsForWard.data) {
+        setDivisions(
+          divisionsForWard.data.map(division => ({
+            id: division.id,
+            code: division.code,
+            name: division.name,
+          }))
+        );
+      }
     } catch (error) {
       console.error(`Error fetching data for ward ${wardId}:`, error);
     } finally {
@@ -433,9 +507,11 @@ export function OrganizationForm({
 
     try {
       console.log(`Fetching villages for parish: ${parishCode}`);
-      const villagesForParish = await getVillages(parishCode);
-      console.log(`Villages returned:`, villagesForParish);
-      setVillages(villagesForParish);
+      const response = await getVillages({ parishId: parishCode });
+      console.log(`Villages returned:`, response);
+      if (response.success && response.data?.data) {
+        setVillages(response.data.data);
+      }
     } catch (error) {
       console.error(`Error fetching villages for parish ${parishCode}:`, error);
     } finally {

@@ -8,7 +8,8 @@ import { ThemeSelector } from '@/features/themes/components/theme-selector';
 import { DashboardBreadcrumbs } from './dashboard-breadcrumbs';
 
 interface SiteHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
+  heading?: string;
+  text?: string;
   children?: React.ReactNode;
 }
 

@@ -190,3 +190,51 @@ export async function getVillages(parishId: string) {
     return { success: false, error: 'Failed to fetch villages' };
   }
 }
+
+export async function getWards(unitCode: string) {
+  try {
+    const data = await db
+      .select({
+        id: districts.id,
+        name: districts.name,
+        code: districts.code,
+      })
+      .from(districts)
+      .where(eq(districts.code, unitCode));
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error('Error fetching wards:', error);
+    return {
+      success: false,
+      error: 'Failed to fetch wards',
+    };
+  }
+}
+
+export async function getDivisions(unitCode: string) {
+  try {
+    const data = await db
+      .select({
+        id: districts.id,
+        name: districts.name,
+        code: districts.code,
+      })
+      .from(districts)
+      .where(eq(districts.code, unitCode));
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error('Error fetching divisions:', error);
+    return {
+      success: false,
+      error: 'Failed to fetch divisions',
+    };
+  }
+}

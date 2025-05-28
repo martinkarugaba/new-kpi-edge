@@ -11,13 +11,11 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addCounty } from '@/features/locations/actions/counties';
+import { getCountries } from '@/features/locations/actions/countries';
+import { getDistricts } from '@/features/locations/actions/districts';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  getCountries,
-  getDistrictsByCountry,
-} from '@/features/locations/actions/locations';
 import { FormValues, formSchema } from './county/schema';
 import { District, Country } from './county/schema';
 import { CountyForm } from './county/county-form';
@@ -45,15 +43,16 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
     },
   });
 
+  const { watch } = form;
+  const selectedCountryId = watch('country_id');
+
   useEffect(() => {
     const fetchCountries = async () => {
       setIsLoadingCountries(true);
       try {
         const result = await getCountries();
-        if (result.success && result.data) {
-          setCountryList(result.data);
-        } else {
-          toast.error('Failed to load countries');
+        if (result.success && result.data?.data) {
+          setCountryList(result.data.data);
         }
       } catch (error) {
         console.error('Error fetching countries:', error);
@@ -63,29 +62,21 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
       }
     };
 
-    if (open) {
-      fetchCountries();
-    }
-  }, [open]);
+    fetchCountries();
+  }, []);
 
-  // Watch for changes in country_id to fetch districts
-  const countryId = form.watch('country_id');
   useEffect(() => {
-    if (countryId) {
+    if (selectedCountryId) {
       const fetchDistricts = async () => {
         setIsLoadingDistricts(true);
         try {
-          const result = await getDistrictsByCountry(countryId);
-          if (result.success && result.data) {
-            setDistrictList(result.data);
-          } else {
-            toast.error('Failed to load districts');
-            setDistrictList([]);
+          const result = await getDistricts({ countryId: selectedCountryId });
+          if (result.success && result.data?.data) {
+            setDistrictList(result.data.data);
           }
         } catch (error) {
           console.error('Error fetching districts:', error);
           toast.error('Failed to load districts');
-          setDistrictList([]);
         } finally {
           setIsLoadingDistricts(false);
         }
@@ -95,9 +86,9 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
     } else {
       setDistrictList([]);
     }
-  }, [countryId]);
+  }, [selectedCountryId]);
 
-  async function onSubmit(values: FormValues) {
+  const onSubmit = async (values: FormValues) => {
     try {
       setIsLoading(true);
       const result = await addCounty(values);
@@ -117,7 +108,7 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -133,7 +124,7 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
           countryList={countryList}
           districtList={districtList}
           isLoading={isLoading || isLoadingCountries || isLoadingDistricts}
-          countyName={form.watch('name')}
+          countyName={watch('name')}
         />
       </DialogContent>
     </Dialog>

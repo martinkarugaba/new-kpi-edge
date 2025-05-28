@@ -23,7 +23,8 @@ const eslintConfig = [
       '.pnp.js',
 
       // next.js
-      '.next/**',
+      '.next/**/*',
+      '.next/types/**/*',
       'out/**',
       'build/**',
       'dist/**',
