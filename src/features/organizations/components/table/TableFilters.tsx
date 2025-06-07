@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Cluster } from '@/features/clusters/types';
+} from "@/components/ui/select";
+import { Cluster } from "@/features/clusters/types";
 
 interface TableFiltersProps {
   clusters: Cluster[];
@@ -16,11 +16,11 @@ interface TableFiltersProps {
 }
 
 export function TableFilters({ clusters, onClusterChange }: TableFiltersProps) {
-  const [selectedCluster, setSelectedCluster] = useState<string>('all');
+  const [selectedCluster, setSelectedCluster] = useState<string>("all");
 
   const handleClusterChange = (value: string) => {
     setSelectedCluster(value);
-    onClusterChange?.(value === 'all' ? null : value);
+    onClusterChange?.(value === "all" ? null : value);
   };
 
   return (

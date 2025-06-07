@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Container } from '@/components/ui/container';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,88 +8,88 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 
 const tiers = [
   {
-    name: 'Free',
-    price: '$0',
-    period: '/month',
-    description: 'Perfect for trying out our KPI tracking features',
+    name: "Free",
+    price: "$0",
+    period: "/month",
+    description: "Perfect for trying out our KPI tracking features",
     features: [
-      'Up to 3 KPIs',
-      'Basic analytics',
-      'Daily data updates',
-      'Email support',
-      'Single user',
+      "Up to 3 KPIs",
+      "Basic analytics",
+      "Daily data updates",
+      "Email support",
+      "Single user",
     ],
-    cta: 'Start Free',
-    ctaLink: '/signup?plan=free',
+    cta: "Start Free",
+    ctaLink: "/signup?plan=free",
     featured: false,
   },
   {
-    name: 'Pro',
-    price: '$49',
-    period: '/month',
-    description: 'Best for growing businesses tracking multiple KPIs',
+    name: "Pro",
+    price: "$49",
+    period: "/month",
+    description: "Best for growing businesses tracking multiple KPIs",
     features: [
-      'Unlimited KPIs',
-      'Advanced analytics',
-      'Real-time updates',
-      'Priority support',
-      'Custom dashboards',
-      'API access',
-      'Data export',
-      'Up to 10 team members',
+      "Unlimited KPIs",
+      "Advanced analytics",
+      "Real-time updates",
+      "Priority support",
+      "Custom dashboards",
+      "API access",
+      "Data export",
+      "Up to 10 team members",
     ],
-    cta: 'Start Free Trial',
-    ctaLink: '/signup?plan=pro',
+    cta: "Start Free Trial",
+    ctaLink: "/signup?plan=pro",
     featured: true,
   },
   {
-    name: 'Enterprise',
-    price: '$99',
-    period: '/month',
+    name: "Enterprise",
+    price: "$99",
+    period: "/month",
     description:
-      'For organizations with advanced needs and multiple departments',
+      "For organizations with advanced needs and multiple departments",
     features: [
-      'Unlimited KPIs',
-      'White-labeled dashboards',
-      'Real-time data updates',
-      'Advanced analytics',
-      'API access',
-      'Custom integrations',
-      'Dedicated account manager',
-      'Unlimited team members',
+      "Unlimited KPIs",
+      "White-labeled dashboards",
+      "Real-time data updates",
+      "Advanced analytics",
+      "API access",
+      "Custom integrations",
+      "Dedicated account manager",
+      "Unlimited team members",
     ],
-    cta: 'Contact Sales',
-    ctaLink: 'mailto:enterprise@kpitracker.com',
+    cta: "Contact Sales",
+    ctaLink: "mailto:enterprise@kpitracker.com",
     featured: false,
   },
 ];
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="py-20 bg-secondary/5">
+    <section id="pricing" className="bg-secondary/5 py-20">
       <Container>
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight mb-2">
+        <div className="mb-16 text-center">
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
             Choose the perfect plan for your business needs
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {tiers.map((tier, index) => (
             <Card
               key={index}
-              className={`border ${tier.featured ? 'border-primary shadow-lg relative' : 'border-border/40'} flex flex-col`}
+              className={`border ${tier.featured ? "border-primary relative shadow-lg" : "border-border/40"} flex flex-col`}
             >
               {tier.featured && (
-                <div className="absolute -top-4 left-0 right-0 flex justify-center">
-                  <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                <div className="absolute -top-4 right-0 left-0 flex justify-center">
+                  <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-medium">
                     Most Popular
                   </span>
                 </div>
@@ -99,7 +99,7 @@ export function PricingSection() {
                 <div className="mt-4 flex items-baseline text-5xl font-extrabold">
                   {tier.price}
                   {tier.period && (
-                    <span className="ml-1 text-2xl font-medium text-muted-foreground">
+                    <span className="text-muted-foreground ml-1 text-2xl font-medium">
                       {tier.period}
                     </span>
                   )}
@@ -114,7 +114,7 @@ export function PricingSection() {
                     <li key={featureIndex} className="flex items-start">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-primary mr-3 mt-0.5"
+                        className="text-primary mt-0.5 mr-3 h-5 w-5"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -133,7 +133,7 @@ export function PricingSection() {
                 <Button
                   asChild
                   className="w-full"
-                  variant={tier.featured ? 'default' : 'outline'}
+                  variant={tier.featured ? "default" : "outline"}
                 >
                   <Link href={tier.ctaLink}>{tier.cta}</Link>
                 </Button>
@@ -143,7 +143,7 @@ export function PricingSection() {
         </div>
 
         <div className="mt-16 text-center">
-          <p className="text-lg text-muted-foreground mb-2">
+          <p className="text-muted-foreground mb-2 text-lg">
             Have questions about which plan is right for you?
           </p>
           <Button variant="outline" asChild>

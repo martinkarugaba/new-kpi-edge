@@ -1,17 +1,17 @@
-'use server';
+"use server";
 
-import { z } from 'zod';
-import { counties } from '@/lib/db/schema';
-import { db } from '@/lib/db';
-import { revalidatePath } from 'next/cache';
-import { eq, and, count, ilike } from 'drizzle-orm';
-import type { PaginationParams } from '../types/pagination';
+import { z } from "zod";
+import { counties } from "@/lib/db/schema";
+import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
+import { eq, and, count, ilike } from "drizzle-orm";
+import type { PaginationParams } from "../types/pagination";
 
 const createCountySchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  code: z.string().min(1, 'Code is required'),
-  country_id: z.string().min(1, 'Country is required'),
-  district_id: z.string().min(1, 'District is required'),
+  name: z.string().min(1, "Name is required"),
+  code: z.string().min(1, "Code is required"),
+  country_id: z.string().min(1, "Country is required"),
+  district_id: z.string().min(1, "District is required"),
 });
 
 export async function addCounty(data: z.infer<typeof createCountySchema>) {
@@ -31,20 +31,20 @@ export async function addCounty(data: z.infer<typeof createCountySchema>) {
       district_id,
     });
 
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch {
-    return { error: 'Failed to create county' };
+    return { error: "Failed to create county" };
   }
 }
 
 export async function deleteCounty(id: string) {
   try {
     await db.delete(counties).where(eq(counties.id, id));
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch {
-    return { error: 'Failed to delete county' };
+    return { error: "Failed to delete county" };
   }
 }
 
@@ -59,9 +59,9 @@ export async function getCounties(
     const { page = 1, limit = 10, search } = pagination;
 
     // Validate pagination parameters
-    if (page < 1) throw new Error('Page must be greater than 0');
+    if (page < 1) throw new Error("Page must be greater than 0");
     if (limit < 1 || limit > 100)
-      throw new Error('Limit must be between 1 and 100');
+      throw new Error("Limit must be between 1 and 100");
 
     // Build where conditions
     const whereConditions = [];
@@ -113,11 +113,11 @@ export async function getCounties(
       },
     };
   } catch (error) {
-    console.error('Error fetching counties:', error);
+    console.error("Error fetching counties:", error);
     return {
       success: false as const,
       error:
-        error instanceof Error ? error.message : 'Failed to fetch counties',
+        error instanceof Error ? error.message : "Failed to fetch counties",
     };
   }
 }
@@ -132,7 +132,7 @@ export async function getCountyById(id: string) {
     });
 
     if (!county) {
-      throw new Error('County not found');
+      throw new Error("County not found");
     }
 
     return {
@@ -140,10 +140,10 @@ export async function getCountyById(id: string) {
       data: county,
     };
   } catch (error) {
-    console.error('Error fetching county:', error);
+    console.error("Error fetching county:", error);
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : 'Failed to fetch county',
+      error: error instanceof Error ? error.message : "Failed to fetch county",
     };
   }
 }

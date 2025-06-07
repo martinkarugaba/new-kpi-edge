@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -6,23 +6,23 @@ import {
   useEffect,
   useState,
   useCallback,
-} from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAtom } from 'jotai';
+} from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAtom } from "jotai";
 import {
   OrganizationFormContextType,
   OrganizationFormValues,
   organizationFormSchema,
   OrganizationData,
   LocationInfo,
-} from './types';
-import { Project } from '@/features/projects/types';
-import { Cluster } from '@/features/clusters/types';
-import { getCountries } from '@/features/locations/actions/countries';
-import { getDistricts } from '@/features/locations/actions/districts';
-import { getSubCounties } from '@/features/locations/actions/subcounties';
-import { getProjects } from '@/features/projects/actions/projects';
+} from "./types";
+import { Project } from "@/features/projects/types";
+import { Cluster } from "@/features/clusters/types";
+import { getCountries } from "@/features/locations/actions/countries";
+import { getDistricts } from "@/features/locations/actions/districts";
+import { getSubCounties } from "@/features/locations/actions/subcounties";
+import { getProjects } from "@/features/projects/actions/projects";
 import {
   countriesAtom,
   districtsAtom,
@@ -30,7 +30,7 @@ import {
   currentCountryAtom,
   currentDistrictAtom,
   districtSubCountiesAtom,
-} from '@/features/organizations/atoms/organization-form';
+} from "@/features/organizations/atoms/organization-form";
 
 interface FormProviderProps extends React.PropsWithChildren {
   initialData?: OrganizationData;
@@ -102,7 +102,7 @@ export function OrganizationFormProvider({
     defaultValues: initialData
       ? {
           name: initialData.name,
-          acronym: initialData.acronym || '',
+          acronym: initialData.acronym || "",
           cluster_id: initialData.cluster_id || null,
           selected_cluster_ids: initialData.cluster_id
             ? [initialData.cluster_id]
@@ -110,25 +110,25 @@ export function OrganizationFormProvider({
           project_id: initialData.project_id || null,
           country: initialData.country ? [initialData.country] : [],
           district: initialData.district ? [initialData.district] : [],
-          sub_county_id: initialData.sub_county_id || '',
+          sub_county_id: initialData.sub_county_id || "",
           operation_sub_counties: initialData.operation_sub_counties || [],
-          parish: initialData.parish || '',
-          village: initialData.village || '',
-          address: initialData.address || '',
+          parish: initialData.parish || "",
+          village: initialData.village || "",
+          address: initialData.address || "",
         }
       : {
-          name: '',
-          acronym: '',
+          name: "",
+          acronym: "",
           cluster_id: defaultClusterId || null,
           selected_cluster_ids: defaultClusterId ? [defaultClusterId] : [],
           project_id: null,
           country: [],
           district: [],
-          sub_county_id: '',
+          sub_county_id: "",
           operation_sub_counties: [],
-          parish: '',
-          village: '',
-          address: '',
+          parish: "",
+          village: "",
+          address: "",
         },
   });
 
@@ -138,7 +138,7 @@ export function OrganizationFormProvider({
       try {
         // Fetch countries and projects separately to handle type conversion properly
         const result = await getCountries().catch((error: unknown) => {
-          console.error('Error fetching countries:', error);
+          console.error("Error fetching countries:", error);
           return { success: false, data: { data: [] } };
         });
 
@@ -149,11 +149,11 @@ export function OrganizationFormProvider({
           (country: { name: string; code: string }) => ({
             name: country.name,
             isoCode: country.code,
-            phonecode: '',
-            flag: '',
-            currency: '',
-            latitude: '',
-            longitude: '',
+            phonecode: "",
+            flag: "",
+            currency: "",
+            latitude: "",
+            longitude: "",
           })
         );
 
@@ -161,7 +161,7 @@ export function OrganizationFormProvider({
 
         // Fetch projects separately
         const projectsResult = await getProjects().catch((error: unknown) => {
-          console.error('Error fetching projects:', error);
+          console.error("Error fetching projects:", error);
           return { success: false, data: [] };
         });
 
@@ -169,7 +169,7 @@ export function OrganizationFormProvider({
           setProjects(projectsResult.data);
         }
       } catch (error: unknown) {
-        console.error('Error in fetchInitialData:', error);
+        console.error("Error in fetchInitialData:", error);
       } finally {
         setLoadingProjects(false);
       }
@@ -206,7 +206,7 @@ export function OrganizationFormProvider({
 
         setDistricts(formattedDistricts);
       } catch (error: unknown) {
-        console.error('Error fetching districts:', error);
+        console.error("Error fetching districts:", error);
       }
     },
     [
@@ -228,7 +228,7 @@ export function OrganizationFormProvider({
       setAvailableSubCounties([]);
 
       if (!currentCountry?.code) {
-        console.error('No country selected');
+        console.error("No country selected");
         return;
       }
 
@@ -253,14 +253,14 @@ export function OrganizationFormProvider({
             name: sc.name,
             stateCode: districtCode,
             countryCode: currentCountry.code,
-            latitude: '',
-            longitude: '',
+            latitude: "",
+            longitude: "",
           })
         );
 
         setAvailableSubCounties(formattedSubCounties);
       } catch (error: unknown) {
-        console.error('Error fetching sub-counties:', error);
+        console.error("Error fetching sub-counties:", error);
       }
     },
     [
@@ -282,13 +282,13 @@ export function OrganizationFormProvider({
   // Handler for finishing country selection
   const handleFinishCountry = useCallback(async () => {
     // Implementation for finalizing country selection
-    console.log('Country selection finished');
+    console.log("Country selection finished");
   }, []);
 
   // Handler for adding a district
   const handleAddDistrict = useCallback(async () => {
     // Implementation for adding a new district
-    console.log('Add district action triggered');
+    console.log("Add district action triggered");
   }, []);
 
   // Now that handleCountrySelect is defined, set initial country and district if provided
@@ -349,7 +349,7 @@ export function useOrganizationForm() {
   const context = useContext(FormContext);
   if (context === undefined) {
     throw new Error(
-      'useOrganizationForm must be used within a OrganizationFormProvider'
+      "useOrganizationForm must be used within a OrganizationFormProvider"
     );
   }
   return context;

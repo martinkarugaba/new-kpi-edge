@@ -1,28 +1,28 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { cities } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
-import { ApiResult } from '@/lib/utils';
+import { db } from "@/lib/db";
+import { cities } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { ApiResult } from "@/lib/utils";
 import {
   districts,
   counties,
   subCounties,
   municipalities,
-} from '@/lib/db/schema';
-import type { City } from '@/features/locations/components/data-table/cities-columns';
+} from "@/lib/db/schema";
+import type { City } from "@/features/locations/components/data-table/cities-columns";
 
 export async function createCity(formData: FormData) {
   try {
     const rawFormData = {
-      name: formData.get('name') as string,
-      code: formData.get('code') as string,
-      countryId: formData.get('countryId') as string,
-      districtId: formData.get('districtId') as string,
-      countyId: formData.get('countyId') as string,
-      subCountyId: formData.get('subCountyId') as string,
-      municipalityId: formData.get('municipalityId') as string,
+      name: formData.get("name") as string,
+      code: formData.get("code") as string,
+      countryId: formData.get("countryId") as string,
+      districtId: formData.get("districtId") as string,
+      countyId: formData.get("countyId") as string,
+      subCountyId: formData.get("subCountyId") as string,
+      municipalityId: formData.get("municipalityId") as string,
     };
 
     await db.insert(cities).values({
@@ -35,24 +35,24 @@ export async function createCity(formData: FormData) {
       municipality_id: rawFormData.municipalityId,
     });
 
-    revalidatePath('/dashboard/locations/cities');
+    revalidatePath("/dashboard/locations/cities");
     return { success: true };
   } catch (error) {
-    console.error('Error creating city:', error);
-    return { error: 'Failed to create city' };
+    console.error("Error creating city:", error);
+    return { error: "Failed to create city" };
   }
 }
 
 export async function updateCity(id: string, formData: FormData) {
   try {
     const rawFormData = {
-      name: formData.get('name') as string,
-      code: formData.get('code') as string,
-      countryId: formData.get('countryId') as string,
-      districtId: formData.get('districtId') as string,
-      countyId: formData.get('countyId') as string,
-      subCountyId: formData.get('subCountyId') as string,
-      municipalityId: formData.get('municipalityId') as string,
+      name: formData.get("name") as string,
+      code: formData.get("code") as string,
+      countryId: formData.get("countryId") as string,
+      districtId: formData.get("districtId") as string,
+      countyId: formData.get("countyId") as string,
+      subCountyId: formData.get("subCountyId") as string,
+      municipalityId: formData.get("municipalityId") as string,
     };
 
     await db
@@ -69,22 +69,22 @@ export async function updateCity(id: string, formData: FormData) {
       })
       .where(eq(cities.id, id));
 
-    revalidatePath('/dashboard/locations/cities');
+    revalidatePath("/dashboard/locations/cities");
     return { success: true };
   } catch (error) {
-    console.error('Error updating city:', error);
-    return { error: 'Failed to update city' };
+    console.error("Error updating city:", error);
+    return { error: "Failed to update city" };
   }
 }
 
 export async function deleteCity(id: string) {
   try {
     await db.delete(cities).where(eq(cities.id, id));
-    revalidatePath('/dashboard/locations/cities');
+    revalidatePath("/dashboard/locations/cities");
     return { success: true };
   } catch (error) {
-    console.error('Error deleting city:', error);
-    return { error: 'Failed to delete city' };
+    console.error("Error deleting city:", error);
+    return { error: "Failed to delete city" };
   }
 }
 
@@ -132,10 +132,10 @@ export async function getCities(
       data: typedData,
     };
   } catch (error) {
-    console.error('Error fetching cities:', error);
+    console.error("Error fetching cities:", error);
     return {
       success: false,
-      error: 'Failed to fetch cities',
+      error: "Failed to fetch cities",
     };
   }
 }

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -7,18 +7,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { addCounty } from '@/features/locations/actions/counties';
-import { getCountries } from '@/features/locations/actions/countries';
-import { getDistricts } from '@/features/locations/actions/districts';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { FormValues, formSchema } from './county/schema';
-import { District, Country } from './county/schema';
-import { CountyForm } from './county/county-form';
+} from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addCounty } from "@/features/locations/actions/counties";
+import { getCountries } from "@/features/locations/actions/countries";
+import { getDistricts } from "@/features/locations/actions/districts";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FormValues, formSchema } from "./county/schema";
+import { District, Country } from "./county/schema";
+import { CountyForm } from "./county/county-form";
 
 interface AddCountyDialogProps {
   children: React.ReactNode;
@@ -36,15 +36,15 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      code: '',
-      country_id: '',
-      district_id: '',
+      name: "",
+      code: "",
+      country_id: "",
+      district_id: "",
     },
   });
 
   const { watch } = form;
-  const selectedCountryId = watch('country_id');
+  const selectedCountryId = watch("country_id");
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -55,8 +55,8 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
           setCountryList(result.data.data);
         }
       } catch (error) {
-        console.error('Error fetching countries:', error);
-        toast.error('Failed to load countries');
+        console.error("Error fetching countries:", error);
+        toast.error("Failed to load countries");
       } finally {
         setIsLoadingCountries(false);
       }
@@ -75,8 +75,8 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
             setDistrictList(result.data.data);
           }
         } catch (error) {
-          console.error('Error fetching districts:', error);
-          toast.error('Failed to load districts');
+          console.error("Error fetching districts:", error);
+          toast.error("Failed to load districts");
         } finally {
           setIsLoadingDistricts(false);
         }
@@ -99,12 +99,12 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
       }
 
       form.reset();
-      toast.success('County added successfully');
+      toast.success("County added successfully");
       setOpen(false); // Close dialog after successful submission
       router.refresh();
     } catch (error) {
-      console.error('Error adding county:', error);
-      toast.error('Failed to add county');
+      console.error("Error adding county:", error);
+      toast.error("Failed to add county");
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +124,7 @@ export function AddCountyDialog({ children }: AddCountyDialogProps) {
           countryList={countryList}
           districtList={districtList}
           isLoading={isLoading || isLoadingCountries || isLoadingDistricts}
-          countyName={watch('name')}
+          countyName={watch("name")}
         />
       </DialogContent>
     </Dialog>

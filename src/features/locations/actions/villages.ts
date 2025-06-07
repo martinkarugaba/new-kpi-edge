@@ -1,20 +1,20 @@
-'use server';
+"use server";
 
-import { z } from 'zod';
-import { villages } from '@/lib/db/schema';
-import { db } from '@/lib/db';
-import { revalidatePath } from 'next/cache';
-import { eq, and, count, ilike } from 'drizzle-orm';
-import type { PaginationParams } from '../types/pagination';
+import { z } from "zod";
+import { villages } from "@/lib/db/schema";
+import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
+import { eq, and, count, ilike } from "drizzle-orm";
+import type { PaginationParams } from "../types/pagination";
 
 const createVillageSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  code: z.string().min(1, 'Code is required'),
-  parishId: z.string().min(1, 'Parish is required'),
-  subCountyId: z.string().min(1, 'Sub County is required'),
-  countyId: z.string().min(1, 'County is required'),
-  districtId: z.string().min(1, 'District is required'),
-  countryId: z.string().min(1, 'Country is required'),
+  name: z.string().min(1, "Name is required"),
+  code: z.string().min(1, "Code is required"),
+  parishId: z.string().min(1, "Parish is required"),
+  subCountyId: z.string().min(1, "Sub County is required"),
+  countyId: z.string().min(1, "County is required"),
+  districtId: z.string().min(1, "District is required"),
+  countryId: z.string().min(1, "Country is required"),
 });
 
 export async function addVillage(data: z.infer<typeof createVillageSchema>) {
@@ -38,20 +38,20 @@ export async function addVillage(data: z.infer<typeof createVillageSchema>) {
       country_id: countryId,
     });
 
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch {
-    return { error: 'Failed to create village' };
+    return { error: "Failed to create village" };
   }
 }
 
 export async function deleteVillage(id: string) {
   try {
     await db.delete(villages).where(eq(villages.id, id));
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch {
-    return { error: 'Failed to delete village' };
+    return { error: "Failed to delete village" };
   }
 }
 
@@ -77,9 +77,9 @@ export async function getVillages(
     const { page = 1, limit = 10, search } = pagination;
 
     // Validate pagination parameters
-    if (page < 1) throw new Error('Page must be greater than 0');
+    if (page < 1) throw new Error("Page must be greater than 0");
     if (limit < 1 || limit > 100)
-      throw new Error('Limit must be between 1 and 100');
+      throw new Error("Limit must be between 1 and 100");
 
     // Build where conditions
     const whereConditions = [];
@@ -147,11 +147,11 @@ export async function getVillages(
       },
     };
   } catch (error) {
-    console.error('Error fetching villages:', error);
+    console.error("Error fetching villages:", error);
     return {
       success: false as const,
       error:
-        error instanceof Error ? error.message : 'Failed to fetch villages',
+        error instanceof Error ? error.message : "Failed to fetch villages",
     };
   }
 }
@@ -170,7 +170,7 @@ export async function getVillageById(id: string) {
     });
 
     if (!village) {
-      throw new Error('Village not found');
+      throw new Error("Village not found");
     }
 
     return {
@@ -178,10 +178,10 @@ export async function getVillageById(id: string) {
       data: village,
     };
   } catch (error) {
-    console.error('Error fetching village:', error);
+    console.error("Error fetching village:", error);
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : 'Failed to fetch village',
+      error: error instanceof Error ? error.message : "Failed to fetch village",
     };
   }
 }

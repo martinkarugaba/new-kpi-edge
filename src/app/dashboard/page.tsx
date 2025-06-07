@@ -1,9 +1,9 @@
-import { ChartAreaInteractive } from '@/features/dashboard/components/chart-area-interactive';
-import { MetricCards } from '@/components/ui/metric-cards';
-import { SiteHeader } from '@/features/dashboard/components/site-header';
+import { ChartAreaInteractive } from "@/features/dashboard/components/chart-area-interactive";
+import { MetricCards } from "@/components/ui/metric-cards";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
 
 // import { DashboardTable } from "./dashboard-table";
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from "@/components/ui/card";
 
 // import data from "./data.json";
 export default function Page() {
@@ -26,15 +26,15 @@ export default function Page() {
     );
   } catch (error) {
     return (
-      <div className="container py-6 space-y-6">
+      <div className="container space-y-6 py-6">
         <div className="mx-auto max-w-7xl">
           <Card>
             <CardContent className="pt-6">
               <p className="text-destructive">
-                Error loading dashboard data:{' '}
+                Error loading dashboard data:{" "}
                 {error instanceof Error
                   ? error.message
-                  : 'Unknown error occurred'}
+                  : "Unknown error occurred"}
               </p>
             </CardContent>
           </Card>

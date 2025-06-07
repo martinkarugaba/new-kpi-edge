@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { MunicipalitiesTable } from '../municipalities-table';
-import { useEffect, useState } from 'react';
-import { municipalities } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { getMunicipalities } from '@/features/locations/actions/municipalities';
+import { MunicipalitiesTable } from "../municipalities-table";
+import { useEffect, useState } from "react";
+import { municipalities } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { getMunicipalities } from "@/features/locations/actions/municipalities";
 
 type Municipality = InferSelectModel<typeof municipalities> & {
   country: { name: string };

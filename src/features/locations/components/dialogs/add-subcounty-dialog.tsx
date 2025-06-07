@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -7,18 +7,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { addSubCounty } from '@/features/locations/actions/subcounties';
-import { getCountries } from '@/features/locations/actions/countries';
-import { getDistricts } from '@/features/locations/actions/districts';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { SubCountyForm } from './subcounty/subcounty-form';
-import { Country, District } from './subcounty/schema';
-import { FormValues, formSchema } from './subcounty/schema';
+} from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addSubCounty } from "@/features/locations/actions/subcounties";
+import { getCountries } from "@/features/locations/actions/countries";
+import { getDistricts } from "@/features/locations/actions/districts";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { SubCountyForm } from "./subcounty/subcounty-form";
+import { Country, District } from "./subcounty/schema";
+import { FormValues, formSchema } from "./subcounty/schema";
 
 interface AddSubCountyDialogProps {
   children: React.ReactNode;
@@ -43,16 +43,16 @@ export function AddSubCountyDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      code: '',
-      countryId: '',
-      districtId: '',
+      name: "",
+      code: "",
+      countryId: "",
+      districtId: "",
     },
   });
 
   const { watch, setValue } = form;
-  const selectedCountryId = watch('countryId');
-  const selectedDistrictId = watch('districtId');
+  const selectedCountryId = watch("countryId");
+  const selectedDistrictId = watch("districtId");
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -62,8 +62,8 @@ export function AddSubCountyDialog({
           setCountryList(result.data.data);
         }
       } catch (error) {
-        console.error('Error fetching countries:', error);
-        toast.error('Failed to load countries');
+        console.error("Error fetching countries:", error);
+        toast.error("Failed to load countries");
       }
     };
 
@@ -82,8 +82,8 @@ export function AddSubCountyDialog({
             setDistrictList(result.data.data);
           }
         } catch (error) {
-          console.error('Error fetching districts:', error);
-          toast.error('Failed to load districts');
+          console.error("Error fetching districts:", error);
+          toast.error("Failed to load districts");
         } finally {
           setIsLoadingDistricts(false);
         }
@@ -118,24 +118,24 @@ export function AddSubCountyDialog({
       }
 
       form.reset();
-      toast.success('Sub-county added successfully');
+      toast.success("Sub-county added successfully");
       setOpen(false);
       router.refresh();
     } catch (error) {
-      console.error('Error adding sub-county:', error);
-      toast.error('Failed to add sub-county');
+      console.error("Error adding sub-county:", error);
+      toast.error("Failed to add sub-county");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCountrySelect = (countryId: string) => {
-    setValue('countryId', countryId);
-    setValue('districtId', ''); // Reset district when country changes
+    setValue("countryId", countryId);
+    setValue("districtId", ""); // Reset district when country changes
   };
 
   const handleDistrictSelect = (districtId: string) => {
-    setValue('districtId', districtId);
+    setValue("districtId", districtId);
   };
 
   return (
@@ -154,9 +154,9 @@ export function AddSubCountyDialog({
           countryList={countryList}
           districtList={districtList}
           isLoading={isLoading || isLoadingDistricts}
-          subcountyName={watch('name')}
-          countryCode={selectedCountry?.code || ''}
-          districtCode={selectedDistrict?.code || ''}
+          subcountyName={watch("name")}
+          countryCode={selectedCountry?.code || ""}
+          districtCode={selectedDistrict?.code || ""}
           onCountrySelect={handleCountrySelect}
           onDistrictSelect={handleDistrictSelect}
         />

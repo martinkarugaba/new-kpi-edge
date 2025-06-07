@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { VillagesTable } from '../villages-table';
-import { useEffect, useState } from 'react';
+import { VillagesTable } from "../villages-table";
+import { useEffect, useState } from "react";
 import {
   villages,
   parishes,
@@ -9,9 +9,9 @@ import {
   counties,
   districts,
   countries,
-} from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { getVillages } from '@/features/locations/actions/villages';
+} from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { getVillages } from "@/features/locations/actions/villages";
 
 type Village = InferSelectModel<typeof villages> & {
   parish?: InferSelectModel<typeof parishes>;

@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
-import { OrganizationMember } from '../../types';
-import { MembersTable } from './MembersTable';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { OrganizationMember } from "../../types";
+import { MembersTable } from "./MembersTable";
 import {
   addOrganizationMember,
   removeOrganizationMember,
   updateOrganizationMemberRole,
-} from '../../actions/organization-members';
-import { AddMemberDialog } from './AddMemberDialog';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { userRole } from '@/lib/db/schema';
+} from "../../actions/organization-members";
+import { AddMemberDialog } from "./AddMemberDialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { userRole } from "@/lib/db/schema";
 
 interface OrganizationMembersProps {
   organizationId: string;
@@ -35,7 +35,7 @@ export function OrganizationMembers({
 
   const handleAddMember = async (userId: string) => {
     if (!userId) {
-      toast.error('Please select a user');
+      toast.error("Please select a user");
       return;
     }
 
@@ -44,20 +44,20 @@ export function OrganizationMembers({
       const result = await addOrganizationMember(organizationId, userId);
 
       if (result.success) {
-        toast.success('Member added successfully');
+        toast.success("Member added successfully");
         setDialogOpen(false);
         router.refresh();
       } else {
-        if (result.error === 'Not authenticated') {
-          toast.error('Your session has expired. Please log in again.');
-          router.push('/auth/login');
+        if (result.error === "Not authenticated") {
+          toast.error("Your session has expired. Please log in again.");
+          router.push("/auth/login");
         } else {
-          toast.error(result.error || 'Failed to add member');
+          toast.error(result.error || "Failed to add member");
         }
       }
     } catch (error) {
-      console.error('Error adding member:', error);
-      toast.error('Failed to add member');
+      console.error("Error adding member:", error);
+      toast.error("Failed to add member");
     } finally {
       setIsLoading(false);
     }
@@ -65,8 +65,8 @@ export function OrganizationMembers({
 
   const handleRemoveMember = async (userId: string) => {
     if (!session) {
-      toast.error('You need to be logged in to remove members');
-      router.push('/sign-in');
+      toast.error("You need to be logged in to remove members");
+      router.push("/sign-in");
       return;
     }
 
@@ -74,13 +74,13 @@ export function OrganizationMembers({
     try {
       const result = await removeOrganizationMember(organizationId, userId);
       if (result.success) {
-        toast.success('Member removed successfully');
+        toast.success("Member removed successfully");
         router.refresh();
       } else {
-        toast.error(result.error || 'Failed to remove member');
+        toast.error(result.error || "Failed to remove member");
       }
     } catch {
-      toast.error('Failed to remove member');
+      toast.error("Failed to remove member");
     } finally {
       setLoadingStates(prev => ({ ...prev, [userId]: false }));
     }
@@ -91,8 +91,8 @@ export function OrganizationMembers({
     role: (typeof userRole.enumValues)[number]
   ) => {
     if (!session) {
-      toast.error('You need to be logged in to update member roles');
-      router.push('/sign-in');
+      toast.error("You need to be logged in to update member roles");
+      router.push("/sign-in");
       return;
     }
 
@@ -104,13 +104,13 @@ export function OrganizationMembers({
         role
       );
       if (result.success) {
-        toast.success('Role updated successfully');
+        toast.success("Role updated successfully");
         router.refresh();
       } else {
-        toast.error(result.error || 'Failed to update role');
+        toast.error(result.error || "Failed to update role");
       }
     } catch {
-      toast.error('Failed to update role');
+      toast.error("Failed to update role");
     } finally {
       setLoadingStates(prev => ({ ...prev, [userId]: false }));
     }
@@ -118,7 +118,7 @@ export function OrganizationMembers({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Organization Members</h2>
         <Button onClick={() => setDialogOpen(true)} size="sm">
           <Plus className="mr-2 h-4 w-4" />

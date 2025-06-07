@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { CitiesTable } from '../cities-table';
-import type { City } from '@/features/locations/components/data-table/cities-columns';
-import { getCities } from '@/features/locations/actions/cities';
+import { useEffect, useState } from "react";
+import { CitiesTable } from "../cities-table";
+import type { City } from "@/features/locations/components/data-table/cities-columns";
+import { getCities } from "@/features/locations/actions/cities";
 
 interface CitiesTabProps {
   countryId: string;

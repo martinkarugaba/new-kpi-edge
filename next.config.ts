@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   // Configure ESLint to work with src directory
   eslint: {
-    dirs: ['src'],
+    dirs: ["src"],
   },
 };
 

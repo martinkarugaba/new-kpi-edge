@@ -1,23 +1,23 @@
 // MultiSelectCombobox.tsx
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 
 export interface Option {
   value: string;
@@ -36,8 +36,8 @@ export function MultiSelectCombobox({
   options,
   selected,
   onChange,
-  placeholder = 'Select options',
-  emptyText = 'No options found.',
+  placeholder = "Select options",
+  emptyText = "No options found.",
 }: MultiSelectComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -86,10 +86,10 @@ export function MultiSelectCombobox({
                 >
                   <Check
                     className={cn(
-                      'mr-2 h-4 w-4',
+                      "mr-2 h-4 w-4",
                       selected.includes(option.value)
-                        ? 'opacity-100'
-                        : 'opacity-0'
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                   {option.label}
@@ -101,14 +101,14 @@ export function MultiSelectCombobox({
       </Popover>
 
       {selected.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-2">
+        <div className="mt-2 flex flex-wrap gap-1">
           {selected.map(value => {
             const option = options.find(option => option.value === value);
             return (
               <Badge
                 key={value}
                 variant="secondary"
-                className="px-2 py-1 rounded-md"
+                className="rounded-md px-2 py-1"
               >
                 {option?.label || value}
                 <X

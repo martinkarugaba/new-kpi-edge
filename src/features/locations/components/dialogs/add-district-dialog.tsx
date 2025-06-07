@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -7,14 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { addDistrict } from '@/features/locations/actions/districts';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { getCountries } from '@/features/locations/actions/countries';
+} from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addDistrict } from "@/features/locations/actions/districts";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getAllCountries } from "@/features/locations/actions/countries";
 
 import {
   AddDistrictDialogProps,
@@ -23,7 +23,7 @@ import {
   FormValues,
   generateDistrictCode,
   DistrictForm,
-} from './district';
+} from "./district";
 
 export function AddDistrictDialog({
   children,
@@ -39,15 +39,20 @@ export function AddDistrictDialog({
       // Fetch countries if they weren't provided
       const fetchCountries = async () => {
         try {
-          const result = await getCountries();
-          if (result.success && result.data?.data) {
-            setCountryList(result.data.data);
+          const result = await getAllCountries();
+
+          if (result && result.success && Array.isArray(result.data)) {
+            setCountryList(result.data);
           } else {
-            toast.error('Failed to load countries');
+            console.error("Invalid response from getAllCountries:", result);
+            // Use empty array as fallback
+            setCountryList([]);
+            toast.error("Failed to load countries. Please try again later.");
           }
         } catch (error) {
-          console.error('Error fetching countries:', error);
-          toast.error('Failed to load countries');
+          console.error("Error fetching countries:", error);
+          setCountryList([]);
+          toast.error("Error loading countries. Please try again later.");
         } finally {
           setIsLoading(false);
         }
@@ -60,15 +65,15 @@ export function AddDistrictDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      code: '',
-      countryId: '',
+      name: "",
+      code: "",
+      countryId: "",
     },
   });
 
   // Watch for changes in name and countryId to auto-generate code
-  const districtName = form.watch('name');
-  const countryId = form.watch('countryId');
+  const districtName = form.watch("name");
+  const countryId = form.watch("countryId");
 
   useEffect(() => {
     if (districtName && countryId) {
@@ -80,7 +85,7 @@ export function AddDistrictDialog({
           selectedCountry.code,
           districtName
         );
-        form.setValue('code', generatedCode);
+        form.setValue("code", generatedCode);
       }
     }
   }, [districtName, countryId, countryList, form]);
@@ -95,12 +100,12 @@ export function AddDistrictDialog({
       }
 
       form.reset();
-      toast.success('District added successfully');
+      toast.success("District added successfully");
       setOpen(false); // Close dialog after successful submission
       router.refresh();
     } catch (error) {
-      console.error('Error adding district:', error);
-      toast.error('Failed to add district');
+      console.error("Error adding district:", error);
+      toast.error("Failed to add district");
     }
   }
 

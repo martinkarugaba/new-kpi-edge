@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,43 +9,43 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Combobox } from '@/components/ui/combobox';
-import { Cluster } from '@/features/clusters/components/clusters-table';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { type InferSelectModel } from 'drizzle-orm';
+} from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
+import { Cluster } from "@/features/clusters/components/clusters-table";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { type InferSelectModel } from "drizzle-orm";
 import {
   type countries,
   type districts,
   type subCounties,
-} from '@/lib/db/schema';
-import { getCountries } from '@/features/locations/actions/countries';
-import { getDistricts } from '@/features/locations/actions/districts';
-import { getSubCounties } from '@/features/locations/actions/subcounties';
-import { getVillages } from '@/features/locations/actions/villages';
-import { getMunicipalities } from '@/features/locations/actions/municipalities';
-import { getCities } from '@/features/locations/actions/cities';
-import { getParishes } from '@/features/locations/actions/parishes';
+} from "@/lib/db/schema";
+import { getCountries } from "@/features/locations/actions/countries";
+import { getDistricts } from "@/features/locations/actions/districts";
+import { getSubCounties } from "@/features/locations/actions/subcounties";
+import { getVillages } from "@/features/locations/actions/villages";
+import { getMunicipalities } from "@/features/locations/actions/municipalities";
+import { getCities } from "@/features/locations/actions/cities";
+import { getParishes } from "@/features/locations/actions/parishes";
 import {
   getWards,
   getDivisions,
-} from '@/features/locations/actions/administrative-units';
-import { Project } from '@/features/projects/types';
-import { getProjects } from '@/features/projects/actions/projects';
-import { createOrganization } from '@/features/organizations/actions/organizations';
+} from "@/features/locations/actions/administrative-units";
+import { Project } from "@/features/projects/types";
+import { getProjects } from "@/features/projects/actions/projects";
+import { createOrganization } from "@/features/organizations/actions/organizations";
 
 interface OrganizationFormProps {
   clusters: Cluster[];
@@ -59,7 +59,7 @@ interface OrganizationFormProps {
 type Country = InferSelectModel<typeof countries>;
 type District = InferSelectModel<typeof districts>;
 type SubCounty = InferSelectModel<typeof subCounties> & {
-  type?: 'subcounty' | 'municipality';
+  type?: "subcounty" | "municipality";
 };
 
 // Add type for the option with search value
@@ -120,12 +120,12 @@ export function OrganizationForm({
           setProjects(result.data);
         } else {
           console.error(
-            'Error fetching projects:',
-            result.error || 'No projects data returned'
+            "Error fetching projects:",
+            result.error || "No projects data returned"
           );
         }
       } catch (error) {
-        console.error('Error fetching projects:', error);
+        console.error("Error fetching projects:", error);
       } finally {
         setLoading(prev => ({ ...prev, projects: false }));
       }
@@ -143,10 +143,10 @@ export function OrganizationForm({
         if (response.success && response.data?.data) {
           setCountries(response.data.data);
         } else {
-          console.error('Error loading countries:', response.error);
+          console.error("Error loading countries:", response.error);
         }
       } catch (error) {
-        console.error('Error fetching countries:', error);
+        console.error("Error fetching countries:", error);
       } finally {
         setLoading(prev => ({ ...prev, locations: false }));
       }
@@ -160,18 +160,18 @@ export function OrganizationForm({
     console.log(`handleCountryChange called with countryCode: ${countryCode}`);
 
     // Reset dependent fields for all cases
-    form.setValue('district', '');
-    form.setValue('sub_county_id', '');
-    form.setValue('operation_sub_counties', []);
-    form.setValue('parish', '');
-    form.setValue('village', '');
+    form.setValue("district", "");
+    form.setValue("sub_county_id", "");
+    form.setValue("operation_sub_counties", []);
+    form.setValue("parish", "");
+    form.setValue("village", "");
     setDistricts([]);
     setSubCounties([]);
     setParishes([]);
     setVillages([]);
 
     // Only load districts if a valid country (not 'none') is selected
-    if (countryCode && countryCode !== 'none') {
+    if (countryCode && countryCode !== "none") {
       console.log(`Loading districts for country ${countryCode}`);
       // Set loading state
       setLoading(prev => ({ ...prev, locations: true }));
@@ -198,7 +198,7 @@ export function OrganizationForm({
         setLoading(prev => ({ ...prev, locations: false }));
       }
     } else {
-      console.log('No valid country code provided, skipping district loading');
+      console.log("No valid country code provided, skipping district loading");
     }
   };
 
@@ -212,11 +212,11 @@ export function OrganizationForm({
     );
 
     // Set the form value
-    form.setValue('district', districtCode);
+    form.setValue("district", districtCode);
 
     // Reset dependent fields
-    form.setValue('sub_county_id', '');
-    form.setValue('operation_sub_counties', []);
+    form.setValue("sub_county_id", "");
+    form.setValue("operation_sub_counties", []);
     setSubCounties([]);
     setParishes([]);
     setVillages([]);
@@ -243,7 +243,7 @@ export function OrganizationForm({
           []
         ).map(unit => ({
           ...unit,
-          type: 'subcounty' as const,
+          type: "subcounty" as const,
         })),
         ...(
           (municipalitiesResponse.success &&
@@ -251,7 +251,7 @@ export function OrganizationForm({
           []
         ).map(unit => ({
           ...unit,
-          type: 'municipality' as const,
+          type: "municipality" as const,
         })),
       ];
 
@@ -276,18 +276,18 @@ export function OrganizationForm({
       `handleSubCountyChange called with unitCode: ${unitCode}, name: ${unitName}, type: ${unitType}`
     );
 
-    if (!unitCode || unitCode === 'none') {
-      console.log('No valid unit code provided, skipping data fetch');
+    if (!unitCode || unitCode === "none") {
+      console.log("No valid unit code provided, skipping data fetch");
       return;
     }
 
     // Reset dependent fields
-    form.setValue('parish', '');
-    form.setValue('village', '');
-    form.setValue('municipality_id', '');
-    form.setValue('city_id', '');
-    form.setValue('ward_id', '');
-    form.setValue('division_id', '');
+    form.setValue("parish", "");
+    form.setValue("village", "");
+    form.setValue("municipality_id", "");
+    form.setValue("city_id", "");
+    form.setValue("ward_id", "");
+    form.setValue("division_id", "");
     setParishes([]);
     setVillages([]);
     setMunicipalities([]);
@@ -299,13 +299,13 @@ export function OrganizationForm({
     setLoading(prev => ({ ...prev, locations: true }));
 
     try {
-      if (unitType === 'subcounty') {
+      if (unitType === "subcounty") {
         // For sub-counties, fetch parishes
         const response = await getParishes({ subCountyId: unitCode });
         if (response.success && response.data?.data) {
           setParishes(response.data.data);
         }
-      } else if (unitType === 'city') {
+      } else if (unitType === "city") {
         // For cities, fetch wards and divisions
         const [wardsResponse, divisionsResponse] = await Promise.all([
           getWards(unitCode),
@@ -329,7 +329,7 @@ export function OrganizationForm({
             }))
           );
         }
-      } else if (unitType === 'municipality') {
+      } else if (unitType === "municipality") {
         // For municipalities, fetch cities, wards, and divisions
         const [citiesResponse, wardsResponse, divisionsResponse] =
           await Promise.all([
@@ -365,15 +365,15 @@ export function OrganizationForm({
       `handleMunicipalityChange called with municipalityId: ${municipalityId}`
     );
 
-    if (!municipalityId || municipalityId === 'none') {
-      console.log('No valid municipality ID provided, skipping data fetch');
+    if (!municipalityId || municipalityId === "none") {
+      console.log("No valid municipality ID provided, skipping data fetch");
       return;
     }
 
     // Reset dependent fields
-    form.setValue('city_id', '');
-    form.setValue('ward_id', '');
-    form.setValue('division_id', '');
+    form.setValue("city_id", "");
+    form.setValue("ward_id", "");
+    form.setValue("division_id", "");
     setCities([]);
     setWards([]);
     setDivisions([]);
@@ -422,14 +422,14 @@ export function OrganizationForm({
   const handleCityChange = async (cityId: string) => {
     console.log(`handleCityChange called with cityId: ${cityId}`);
 
-    if (!cityId || cityId === 'none') {
-      console.log('No valid city ID provided, skipping data fetch');
+    if (!cityId || cityId === "none") {
+      console.log("No valid city ID provided, skipping data fetch");
       return;
     }
 
     // Reset dependent fields
-    form.setValue('ward_id', '');
-    form.setValue('division_id', '');
+    form.setValue("ward_id", "");
+    form.setValue("division_id", "");
     setWards([]);
     setDivisions([]);
 
@@ -460,13 +460,13 @@ export function OrganizationForm({
   const handleWardChange = async (wardId: string) => {
     console.log(`handleWardChange called with wardId: ${wardId}`);
 
-    if (!wardId || wardId === 'none') {
-      console.log('No valid ward ID provided, skipping data fetch');
+    if (!wardId || wardId === "none") {
+      console.log("No valid ward ID provided, skipping data fetch");
       return;
     }
 
     // Reset dependent fields
-    form.setValue('division_id', '');
+    form.setValue("division_id", "");
     setDivisions([]);
 
     // Set loading state
@@ -499,7 +499,7 @@ export function OrganizationForm({
     );
 
     // Reset villages
-    form.setValue('village', '');
+    form.setValue("village", "");
     setVillages([]);
 
     // Set loading state
@@ -540,15 +540,15 @@ export function OrganizationForm({
 
   // Define form schema with required and optional fields
   const formSchema = z.object({
-    name: z.string().min(2, { message: 'Organization name is required' }),
-    acronym: z.string().min(1, { message: 'Acronym is required' }),
-    cluster_id: z.string().min(1, { message: 'Please select a cluster' }),
+    name: z.string().min(2, { message: "Organization name is required" }),
+    acronym: z.string().min(1, { message: "Acronym is required" }),
+    cluster_id: z.string().min(1, { message: "Please select a cluster" }),
     project_id: z.string().nullable(),
-    country: z.string().min(1, { message: 'Country is required' }),
-    district: z.string().min(1, { message: 'District is required' }),
+    country: z.string().min(1, { message: "Country is required" }),
+    district: z.string().min(1, { message: "District is required" }),
     sub_county_id: z
       .string()
-      .min(1, { message: 'Organization subcounty is required' }),
+      .min(1, { message: "Organization subcounty is required" }),
     municipality_id: z.string().optional(),
     city_id: z.string().optional(),
     ward_id: z.string().optional(),
@@ -556,7 +556,7 @@ export function OrganizationForm({
     operation_sub_counties: z.array(z.string()).default([]),
     parish: z.string().optional(),
     village: z.string().optional(),
-    address: z.string().min(1, { message: 'Address is required' }),
+    address: z.string().min(1, { message: "Address is required" }),
   });
 
   // Infer form values type from schema
@@ -564,21 +564,21 @@ export function OrganizationForm({
 
   // Initialize form with default values that match the schema
   const defaultFormValues = {
-    name: '',
-    acronym: '',
-    cluster_id: defaultClusterId || '',
-    project_id: 'none',
-    country: '',
-    district: '',
-    sub_county_id: '', // Will be validated before submission
-    municipality_id: '',
-    city_id: '',
-    ward_id: '',
-    division_id: '',
+    name: "",
+    acronym: "",
+    cluster_id: defaultClusterId || "",
+    project_id: "none",
+    country: "",
+    district: "",
+    sub_county_id: "", // Will be validated before submission
+    municipality_id: "",
+    city_id: "",
+    ward_id: "",
+    division_id: "",
     operation_sub_counties: [], // Required by server action
-    parish: '',
-    village: '',
-    address: '',
+    parish: "",
+    village: "",
+    address: "",
   };
 
   const form = useForm({
@@ -587,26 +587,26 @@ export function OrganizationForm({
   });
 
   const onSubmit = async (values: FormValues) => {
-    console.log('Form values being submitted:', values);
+    console.log("Form values being submitted:", values);
 
     // Transform project_id to null if it's 'none' or to undefined if empty
-    if (values.project_id === 'none' || values.project_id === '') {
+    if (values.project_id === "none" || values.project_id === "") {
       values.project_id = null;
     }
 
     // Make sure country is not 'none'
-    if (values.country === 'none') {
+    if (values.country === "none") {
       // This should be caught by the schema validation already
-      form.setError('country', {
-        message: 'Country is required',
+      form.setError("country", {
+        message: "Country is required",
       });
       return;
     }
 
     // Make sure sub_county_id is not empty or 'none'
-    if (!values.sub_county_id || values.sub_county_id === 'none') {
-      form.setError('sub_county_id', {
-        message: 'Organization subcounty is required',
+    if (!values.sub_county_id || values.sub_county_id === "none") {
+      form.setError("sub_county_id", {
+        message: "Organization subcounty is required",
       });
       return;
     }
@@ -638,13 +638,13 @@ export function OrganizationForm({
       const result = await createOrganization(organizationData);
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to create organization');
+        throw new Error(result.error || "Failed to create organization");
       }
 
       router.refresh();
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -729,15 +729,15 @@ export function OrganizationForm({
                 <FormControl>
                   <Combobox
                     options={[
-                      { value: 'none', label: 'No Project' },
+                      { value: "none", label: "No Project" },
                       ...projects.map(project => ({
                         value: project.id,
                         label: project.acronym || project.name,
                       })),
                     ]}
-                    value={field.value || ''}
+                    value={field.value || ""}
                     onValueChange={value => {
-                      console.log('Project selected:', value);
+                      console.log("Project selected:", value);
                       field.onChange(value);
                     }}
                     placeholder="Search and select a project"
@@ -766,20 +766,20 @@ export function OrganizationForm({
                   <FormControl>
                     <Combobox
                       options={[
-                        { value: 'none', label: 'Select a country' },
+                        { value: "none", label: "Select a country" },
                         ...countries.map(country => ({
                           value: country.code,
                           label: country.name,
                         })),
                       ]}
-                      value={field.value || ''}
+                      value={field.value || ""}
                       onValueChange={value => {
                         console.log(
-                          'Country selected:',
+                          "Country selected:",
                           value,
-                          'Label:',
+                          "Label:",
                           countries.find(c => c.code === value)?.name ||
-                            'Select a country'
+                            "Select a country"
                         );
                         field.onChange(value);
                         handleCountryChange(value);
@@ -805,33 +805,33 @@ export function OrganizationForm({
                   <FormControl>
                     <Combobox
                       options={[
-                        { value: 'none', label: 'Select a district' },
+                        { value: "none", label: "Select a district" },
                         ...districts.map(district => ({
                           value: district.code,
                           label: district.name,
                         })),
                       ]}
-                      value={field.value || ''}
+                      value={field.value || ""}
                       onValueChange={value => {
                         field.onChange(value);
-                        const countryCode = form.getValues('country');
-                        if (countryCode && countryCode !== 'none') {
+                        const countryCode = form.getValues("country");
+                        if (countryCode && countryCode !== "none") {
                           handleDistrictChange(value, countryCode);
                         }
                       }}
                       placeholder={
                         districts.length > 0
-                          ? 'Select a district'
-                          : form.getValues('country') &&
-                              form.getValues('country') !== 'none'
-                            ? `No districts available for ${form.getValues('country')}`
-                            : 'Select a country first'
+                          ? "Select a district"
+                          : form.getValues("country") &&
+                              form.getValues("country") !== "none"
+                            ? `No districts available for ${form.getValues("country")}`
+                            : "Select a country first"
                       }
                       emptyMessage="No matching districts found"
                       disabled={
-                        !form.getValues('country') ||
-                        form.getValues('country') === 'none' ||
-                        (form.getValues('country') && districts.length === 0) ||
+                        !form.getValues("country") ||
+                        form.getValues("country") === "none" ||
+                        (form.getValues("country") && districts.length === 0) ||
                         loading.locations
                       }
                     />
@@ -854,13 +854,13 @@ export function OrganizationForm({
                   <FormControl>
                     <Combobox
                       options={[
-                        { value: 'none', label: 'Select a location' },
+                        { value: "none", label: "Select a location" },
                         ...subCounties.map(unit => ({
                           value: unit.code,
                           label: `${unit.name} (${unit.type})`,
                         })),
                       ]}
-                      value={field.value || ''}
+                      value={field.value || ""}
                       onValueChange={value => {
                         field.onChange(value);
                         const unit = subCounties.find(s => s.code === value);
@@ -868,14 +868,14 @@ export function OrganizationForm({
                           handleSubCountyChange(
                             unit.code,
                             unit.name,
-                            unit.type || 'subcounty'
+                            unit.type || "subcounty"
                           );
                         }
                       }}
                       placeholder={
                         subCounties.length > 0
-                          ? 'Select location'
-                          : 'Select a district first'
+                          ? "Select location"
+                          : "Select a district first"
                       }
                       emptyMessage="No matching locations found"
                       disabled={subCounties.length === 0 || loading.locations}
@@ -900,8 +900,8 @@ export function OrganizationForm({
                     <Combobox
                       options={[
                         {
-                          value: 'none',
-                          label: 'Select operation sub-counties',
+                          value: "none",
+                          label: "Select operation sub-counties",
                         },
                         ...subCounties.map(subCounty => ({
                           value: subCounty.code,
@@ -911,7 +911,7 @@ export function OrganizationForm({
                       value={
                         field.value && field.value.length > 0
                           ? field.value[0]
-                          : ''
+                          : ""
                       }
                       onValueChange={value => {
                         const currentValues = field.value || [];
@@ -924,23 +924,23 @@ export function OrganizationForm({
                         subCounties.length > 0
                           ? field.value && field.value.length > 0
                             ? `${field.value.length} sub-counties selected`
-                            : 'Select operation sub-counties'
-                          : 'Select a district first'
+                            : "Select operation sub-counties"
+                          : "Select a district first"
                       }
                       emptyMessage="No matching sub-counties found"
                       disabled={subCounties.length === 0 || loading.locations}
                     />
                   </FormControl>
-                  <FormDescription className="flex flex-wrap gap-2 mt-2">
+                  <FormDescription className="mt-2 flex flex-wrap gap-2">
                     <span className="mr-1">Selected:</span>
                     {Array.isArray(field.value) && field.value.length > 0
                       ? field.value
                           .map((id: string) => {
                             const sc = subCounties.find(s => s.code === id);
-                            return sc ? sc.name : '';
+                            return sc ? sc.name : "";
                           })
-                          .join(', ')
-                      : 'None'}
+                          .join(", ")
+                      : "None"}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -960,21 +960,21 @@ export function OrganizationForm({
                     <FormControl>
                       <Combobox
                         options={[
-                          { value: 'none', label: 'Select a municipality' },
+                          { value: "none", label: "Select a municipality" },
                           ...municipalities.map(municipality => ({
                             value: municipality.code,
                             label: municipality.name,
                           })),
                         ]}
-                        value={field.value || ''}
+                        value={field.value || ""}
                         onValueChange={value => {
                           field.onChange(value);
                           handleMunicipalityChange(value);
                         }}
                         placeholder={
                           municipalities.length > 0
-                            ? 'Select a municipality'
-                            : 'No municipalities available'
+                            ? "Select a municipality"
+                            : "No municipalities available"
                         }
                         emptyMessage="No matching municipalities found"
                         disabled={
@@ -996,21 +996,21 @@ export function OrganizationForm({
                     <FormControl>
                       <Combobox
                         options={[
-                          { value: 'none', label: 'Select a city' },
+                          { value: "none", label: "Select a city" },
                           ...cities.map(city => ({
                             value: city.code,
                             label: city.name,
                           })),
                         ]}
-                        value={field.value || ''}
+                        value={field.value || ""}
                         onValueChange={value => {
                           field.onChange(value);
                           handleCityChange(value);
                         }}
                         placeholder={
                           cities.length > 0
-                            ? 'Select a city'
-                            : 'No cities available'
+                            ? "Select a city"
+                            : "No cities available"
                         }
                         emptyMessage="No matching cities found"
                         disabled={cities.length === 0 || loading.locations}
@@ -1024,7 +1024,7 @@ export function OrganizationForm({
           )}
 
           {/* Wards and Divisions - Only show if municipality or city is selected */}
-          {(form.getValues('municipality_id') || form.getValues('city_id')) && (
+          {(form.getValues("municipality_id") || form.getValues("city_id")) && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -1035,21 +1035,21 @@ export function OrganizationForm({
                     <FormControl>
                       <Combobox
                         options={[
-                          { value: 'none', label: 'Select a ward' },
+                          { value: "none", label: "Select a ward" },
                           ...wards.map(ward => ({
                             value: ward.code,
                             label: ward.name,
                           })),
                         ]}
-                        value={field.value || ''}
+                        value={field.value || ""}
                         onValueChange={value => {
                           field.onChange(value);
                           handleWardChange(value);
                         }}
                         placeholder={
                           wards.length > 0
-                            ? 'Select a ward'
-                            : 'No wards available'
+                            ? "Select a ward"
+                            : "No wards available"
                         }
                         emptyMessage="No matching wards found"
                         disabled={wards.length === 0 || loading.locations}
@@ -1069,18 +1069,18 @@ export function OrganizationForm({
                     <FormControl>
                       <Combobox
                         options={[
-                          { value: 'none', label: 'Select a division' },
+                          { value: "none", label: "Select a division" },
                           ...divisions.map(division => ({
                             value: division.code,
                             label: division.name,
                           })),
                         ]}
-                        value={field.value || ''}
+                        value={field.value || ""}
                         onValueChange={field.onChange}
                         placeholder={
                           divisions.length > 0
-                            ? 'Select a division'
-                            : 'No divisions available'
+                            ? "Select a division"
+                            : "No divisions available"
                         }
                         emptyMessage="No matching divisions found"
                         disabled={divisions.length === 0 || loading.locations}
@@ -1094,9 +1094,9 @@ export function OrganizationForm({
           )}
 
           {/* Parishes and Villages - Only show for sub-counties */}
-          {form.getValues('sub_county_id') &&
-            subCounties.find(s => s.code === form.getValues('sub_county_id'))
-              ?.type === 'subcounty' && (
+          {form.getValues("sub_county_id") &&
+            subCounties.find(s => s.code === form.getValues("sub_county_id"))
+              ?.type === "subcounty" && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -1107,13 +1107,13 @@ export function OrganizationForm({
                       <FormControl>
                         <Combobox
                           options={[
-                            { value: 'none', label: 'Select a parish' },
+                            { value: "none", label: "Select a parish" },
                             ...parishes.map(parish => ({
                               value: parish.code,
                               label: parish.name,
                             })),
                           ]}
-                          value={field.value || ''}
+                          value={field.value || ""}
                           onValueChange={value => {
                             field.onChange(value);
                             const parishObj = parishes.find(
@@ -1128,8 +1128,8 @@ export function OrganizationForm({
                           }}
                           placeholder={
                             parishes.length > 0
-                              ? 'Select a parish'
-                              : 'No parishes available'
+                              ? "Select a parish"
+                              : "No parishes available"
                           }
                           emptyMessage="No matching parishes found"
                           disabled={parishes.length === 0 || loading.locations}
@@ -1149,24 +1149,24 @@ export function OrganizationForm({
                       <FormControl>
                         <Combobox
                           options={[
-                            { value: 'none', label: 'Select a village' },
+                            { value: "none", label: "Select a village" },
                             ...villages.map(village => ({
                               value: village.code,
                               label: village.name,
                             })),
                           ]}
-                          value={field.value || ''}
+                          value={field.value || ""}
                           onValueChange={field.onChange}
                           placeholder={
                             villages.length > 0
-                              ? 'Select a village'
-                              : form.getValues('parish')
-                                ? 'No villages available'
-                                : 'Select a parish first'
+                              ? "Select a village"
+                              : form.getValues("parish")
+                                ? "No villages available"
+                                : "Select a parish first"
                           }
                           emptyMessage="No matching villages found"
                           disabled={
-                            !form.getValues('parish') || loading.locations
+                            !form.getValues("parish") || loading.locations
                           }
                         />
                       </FormControl>
@@ -1178,16 +1178,16 @@ export function OrganizationForm({
             )}
 
           {/* Cities, Wards, and Divisions - Only show for cities and municipalities */}
-          {form.getValues('sub_county_id') &&
-            ['city', 'municipality'].includes(
-              subCounties.find(s => s.code === form.getValues('sub_county_id'))
-                ?.type || ''
+          {form.getValues("sub_county_id") &&
+            ["city", "municipality"].includes(
+              subCounties.find(s => s.code === form.getValues("sub_county_id"))
+                ?.type || ""
             ) && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Cities - Only show for municipalities */}
                 {subCounties.find(
-                  s => s.code === form.getValues('sub_county_id')
-                )?.type === 'municipality' && (
+                  s => s.code === form.getValues("sub_county_id")
+                )?.type === "municipality" && (
                   <FormField
                     control={form.control}
                     name="city_id"
@@ -1197,21 +1197,21 @@ export function OrganizationForm({
                         <FormControl>
                           <Combobox
                             options={[
-                              { value: 'none', label: 'Select a city' },
+                              { value: "none", label: "Select a city" },
                               ...cities.map(city => ({
                                 value: city.code,
                                 label: city.name,
                               })),
                             ]}
-                            value={field.value || ''}
+                            value={field.value || ""}
                             onValueChange={value => {
                               field.onChange(value);
                               handleCityChange(value);
                             }}
                             placeholder={
                               cities.length > 0
-                                ? 'Select a city'
-                                : 'No cities available'
+                                ? "Select a city"
+                                : "No cities available"
                             }
                             emptyMessage="No matching cities found"
                             disabled={cities.length === 0 || loading.locations}
@@ -1233,21 +1233,21 @@ export function OrganizationForm({
                       <FormControl>
                         <Combobox
                           options={[
-                            { value: 'none', label: 'Select a ward' },
+                            { value: "none", label: "Select a ward" },
                             ...wards.map(ward => ({
                               value: ward.code,
                               label: ward.name,
                             })),
                           ]}
-                          value={field.value || ''}
+                          value={field.value || ""}
                           onValueChange={value => {
                             field.onChange(value);
                             handleWardChange(value);
                           }}
                           placeholder={
                             wards.length > 0
-                              ? 'Select a ward'
-                              : 'No wards available'
+                              ? "Select a ward"
+                              : "No wards available"
                           }
                           emptyMessage="No matching wards found"
                           disabled={wards.length === 0 || loading.locations}
@@ -1268,18 +1268,18 @@ export function OrganizationForm({
                       <FormControl>
                         <Combobox
                           options={[
-                            { value: 'none', label: 'Select a division' },
+                            { value: "none", label: "Select a division" },
                             ...divisions.map(division => ({
                               value: division.code,
                               label: division.name,
                             })),
                           ]}
-                          value={field.value || ''}
+                          value={field.value || ""}
                           onValueChange={field.onChange}
                           placeholder={
                             divisions.length > 0
-                              ? 'Select a division'
-                              : 'No divisions available'
+                              ? "Select a division"
+                              : "No divisions available"
                           }
                           emptyMessage="No matching divisions found"
                           disabled={divisions.length === 0 || loading.locations}
@@ -1310,7 +1310,7 @@ export function OrganizationForm({
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+          <div className="rounded-md bg-red-50 p-3 text-sm text-red-500">
             {error}
           </div>
         )}
@@ -1320,7 +1320,7 @@ export function OrganizationForm({
             Cancel
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Creating...' : 'Create Organization'}
+            {isLoading ? "Creating..." : "Create Organization"}
           </Button>
         </div>
       </form>

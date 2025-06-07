@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { ModeToggle } from '@/features/themes/components/mode-toggle';
-import { ThemeSelector } from '@/features/themes/components/theme-selector';
-import { DashboardBreadcrumbs } from './dashboard-breadcrumbs';
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ModeToggle } from "@/features/themes/components/mode-toggle";
+import { ThemeSelector } from "@/features/themes/components/theme-selector";
+import { DashboardBreadcrumbs } from "./dashboard-breadcrumbs";
 
 interface SiteHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   heading?: string;
@@ -17,7 +17,7 @@ export function SiteHeader({ children, className, ...props }: SiteHeaderProps) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-t-2xl px-2 w-full',
+        "bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full rounded-t-2xl border-b px-2 backdrop-blur",
         className
       )}
       {...props}
