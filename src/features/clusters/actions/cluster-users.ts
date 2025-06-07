@@ -1,15 +1,15 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
+import { db } from "@/lib/db";
 import {
   clusterUsers,
   users,
   clusters,
   clusterMembers,
   organizations,
-} from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { auth } from '@/features/auth/auth';
+} from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
+import { auth } from "@/features/auth/auth";
 
 // Get clusters a user belongs to
 export async function getUserClusters(userId: string) {
@@ -39,8 +39,8 @@ export async function getUserClusters(userId: string) {
 
     return { success: true, data: formattedClusters };
   } catch (error) {
-    console.error('Error fetching user clusters:', error);
-    return { success: false, error: 'Failed to fetch user clusters' };
+    console.error("Error fetching user clusters:", error);
+    return { success: false, error: "Failed to fetch user clusters" };
   }
 }
 
@@ -101,10 +101,10 @@ export async function getUserClusterOrganizations(userId: string) {
 
     return { success: true, data: formattedOrgs };
   } catch (error) {
-    console.error('Error fetching user cluster organizations:', error);
+    console.error("Error fetching user cluster organizations:", error);
     return {
       success: false,
-      error: 'Failed to fetch user cluster organizations',
+      error: "Failed to fetch user cluster organizations",
     };
   }
 }
@@ -115,7 +115,7 @@ export async function getCurrentUserClusterOrganizations() {
     const session = await auth();
 
     if (!session?.user) {
-      return { success: false, error: 'User not authenticated' };
+      return { success: false, error: "User not authenticated" };
     }
 
     return await getUserClusterOrganizations(session.user.id);
@@ -124,7 +124,7 @@ export async function getCurrentUserClusterOrganizations() {
       "Error fetching current user's cluster organizations:",
       error
     );
-    return { success: false, error: 'Failed to fetch cluster organizations' };
+    return { success: false, error: "Failed to fetch cluster organizations" };
   }
 }
 
@@ -133,11 +133,11 @@ export async function addUserToCluster(
   userId: string,
   clusterId: string,
   role:
-    | 'super_admin'
-    | 'cluster_manager'
-    | 'organization_admin'
-    | 'organization_member'
-    | 'user' = 'cluster_manager'
+    | "super_admin"
+    | "cluster_manager"
+    | "organization_admin"
+    | "organization_member"
+    | "user" = "cluster_manager"
 ) {
   try {
     // Check if already a member
@@ -164,8 +164,8 @@ export async function addUserToCluster(
 
     return { success: true, data: newMember };
   } catch (error) {
-    console.error('Error adding user to cluster:', error);
-    return { success: false, error: 'Failed to add user to cluster' };
+    console.error("Error adding user to cluster:", error);
+    return { success: false, error: "Failed to add user to cluster" };
   }
 }
 
@@ -183,8 +183,8 @@ export async function removeUserFromCluster(userId: string, clusterId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error('Error removing user from cluster:', error);
-    return { success: false, error: 'Failed to remove user from cluster' };
+    console.error("Error removing user from cluster:", error);
+    return { success: false, error: "Failed to remove user from cluster" };
   }
 }
 
@@ -211,7 +211,7 @@ export async function getClusterUsers(clusterId: string) {
 
     const formattedUsers = clusterMemberships.map(item => ({
       id: item.user.id,
-      name: item.user.name || 'Unknown User',
+      name: item.user.name || "Unknown User",
       email: item.user.email,
       role: item.membership.role,
       created_at: item.membership.created_at,
@@ -220,7 +220,7 @@ export async function getClusterUsers(clusterId: string) {
 
     return { success: true, data: formattedUsers };
   } catch (error) {
-    console.error('Error fetching cluster users:', error);
-    return { success: false, error: 'Failed to fetch cluster users' };
+    console.error("Error fetching cluster users:", error);
+    return { success: false, error: "Failed to fetch cluster users" };
   }
 }

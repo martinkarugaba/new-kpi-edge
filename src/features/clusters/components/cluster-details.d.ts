@@ -1,4 +1,4 @@
-declare module '@/features/clusters/components/cluster-details' {
+declare module "@/features/clusters/components/cluster-details" {
   export interface ClusterDetailsProps {
     cluster: {
       id: string;

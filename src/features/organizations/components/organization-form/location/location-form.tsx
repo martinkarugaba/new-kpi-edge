@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { ugandaSubCounties } from '@/data/uganda-subcounties';
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ugandaSubCounties } from "@/data/uganda-subcounties";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { useOrganizationForm } from '../form-context/form-provider';
-import { Combobox } from '@/components/ui/combobox';
-import { LocationInfo } from '../form-context/types';
-import { MultiSelectCombobox } from './MultiSelectCombobox';
+} from "@/components/ui/form";
+import { useOrganizationForm } from "../form-context/form-provider";
+import { Combobox } from "@/components/ui/combobox";
+import { LocationInfo } from "../form-context/types";
+import { MultiSelectCombobox } from "./MultiSelectCombobox";
 
 export function LocationForm() {
   const {
@@ -72,7 +72,7 @@ export function LocationForm() {
   // }, [districts]);
 
   // Keep track of selected subcounties for UI feedback
-  const selectedSubCounties = form.watch('operation_sub_counties') || [];
+  const selectedSubCounties = form.watch("operation_sub_counties") || [];
 
   return (
     <Card>
@@ -129,7 +129,7 @@ export function LocationForm() {
                       value: district.code,
                       label: district.name,
                     }))}
-                    value={field.value?.[0] || ''}
+                    value={field.value?.[0] || ""}
                     onValueChange={value => {
                       const district = districts.find(
                         (d: LocationInfo) => d.code === value
@@ -156,7 +156,7 @@ export function LocationForm() {
             name="operation_sub_counties"
             render={({ field }) => (
               <FormItem>
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <FormLabel>Sub-Counties</FormLabel>
                 </div>
                 <FormControl>
@@ -167,7 +167,7 @@ export function LocationForm() {
                     }))}
                     selected={Array.isArray(field.value) ? field.value : []}
                     onChange={selected => {
-                      form.setValue('operation_sub_counties', selected);
+                      form.setValue("operation_sub_counties", selected);
 
                       // Update the district subcounties map
                       if (currentDistrict?.code) {
@@ -180,8 +180,8 @@ export function LocationForm() {
                     placeholder="Select sub-counties"
                     emptyText={
                       filteredSubcounties.length > 0
-                        ? 'No sub-counties matched your search'
-                        : 'No sub-counties found for this district'
+                        ? "No sub-counties matched your search"
+                        : "No sub-counties found for this district"
                     }
                   />
                 </FormControl>
@@ -195,7 +195,7 @@ export function LocationForm() {
         {Array.isArray(selectedSubCounties) &&
           selectedSubCounties.length > 0 && (
             <div className="rounded-md border p-4">
-              <h4 className="text-sm font-medium mb-2">
+              <h4 className="mb-2 text-sm font-medium">
                 Selected Sub-Counties:
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -203,12 +203,12 @@ export function LocationForm() {
                   <Badge
                     key={subCounty}
                     variant="secondary"
-                    className="px-2 py-1 cursor-pointer"
+                    className="cursor-pointer px-2 py-1"
                     onClick={() => {
                       const newSelection = selectedSubCounties.filter(
                         (sc: string) => sc !== subCounty
                       );
-                      form.setValue('operation_sub_counties', newSelection);
+                      form.setValue("operation_sub_counties", newSelection);
 
                       if (currentDistrict?.code) {
                         const updatedDistrictSubcounties = {

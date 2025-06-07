@@ -1,17 +1,17 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { clusterMembers } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+import { db } from "@/lib/db";
+import { clusterMembers } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import {
   createOrganization as originalCreate,
   updateOrganization as originalUpdate,
-} from './organizations';
-import { z } from 'zod';
+} from "./organizations";
+import { z } from "zod";
 
 // Import the schema from the schema file
-import { createOrganizationSchema as originalCreateSchema } from '../schemas/organization-schema';
+import { createOrganizationSchema as originalCreateSchema } from "../schemas/organization-schema";
 
 type CreateOrganizationInput = z.infer<typeof originalCreateSchema>;
 
@@ -27,7 +27,7 @@ export async function createOrganizationWithClusters(
         success: false,
         error: validationResult.error.errors
           .map((e: { message: string }) => e.message)
-          .join(', '),
+          .join(", "),
       };
     }
 
@@ -51,16 +51,16 @@ export async function createOrganizationWithClusters(
           }))
         );
       } catch (error) {
-        console.error('Error adding organization to clusters:', error);
+        console.error("Error adding organization to clusters:", error);
         // We don't want to fail the whole operation if cluster assignment fails
       }
     }
 
-    revalidatePath('/dashboard/organizations');
+    revalidatePath("/dashboard/organizations");
     return result;
   } catch (error) {
-    console.error('Error creating organization with clusters:', error);
-    return { success: false, error: 'Failed to create organization' };
+    console.error("Error creating organization with clusters:", error);
+    return { success: false, error: "Failed to create organization" };
   }
 }
 
@@ -77,7 +77,7 @@ export async function updateOrganizationWithClusters(
         success: false,
         error: validationResult.error.errors
           .map((e: { message: string }) => e.message)
-          .join(', '),
+          .join(", "),
       };
     }
 
@@ -105,16 +105,16 @@ export async function updateOrganizationWithClusters(
         );
       }
     } catch (error) {
-      console.error('Error updating organization clusters:', error);
+      console.error("Error updating organization clusters:", error);
       // We don't want to fail the whole operation if cluster assignment fails
     }
 
-    revalidatePath('/dashboard/organizations');
+    revalidatePath("/dashboard/organizations");
     revalidatePath(`/dashboard/organizations/${id}`);
 
     return result;
   } catch (error) {
-    console.error('Error updating organization with clusters:', error);
-    return { success: false, error: 'Failed to update organization' };
+    console.error("Error updating organization with clusters:", error);
+    return { success: false, error: "Failed to update organization" };
   }
 }

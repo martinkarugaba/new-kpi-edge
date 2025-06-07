@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ProjectForm } from './project-form';
-import { useState } from 'react';
-import { Project } from '../types';
-import { Modal } from '@/components/ui/modal';
+import { ProjectForm } from "./project-form";
+import { useState } from "react";
+import { Project } from "../types";
+import { Modal } from "@/components/ui/modal";
 
 type EditProjectDialogProps = {
   project: Project;
@@ -31,7 +31,7 @@ export function EditProjectDialog({
       onOpenChange={setOpen}
       title="Edit Project"
       description="Update the project details below."
-      className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto"
+      className="max-h-[80vh] overflow-y-auto sm:max-w-[700px]"
     >
       <ProjectForm
         initialData={project}

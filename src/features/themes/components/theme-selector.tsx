@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { THEMES } from '../lib/themes';
-import { useThemeConfig } from './active-theme';
+import { THEMES } from "../lib/themes";
+import { useThemeConfig } from "./active-theme";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 export function ThemeSelector() {
   const { activeTheme, setActiveTheme } = useThemeConfig();
@@ -17,7 +17,7 @@ export function ThemeSelector() {
     <Select value={activeTheme} onValueChange={setActiveTheme}>
       <SelectTrigger
         size="sm"
-        className="w-32 bg-background text-foreground border"
+        className="bg-background text-foreground w-32 border"
       >
         <SelectValue placeholder="Select a theme" />
       </SelectTrigger>

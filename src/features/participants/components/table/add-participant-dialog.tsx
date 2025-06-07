@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,14 +6,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { type Project } from '@/features/projects/types';
-import { type Participant } from '../../types/types';
-import { type ParticipantFormValues } from '../participant-form';
-import { ParticipantForm } from '../participant-form';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { type Project } from "@/features/projects/types";
+import { type Participant } from "../../types/types";
+import { type ParticipantFormValues } from "../participant-form";
+import { ParticipantForm } from "../participant-form";
+import { Separator } from "@/components/ui/separator";
 
 // Extended participant type with the additional properties needed for the form
 type ExtendedParticipant = Participant & {
@@ -53,33 +53,33 @@ export function AddParticipantDialog({
         subCounty: editingParticipant.subCounty,
         parish: editingParticipant.parish,
         village: editingParticipant.village,
-        sex: editingParticipant.sex as 'male' | 'female' | 'other',
+        sex: editingParticipant.sex as "male" | "female" | "other",
         age: editingParticipant.age.toString(),
-        isPWD: editingParticipant.isPWD as 'yes' | 'no',
-        isMother: editingParticipant.isMother as 'yes' | 'no',
-        isRefugee: editingParticipant.isRefugee as 'yes' | 'no',
+        isPWD: editingParticipant.isPWD as "yes" | "no",
+        isMother: editingParticipant.isMother as "yes" | "no",
+        isRefugee: editingParticipant.isRefugee as "yes" | "no",
         designation: editingParticipant.designation,
         enterprise: editingParticipant.enterprise,
         contact: editingParticipant.contact,
-        organization_id: editingParticipant.organization_id || '',
+        organization_id: editingParticipant.organization_id || "",
         project_id: editingParticipant.project_id,
-        cluster_id: editingParticipant.cluster_id || clusters[0]?.id || '',
+        cluster_id: editingParticipant.cluster_id || clusters[0]?.id || "",
         isPermanentResident: (editingParticipant.isPermanentResident ||
-          'yes') as 'yes' | 'no',
-        areParentsAlive: (editingParticipant.areParentsAlive || 'yes') as
-          | 'yes'
-          | 'no',
+          "yes") as "yes" | "no",
+        areParentsAlive: (editingParticipant.areParentsAlive || "yes") as
+          | "yes"
+          | "no",
         numberOfChildren:
-          editingParticipant.numberOfChildren?.toString() || '0',
-        employmentStatus: editingParticipant.employmentStatus || 'unemployed',
-        monthlyIncome: editingParticipant.monthlyIncome?.toString() || '0',
-        mainChallenge: editingParticipant.mainChallenge || '',
-        skillOfInterest: editingParticipant.skillOfInterest || '',
-        expectedImpact: editingParticipant.expectedImpact || '',
+          editingParticipant.numberOfChildren?.toString() || "0",
+        employmentStatus: editingParticipant.employmentStatus || "unemployed",
+        monthlyIncome: editingParticipant.monthlyIncome?.toString() || "0",
+        mainChallenge: editingParticipant.mainChallenge || "",
+        skillOfInterest: editingParticipant.skillOfInterest || "",
+        expectedImpact: editingParticipant.expectedImpact || "",
         isWillingToParticipate: (editingParticipant.isWillingToParticipate ||
-          'yes') as 'yes' | 'no',
-        noOfTrainings: '0',
-        isActive: 'yes' as const,
+          "yes") as "yes" | "no",
+        noOfTrainings: "0",
+        isActive: "yes" as const,
       }
     : undefined;
 
@@ -97,10 +97,10 @@ export function AddParticipantDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="min-w-[80vw] lg:min-w-[600px] max-h-[90vh] overflow-auto">
+      <DialogContent className="max-h-[90vh] min-w-[80vw] overflow-auto lg:min-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-lg text-center font-semibold">
-            {editingParticipant ? 'Edit Participant' : 'Add Participant'}
+          <DialogTitle className="text-center text-lg font-semibold">
+            {editingParticipant ? "Edit Participant" : "Add Participant"}
           </DialogTitle>
         </DialogHeader>
         <Separator />

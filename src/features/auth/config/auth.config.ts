@@ -1,23 +1,23 @@
-import type { NextAuthConfig } from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { z } from 'zod';
-import type { User } from 'next-auth';
-import { db } from '@/lib/db';
-import { users } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcryptjs';
+import type { NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { z } from "zod";
+import type { User } from "next-auth";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
+    signIn: "/auth/login",
+    error: "/auth/error",
   },
   callbacks: {
     async signIn() {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith('/dashboard')) {
+      if (url.startsWith("/dashboard")) {
         return url;
       }
       return baseUrl;
@@ -51,18 +51,18 @@ export const authConfig: NextAuthConfig = {
         } catch (dbError) {
           // Database connection error, log but proceed with session
           console.error(
-            'Database connection error in session callback:',
+            "Database connection error in session callback:",
             dbError
           );
         }
       } catch (error) {
-        console.error('Error in session callback:', error);
+        console.error("Error in session callback:", error);
       }
 
       return session;
     },
     async jwt({ token, user }) {
-      if (user && 'id' in user && 'role' in user) {
+      if (user && "id" in user && "role" in user) {
         token.id = user.id;
         token.role = user.role;
         token.accessToken = user.accessToken;
@@ -72,10 +72,10 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [
     Credentials({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials): Promise<User | null> {
         const parsedCredentials = z
@@ -83,7 +83,7 @@ export const authConfig: NextAuthConfig = {
           .safeParse(credentials);
 
         if (!parsedCredentials.success) {
-          throw new Error('Invalid credentials');
+          throw new Error("Invalid credentials");
         }
 
         const { email, password } = parsedCredentials.data;
@@ -95,26 +95,26 @@ export const authConfig: NextAuthConfig = {
           });
 
           if (!user || !user.password) {
-            throw new Error('User not found');
+            throw new Error("User not found");
           }
 
           // Verify password
           const isValidPassword = await bcrypt.compare(password, user.password);
 
           if (!isValidPassword) {
-            throw new Error('Incorrect password');
+            throw new Error("Incorrect password");
           }
 
           // Return user without password
           return {
             id: user.id,
-            name: user.name || '',
+            name: user.name || "",
             email: user.email,
             role: user.role,
             accessToken: `token_${user.id}`,
           };
         } catch (error) {
-          console.error('Error during authentication:', error);
+          console.error("Error during authentication:", error);
           throw error; // Re-throw to preserve the error message
         }
       },

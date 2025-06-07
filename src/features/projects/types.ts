@@ -1,11 +1,11 @@
-import { Organization } from '../organizations/types';
+import { Organization } from "../organizations/types";
 
 export interface Project {
   id: string;
   name: string;
   acronym: string;
   description: string | null;
-  status: 'active' | 'completed' | 'on-hold';
+  status: "active" | "completed" | "on-hold";
   startDate: Date | null;
   endDate: Date | null;
   createdAt: Date | null;

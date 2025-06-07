@@ -1,29 +1,29 @@
-import { db } from '../src/lib/db';
-import { sql, eq } from 'drizzle-orm';
+import { db } from "../src/lib/db";
+import { sql, eq } from "drizzle-orm";
 import {
   municipalities,
   districts,
   counties,
   subCounties,
-} from '../src/lib/db/schema';
-import * as dotenv from 'dotenv';
-import path from 'path';
+} from "../src/lib/db/schema";
+import * as dotenv from "dotenv";
+import path from "path";
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 // Allow passing database URL via command line argument
 const args = process.argv.slice(2);
-const dbUrlArg = args.find(arg => arg.startsWith('--database-url='));
+const dbUrlArg = args.find(arg => arg.startsWith("--database-url="));
 if (dbUrlArg) {
-  const dbUrl = dbUrlArg.split('=')[1];
+  const dbUrl = dbUrlArg.split("=")[1];
   process.env.DATABASE_URL = dbUrl;
-  console.log('Using database URL from command line argument');
+  console.log("Using database URL from command line argument");
 }
 
 async function testMunicipalityData() {
   try {
-    console.log('🔍 Testing municipality data...');
+    console.log("🔍 Testing municipality data...");
 
     // Get count of municipalities
     const municipalityCount = await db
@@ -47,20 +47,20 @@ async function testMunicipalityData() {
       .innerJoin(subCounties, eq(municipalities.sub_county_id, subCounties.id))
       .limit(10);
 
-    console.log('\nSample municipalities with relations:');
+    console.log("\nSample municipalities with relations:");
 
     if (sampleMunicipalities.length === 0) {
-      console.log('No municipalities found. Have you run the seed script yet?');
+      console.log("No municipalities found. Have you run the seed script yet?");
     } else {
       // Display the sample data in a tabular format
       console.log(
-        '------------------------------------------------------------------------------------------------'
+        "------------------------------------------------------------------------------------------------"
       );
       console.log(
-        '| Municipality      | Code             | District          | County            | Subcounty        |'
+        "| Municipality      | Code             | District          | County            | Subcounty        |"
       );
       console.log(
-        '------------------------------------------------------------------------------------------------'
+        "------------------------------------------------------------------------------------------------"
       );
 
       sampleMunicipalities.forEach(
@@ -84,14 +84,14 @@ async function testMunicipalityData() {
       );
 
       console.log(
-        '------------------------------------------------------------------------------------------------'
+        "------------------------------------------------------------------------------------------------"
       );
     }
 
-    console.log('\nTest completed successfully');
+    console.log("\nTest completed successfully");
   } catch (error: unknown) {
     console.error(
-      '❌ Error testing municipality data:',
+      "❌ Error testing municipality data:",
       error instanceof Error ? error.message : String(error)
     );
     throw error;
@@ -101,12 +101,12 @@ async function testMunicipalityData() {
 // Run the test
 testMunicipalityData()
   .then(() => {
-    console.log('✅ Municipality data test completed');
+    console.log("✅ Municipality data test completed");
     process.exit(0);
   })
   .catch((error: unknown) => {
     console.error(
-      '❌ Municipality data test failed:',
+      "❌ Municipality data test failed:",
       error instanceof Error ? error.message : String(error)
     );
     process.exit(1);

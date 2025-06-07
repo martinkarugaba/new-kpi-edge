@@ -1,17 +1,17 @@
-import { Cluster } from '@/features/clusters/types';
-import { Project } from '@/features/projects/types';
-import { UseFormReturn } from 'react-hook-form';
-import { z } from 'zod';
+import { Cluster } from "@/features/clusters/types";
+import { Project } from "@/features/projects/types";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
 
 export const organizationFormSchema = z.object({
-  name: z.string().min(1, 'Organization name is required'),
+  name: z.string().min(1, "Organization name is required"),
   acronym: z.string().optional(),
   cluster_id: z.string().nullable(),
   selected_cluster_ids: z.array(z.string()),
   project_id: z.string().nullable(),
-  country: z.array(z.string()).min(1, 'Country is required'),
-  district: z.array(z.string()).min(1, 'District is required'),
-  sub_county_id: z.string().min(1, 'Sub-county is required'),
+  country: z.array(z.string()).min(1, "Country is required"),
+  district: z.array(z.string()).min(1, "District is required"),
+  sub_county_id: z.string().min(1, "Sub-county is required"),
   operation_sub_counties: z.array(z.string()).optional(),
   parish: z.string().optional(),
   village: z.string().optional(),

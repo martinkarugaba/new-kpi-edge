@@ -1,41 +1,41 @@
-import Link from 'next/link';
-import { Container } from '@/components/ui/container';
-import { Separator } from '@/components/ui/separator';
+import Link from "next/link";
+import { Container } from "@/components/ui/container";
+import { Separator } from "@/components/ui/separator";
 
 const footerLinks = [
   {
-    title: 'Product',
+    title: "Product",
     links: [
-      { name: 'Features', href: '#features' },
-      { name: 'Pricing', href: '#pricing' },
-      { name: 'Integrations', href: '#integrations' },
-      { name: 'Changelog', href: '/changelog' },
+      { name: "Features", href: "#features" },
+      { name: "Pricing", href: "#pricing" },
+      { name: "Integrations", href: "#integrations" },
+      { name: "Changelog", href: "/changelog" },
     ],
   },
   {
-    title: 'Company',
+    title: "Company",
     links: [
-      { name: 'About', href: '/about' },
-      { name: 'Blog', href: '/blog' },
-      { name: 'Careers', href: '/careers' },
+      { name: "About", href: "/about" },
+      { name: "Blog", href: "/blog" },
+      { name: "Careers", href: "/careers" },
     ],
   },
   {
-    title: 'Resources',
+    title: "Resources",
     links: [
-      { name: 'Documentation', href: '/docs' },
-      { name: 'Support', href: '/support' },
-      { name: 'API', href: '/api' },
-      { name: 'Community', href: '/community' },
+      { name: "Documentation", href: "/docs" },
+      { name: "Support", href: "/support" },
+      { name: "API", href: "/api" },
+      { name: "Community", href: "/community" },
     ],
   },
   {
-    title: 'Legal',
+    title: "Legal",
     links: [
-      { name: 'Privacy', href: '/privacy' },
-      { name: 'Terms', href: '/terms' },
-      { name: 'Security', href: '/security' },
-      { name: 'Cookies', href: '/cookies' },
+      { name: "Privacy", href: "/privacy" },
+      { name: "Terms", href: "/terms" },
+      { name: "Security", href: "/security" },
+      { name: "Cookies", href: "/cookies" },
     ],
   },
 ];
@@ -45,7 +45,7 @@ export function Footer() {
     <footer className="bg-muted/40">
       <Container>
         <div className="py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {footerLinks.map(section => (
               <div key={section.title} className="space-y-4">
                 <h3 className="text-sm font-medium">{section.title}</h3>
@@ -54,7 +54,7 @@ export function Footer() {
                     <li key={link.name}>
                       <Link
                         href={link.href}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                       >
                         {link.name}
                       </Link>
@@ -66,14 +66,14 @@ export function Footer() {
           </div>
         </div>
         <Separator />
-        <div className="py-6 flex flex-col md:flex-row items-center justify-between">
+        <div className="flex flex-col items-center justify-between py-6 md:flex-row">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold">KPI Tracker</span>
           </div>
-          <p className="text-sm text-muted-foreground mt-4 md:mt-0">
+          <p className="text-muted-foreground mt-4 text-sm md:mt-0">
             &copy; {new Date().getFullYear()} KPI Tracker. All rights reserved.
           </p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
+          <div className="mt-4 flex space-x-4 md:mt-0">
             <Link
               href="#"
               className="text-muted-foreground hover:text-foreground transition-colors"

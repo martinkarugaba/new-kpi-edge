@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { ColumnDef } from '@tanstack/react-table';
-import { countries } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { ColumnDef } from "@tanstack/react-table";
+import { countries } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,21 +13,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { deleteCountry } from '@/features/locations/actions/countries';
-import { toast } from 'sonner';
+} from "@/components/ui/dropdown-menu";
+import { deleteCountry } from "@/features/locations/actions/countries";
+import { toast } from "sonner";
 
 type Country = InferSelectModel<typeof countries>;
 
 export const columns: ColumnDef<Country>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -47,12 +47,12 @@ export const columns: ColumnDef<Country>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: 'code',
-    header: 'Code',
+    accessorKey: "code",
+    header: "Code",
   },
   // {
   //   accessorKey: 'created_at',
@@ -73,8 +73,8 @@ export const columns: ColumnDef<Country>[] = [
   //   },
   // },
   {
-    id: 'actions',
-    header: 'Actions',
+    id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const country = row.original;
 
@@ -91,7 +91,7 @@ export const columns: ColumnDef<Country>[] = [
             <DropdownMenuItem
               onClick={() => {
                 // TODO: Implement edit functionality
-                toast.info('Edit functionality coming soon');
+                toast.info("Edit functionality coming soon");
               }}
             >
               <Pencil className="mr-2 h-4 w-4" />
@@ -103,9 +103,9 @@ export const columns: ColumnDef<Country>[] = [
               onClick={async () => {
                 try {
                   await deleteCountry(country.id);
-                  toast.success('Country deleted successfully');
+                  toast.success("Country deleted successfully");
                 } catch {
-                  toast.error('Failed to delete country');
+                  toast.error("Failed to delete country");
                 }
               }}
             >

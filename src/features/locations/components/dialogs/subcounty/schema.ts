@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, "Name is required"),
   code: z.string(),
-  countryId: z.string().min(1, 'Country is required'),
-  districtId: z.string().min(1, 'District is required'),
+  countryId: z.string().min(1, "Country is required"),
+  districtId: z.string().min(1, "District is required"),
 });
 
 export type FormValues = z.infer<typeof formSchema>;

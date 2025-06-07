@@ -1,6 +1,6 @@
-import { getUsers } from '@/features/users/actions/users';
-import { UsersTable } from '@/features/users/components/users-table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getUsers } from "@/features/users/actions/users";
+import { UsersTable } from "@/features/users/components/users-table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function UsersPage() {
   const result = await getUsers();

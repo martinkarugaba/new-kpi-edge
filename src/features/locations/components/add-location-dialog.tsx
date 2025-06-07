@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -14,40 +14,40 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
   createCountry,
   createDistrict,
   createSubCounty,
   createParish,
   createVillage,
-} from '../actions/administrative-units';
-import { getParentOptions } from '../actions/get-parent-options';
-import { LocationType } from './columns';
+} from "../actions/administrative-units";
+import { getParentOptions } from "../actions/get-parent-options";
+import { LocationType } from "./columns";
 import {
   getDistrictById,
   getSubCountyById,
   getParishById,
   findDefaultCountyForDistrict,
-} from '../actions/location-details';
+} from "../actions/location-details";
 
 const formSchema = z.object({
-  type: z.enum(['country', 'district', 'subcounty', 'parish', 'village']),
-  name: z.string().min(1, 'Name is required'),
-  code: z.string().min(1, 'Code is required'),
+  type: z.enum(["country", "district", "subcounty", "parish", "village"]),
+  name: z.string().min(1, "Name is required"),
+  code: z.string().min(1, "Code is required"),
   parentId: z.string().optional(),
 });
 
@@ -75,13 +75,13 @@ export function AddLocationDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: 'country',
-      name: '',
-      code: '',
+      type: "country",
+      name: "",
+      code: "",
     },
   });
 
-  const locationType = form.watch('type');
+  const locationType = form.watch("type");
 
   // Reset form when dialog is closed
   useEffect(() => {
@@ -94,7 +94,7 @@ export function AddLocationDialog({
   // Load parent options when location type changes
   useEffect(() => {
     async function loadParentOptions() {
-      if (locationType === 'country') {
+      if (locationType === "country") {
         setParentOptions([]);
         return;
       }
@@ -105,8 +105,8 @@ export function AddLocationDialog({
           setParentOptions(result.data);
         }
       } catch (error) {
-        console.error('Error loading parent options:', error);
-        toast.error('Failed to load parent options');
+        console.error("Error loading parent options:", error);
+        toast.error("Failed to load parent options");
       }
     }
 
@@ -119,12 +119,12 @@ export function AddLocationDialog({
       let result;
 
       switch (data.type) {
-        case 'country':
+        case "country":
           result = await createCountry({ name: data.name, code: data.code });
           break;
-        case 'district':
+        case "district":
           if (!data.parentId) {
-            toast.error('Please select a country');
+            toast.error("Please select a country");
             return;
           }
           result = await createDistrict({
@@ -133,16 +133,16 @@ export function AddLocationDialog({
             countryId: data.parentId,
           });
           break;
-        case 'subcounty':
+        case "subcounty":
           if (!data.parentId) {
-            toast.error('Please select a district');
+            toast.error("Please select a district");
             return;
           }
 
           // Get district details
           const districtResult = await getDistrictById(data.parentId);
           if (!districtResult.success || !districtResult.data) {
-            toast.error('Failed to get district details');
+            toast.error("Failed to get district details");
             return;
           }
 
@@ -154,7 +154,7 @@ export function AddLocationDialog({
           const countyId =
             countyResult.success && countyResult.data
               ? countyResult.data.id
-              : '';
+              : "";
 
           result = await createSubCounty({
             name: data.name,
@@ -164,16 +164,16 @@ export function AddLocationDialog({
             countyId: countyId,
           });
           break;
-        case 'parish':
+        case "parish":
           if (!data.parentId) {
-            toast.error('Please select a sub-county');
+            toast.error("Please select a sub-county");
             return;
           }
 
           // Get the sub-county details
           const subCountyResult = await getSubCountyById(data.parentId);
           if (!subCountyResult.success || !subCountyResult.data) {
-            toast.error('Failed to get sub-county details');
+            toast.error("Failed to get sub-county details");
             return;
           }
 
@@ -186,16 +186,16 @@ export function AddLocationDialog({
             countryId: subCountyResult.data.country_id,
           });
           break;
-        case 'village':
+        case "village":
           if (!data.parentId) {
-            toast.error('Please select a parish');
+            toast.error("Please select a parish");
             return;
           }
 
           // Get the parish details
           const parishResult = await getParishById(data.parentId);
           if (!parishResult.success || !parishResult.data) {
-            toast.error('Failed to get parish details');
+            toast.error("Failed to get parish details");
             return;
           }
 
@@ -212,16 +212,16 @@ export function AddLocationDialog({
       }
 
       if (result?.success) {
-        toast.success('Location added successfully');
+        toast.success("Location added successfully");
         onOpenChange(false);
         form.reset();
         await onSuccess?.();
       } else {
-        toast.error(result?.error || 'Failed to add location');
+        toast.error(result?.error || "Failed to add location");
       }
     } catch (error) {
       console.error(error);
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -247,7 +247,7 @@ export function AddLocationDialog({
                     onValueChange={value => {
                       field.onChange(value);
                       // Reset parentId when type changes
-                      form.setValue('parentId', undefined);
+                      form.setValue("parentId", undefined);
                     }}
                   >
                     <FormControl>
@@ -268,23 +268,23 @@ export function AddLocationDialog({
               )}
             />
 
-            {locationType !== 'country' && (
+            {locationType !== "country" && (
               <FormField
                 control={form.control}
                 name="parentId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {locationType === 'district' && 'Country'}
-                      {locationType === 'subcounty' && 'District'}
-                      {locationType === 'parish' && 'Sub-County'}
-                      {locationType === 'village' && 'Parish'}
+                      {locationType === "district" && "Country"}
+                      {locationType === "subcounty" && "District"}
+                      {locationType === "parish" && "Sub-County"}
+                      {locationType === "village" && "Parish"}
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue
-                            placeholder={`Select parent ${locationType === 'district' ? 'country' : locationType === 'subcounty' ? 'district' : locationType === 'parish' ? 'sub-county' : 'parish'}`}
+                            placeholder={`Select parent ${locationType === "district" ? "country" : locationType === "subcounty" ? "district" : locationType === "parish" ? "sub-county" : "parish"}`}
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -339,7 +339,7 @@ export function AddLocationDialog({
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Adding...' : 'Add Location'}
+                {loading ? "Adding..." : "Add Location"}
               </Button>
             </div>
           </form>

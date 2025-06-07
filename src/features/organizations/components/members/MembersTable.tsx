@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { format } from 'date-fns';
-import { Loader2, Trash } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { format } from "date-fns";
+import { Loader2, Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,16 +10,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { OrganizationMember } from '../../types';
-import { userRole } from '@/lib/db/schema';
+} from "@/components/ui/select";
+import { OrganizationMember } from "../../types";
+import { userRole } from "@/lib/db/schema";
 
 interface MembersTableProps {
   members: OrganizationMember[];
@@ -54,7 +54,7 @@ export function MembersTable({
           <TableRow>
             <TableCell
               colSpan={6}
-              className="text-center py-6 text-muted-foreground"
+              className="text-muted-foreground py-6 text-center"
             >
               No members found. Add members to get started.
             </TableCell>
@@ -86,13 +86,13 @@ export function MembersTable({
               </TableCell>
               <TableCell>
                 {member.created_at
-                  ? format(new Date(member.created_at), 'PPp')
-                  : 'N/A'}
+                  ? format(new Date(member.created_at), "PPp")
+                  : "N/A"}
               </TableCell>
               <TableCell>
                 {member.updated_at
-                  ? format(new Date(member.updated_at), 'PPp')
-                  : 'N/A'}
+                  ? format(new Date(member.updated_at), "PPp")
+                  : "N/A"}
               </TableCell>
               <TableCell>
                 <Button

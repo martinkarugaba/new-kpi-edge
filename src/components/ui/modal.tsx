@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { XIcon } from 'lucide-react';
+import * as React from "react";
+import { XIcon } from "lucide-react";
 
 import {
   Dialog,
@@ -10,9 +10,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export interface ModalProps {
   open: boolean;
@@ -39,7 +39,7 @@ export function Modal({
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-[500px]', className)}>
+      <DialogContent className={cn("sm:max-w-[500px]", className)}>
         {(title || description) && (
           <DialogHeader>
             {title && <DialogTitle>{title}</DialogTitle>}
@@ -49,7 +49,7 @@ export function Modal({
           </DialogHeader>
         )}
 
-        <div className={cn('py-4', contentClassName)}>{children}</div>
+        <div className={cn("py-4", contentClassName)}>{children}</div>
 
         {footer && <DialogFooter>{footer}</DialogFooter>}
 
@@ -57,7 +57,7 @@ export function Modal({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none"
             onClick={() => onOpenChange(false)}
           >
             <XIcon className="h-4 w-4" />

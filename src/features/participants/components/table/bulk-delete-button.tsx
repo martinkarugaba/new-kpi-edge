@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Trash } from 'lucide-react';
-import { type Participant } from '../../types/types';
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
+import { type Participant } from "../../types/types";
 
 interface BulkDeleteButtonProps {
   selectedRows: Participant[];

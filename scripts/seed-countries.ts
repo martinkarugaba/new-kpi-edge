@@ -1,17 +1,17 @@
-import { db } from '@/lib/db';
-import { countries } from '@/lib/db/schema';
-import { Country } from 'country-state-city';
-import { sql } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { countries } from "@/lib/db/schema";
+import { Country } from "country-state-city";
+import { sql } from "drizzle-orm";
 
 async function checkExistingData() {
   try {
-    console.log('🔍 Checking existing countries data...');
+    console.log("🔍 Checking existing countries data...");
     const existingCountries = await db.select().from(countries);
     console.log(`✅ Found ${existingCountries.length} existing countries`);
     return existingCountries;
   } catch (error) {
     console.error(
-      '❌ Error checking data:',
+      "❌ Error checking data:",
       error instanceof Error ? error.message : String(error)
     );
     return [];
@@ -20,7 +20,7 @@ async function checkExistingData() {
 
 async function seedCountries(existingCodes: Set<string> = new Set()) {
   try {
-    console.log('🌱 Starting to seed countries...');
+    console.log("🌱 Starting to seed countries...");
 
     // Get countries data from the country-state-city package
     const allCountries = Country.getAllCountries();
@@ -35,7 +35,7 @@ async function seedCountries(existingCodes: Set<string> = new Set()) {
 
     if (newCountries.length === 0) {
       console.log(
-        '✅ No new countries to add. Database is already up to date.'
+        "✅ No new countries to add. Database is already up to date."
       );
       return;
     }
@@ -109,7 +109,7 @@ async function seedCountries(existingCodes: Set<string> = new Set()) {
     }
   } catch (error) {
     console.error(
-      '❌ Error seeding data:',
+      "❌ Error seeding data:",
       error instanceof Error ? error.message : String(error)
     );
     throw error;
@@ -125,7 +125,7 @@ async function main() {
       existingCodes = new Set(existingCountries.map(c => c.code));
     } catch {
       console.warn(
-        'Warning: Failed to check existing countries properly, will proceed carefully'
+        "Warning: Failed to check existing countries properly, will proceed carefully"
       );
     }
 
@@ -134,7 +134,7 @@ async function main() {
     process.exit(0);
   } catch (error) {
     console.error(
-      'Failed to seed database:',
+      "Failed to seed database:",
       error instanceof Error ? error.message : String(error)
     );
     process.exit(1);

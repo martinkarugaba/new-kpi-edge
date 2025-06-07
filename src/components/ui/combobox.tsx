@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -10,12 +10,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 
 export interface ComboboxOption {
   value: string;
@@ -27,6 +27,7 @@ interface ComboboxProps {
   options: ComboboxOption[];
   value?: string | null;
   onValueChange?: (value: string) => void;
+  onSearchChange?: (searchTerm: string) => void;
   placeholder?: string;
   emptyMessage?: string;
   className?: string;
@@ -37,15 +38,37 @@ export function Combobox({
   options,
   value,
   onValueChange,
-  placeholder = 'Select an option',
-  emptyMessage = 'No options found.',
+  onSearchChange,
+  placeholder = "Select an option",
+  emptyMessage = "No options found.",
   className,
   disabled = false,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const searchTimeout = React.useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+
+  // Debounced search handler
+  const handleSearch = React.useCallback(
+    (term: string) => {
+      setSearchTerm(term);
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+
+      if (onSearchChange) {
+        searchTimeout.current = setTimeout(() => {
+          onSearchChange(term);
+        }, 300); // 300ms debounce
+      }
+    },
+    [onSearchChange]
+  );
 
   // Make sure value is a string and not null/undefined for comparison
-  const safeValue = value || '';
+  const safeValue = value || "";
 
   // Get the display label for the current value
   // First try to find by exact value match
@@ -55,28 +78,28 @@ export function Combobox({
   if (
     !selectedOption &&
     safeValue &&
-    safeValue !== 'none' &&
-    safeValue !== ''
+    safeValue !== "none" &&
+    safeValue !== ""
   ) {
     selectedOption = options.find(option => option.label === safeValue);
   }
 
   // Use the selected option's label if there is one, otherwise use placeholder
   let displayLabel = placeholder;
-  if (selectedOption && safeValue !== 'none' && safeValue !== '') {
+  if (selectedOption && safeValue !== "none" && safeValue !== "") {
     displayLabel = selectedOption.label;
-  } else if (safeValue && safeValue !== 'none' && safeValue !== '') {
+  } else if (safeValue && safeValue !== "none" && safeValue !== "") {
     // If we have a value but no matching option, display the value itself
     displayLabel = safeValue;
   }
 
   // Debug logging
-  console.log('ComboBox rendering with:', {
+  console.log("ComboBox rendering with:", {
     value,
     safeValue,
     selectedOptionLabel: selectedOption?.label,
     displayLabel,
-    isNone: safeValue === 'none',
+    isNone: safeValue === "none",
   });
 
   return (
@@ -86,16 +109,21 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn('w-full justify-between', className)}
+          className={cn("w-full justify-between", className)}
           disabled={disabled}
         >
-          {safeValue === 'none' ? placeholder : displayLabel}
+          {safeValue === "none" ? placeholder : displayLabel}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
         <Command>
-          <CommandInput placeholder={placeholder} className="h-9" />
+          <CommandInput
+            placeholder={placeholder}
+            className="h-9"
+            onValueChange={handleSearch}
+            value={searchTerm}
+          />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
@@ -110,7 +138,7 @@ export function Combobox({
                     if (selectedOption) {
                       onValueChange?.(
                         selectedOption.value === safeValue
-                          ? ''
+                          ? ""
                           : selectedOption.value
                       );
                     }
@@ -121,8 +149,8 @@ export function Combobox({
                   {option.label}
                   <Check
                     className={cn(
-                      'ml-auto h-4 w-4',
-                      safeValue === option.value ? 'opacity-100' : 'opacity-0'
+                      "ml-auto h-4 w-4",
+                      safeValue === option.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

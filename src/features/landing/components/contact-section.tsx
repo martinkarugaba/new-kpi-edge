@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { Container } from '@/components/ui/container';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,16 +13,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle2 } from 'lucide-react';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2 } from "lucide-react";
 
 const contactFormSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
+  name: z.string().min(1, "Name is required"),
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -34,9 +34,9 @@ export function ContactSection() {
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      message: '',
+      name: "",
+      email: "",
+      message: "",
     },
   });
 
@@ -48,21 +48,21 @@ export function ContactSection() {
       setSubmitted(true);
       form.reset();
     } catch (error) {
-      console.error('Failed to submit form:', error);
+      console.error("Failed to submit form:", error);
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <section className="py-16 md:py-24 bg-secondary/5">
+    <section className="bg-secondary/5 py-16 md:py-24">
       <Container>
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="grid items-start gap-12 md:grid-cols-2">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
               Get in Touch
             </h2>
-            <p className="text-lg text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-6 text-lg">
               Have questions about our KPI tracking solution? We&apos;d love to
               hear from you. Our team is here to help and answer any questions
               you may have.
@@ -70,7 +70,7 @@ export function ContactSection() {
 
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-2">Office Location</h3>
+                <h3 className="mb-2 text-lg font-semibold">Office Location</h3>
                 <p className="text-muted-foreground">
                   123 Business Avenue
                   <br />
@@ -81,7 +81,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Contact Info</h3>
+                <h3 className="mb-2 text-lg font-semibold">Contact Info</h3>
                 <p className="text-muted-foreground">
                   Email: support@kpitracker.com
                   <br />
@@ -163,10 +163,10 @@ export function ContactSection() {
                   />
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base"
+                    className="h-12 w-full text-base"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </Form>

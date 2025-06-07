@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,11 +6,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useState } from 'react';
-import { Organization } from '../types';
-import { Cluster } from '@/features/clusters/components/clusters-table';
-import { OrganizationForm } from './organization-form/organization-form';
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { Organization } from "../types";
+import { Cluster } from "@/features/clusters/components/clusters-table";
+import { OrganizationForm } from "./organization-form/organization-form";
 
 type EditOrganizationDialogProps = {
   organization: Organization;
@@ -35,7 +35,7 @@ export function EditOrganizationDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">
             Edit Organization
@@ -46,7 +46,7 @@ export function EditOrganizationDialog({
         </DialogHeader>
         <OrganizationForm
           clusters={clusters}
-          defaultClusterId={organization.cluster_id || ''}
+          defaultClusterId={organization.cluster_id || ""}
           onSuccess={() => setOpen(false)}
           isLoading={isLoading}
           setIsLoading={setIsLoading}

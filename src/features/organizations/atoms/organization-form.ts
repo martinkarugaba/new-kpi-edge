@@ -1,5 +1,5 @@
-import { atom } from 'jotai';
-import type { ICity, ICountry, IState } from 'country-state-city';
+import { atom } from "jotai";
+import type { ICity, ICountry, IState } from "country-state-city";
 
 // Types for location selection
 export interface LocationSelection {

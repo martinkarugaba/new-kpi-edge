@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { municipalities } from '@/lib/db/schema';
-import { revalidatePath } from 'next/cache';
-import { eq } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { municipalities } from "@/lib/db/schema";
+import { revalidatePath } from "next/cache";
+import { eq } from "drizzle-orm";
 
 export type CreateMunicipalityInput = {
   name: string;
@@ -25,11 +25,11 @@ export async function createMunicipality(data: CreateMunicipalityInput) {
       sub_county_id: data.subCountyId,
     });
 
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error creating municipality:', error);
-    return { success: false, error: 'Failed to create municipality' };
+    console.error("Error creating municipality:", error);
+    return { success: false, error: "Failed to create municipality" };
   }
 }
 
@@ -47,8 +47,8 @@ export async function getMunicipality(id: string) {
 
     return { success: true, data };
   } catch (error) {
-    console.error('Error fetching municipality:', error);
-    return { success: false, error: 'Failed to fetch municipality' };
+    console.error("Error fetching municipality:", error);
+    return { success: false, error: "Failed to fetch municipality" };
   }
 }
 
@@ -70,51 +70,91 @@ export async function updateMunicipality(
       })
       .where(eq(municipalities.id, id));
 
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error updating municipality:', error);
-    return { success: false, error: 'Failed to update municipality' };
+    console.error("Error updating municipality:", error);
+    return { success: false, error: "Failed to update municipality" };
   }
 }
 
 export async function deleteMunicipality(id: string) {
   try {
     await db.delete(municipalities).where(eq(municipalities.id, id));
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error deleting municipality:', error);
-    return { success: false, error: 'Failed to delete municipality' };
+    console.error("Error deleting municipality:", error);
+    return { success: false, error: "Failed to delete municipality" };
   }
 }
 
-export async function getMunicipalities(
-  params: {
-    districtId?: string;
-    countyId?: string;
-    subCountyId?: string;
-  } = {}
-) {
+import { and, count, ilike } from "drizzle-orm";
+import type { PaginationParams } from "../types/pagination";
+
+interface GetMunicipalitiesParams {
+  countryId?: string;
+  districtId?: string;
+  countyId?: string;
+  subCountyId?: string;
+  pagination?: PaginationParams;
+}
+
+export async function getMunicipalities(params: GetMunicipalitiesParams = {}) {
+  const {
+    countryId,
+    districtId,
+    countyId,
+    subCountyId,
+    pagination = { page: 1, limit: 10 },
+  } = params;
+
   try {
+    const { page = 1, limit = 10, search } = pagination;
+
+    // Validate and sanitize pagination parameters
+    const validatedPage = Math.max(1, page);
+    const validatedLimit = Math.min(Math.max(1, limit), 100);
+    const offset = (validatedPage - 1) * validatedLimit;
+
+    // Build where conditions
     const whereConditions = [];
 
-    if (params.districtId) {
-      whereConditions.push(eq(municipalities.district_id, params.districtId));
+    if (districtId) {
+      whereConditions.push(eq(municipalities.district_id, districtId));
     }
 
-    if (params.countyId) {
-      whereConditions.push(eq(municipalities.county_id, params.countyId));
+    if (countyId) {
+      whereConditions.push(eq(municipalities.county_id, countyId));
     }
 
-    if (params.subCountyId) {
-      whereConditions.push(
-        eq(municipalities.sub_county_id, params.subCountyId)
-      );
+    if (subCountyId) {
+      whereConditions.push(eq(municipalities.sub_county_id, subCountyId));
     }
 
+    if (countryId) {
+      whereConditions.push(eq(municipalities.country_id, countryId));
+    }
+
+    if (search) {
+      whereConditions.push(ilike(municipalities.name, `%${search}%`));
+    }
+
+    // Combine all conditions with AND
+    const finalWhereCondition =
+      whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+    // Get total count
+    const [totalResult] = await db
+      .select({ count: count() })
+      .from(municipalities)
+      .where(finalWhereCondition);
+
+    const total = totalResult.count;
+
+    // Get paginated data
     const data = await db.query.municipalities.findMany({
-      where: whereConditions.length > 0 ? whereConditions[0] : undefined,
+      where: finalWhereCondition,
       with: {
         country: true,
         district: true,
@@ -122,11 +162,28 @@ export async function getMunicipalities(
         subCounty: true,
       },
       orderBy: (municipalities, { asc }) => [asc(municipalities.name)],
+      limit: validatedLimit,
+      offset: offset,
     });
 
-    return { success: true, data };
+    const totalPages = Math.ceil(total / validatedLimit);
+
+    return {
+      success: true,
+      data: {
+        data,
+        pagination: {
+          page: validatedPage,
+          limit: validatedLimit,
+          total,
+          totalPages,
+          hasNext: validatedPage < totalPages,
+          hasPrev: validatedPage > 1,
+        },
+      },
+    };
   } catch (error) {
-    console.error('Error fetching municipalities:', error);
-    return { success: false, error: 'Failed to fetch municipalities' };
+    console.error("Error fetching municipalities:", error);
+    return { success: false, error: "Failed to fetch municipalities" };
   }
 }

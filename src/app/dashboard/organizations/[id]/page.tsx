@@ -1,13 +1,13 @@
-import { notFound, redirect } from 'next/navigation';
-import { getOrganization } from '@/features/organizations/actions/organizations';
-import { getOrganizationMembers } from '@/features/organizations/actions/organization-members';
-import { auth } from '@/features/auth/auth';
-import { SiteHeader } from '@/features/dashboard/components/site-header';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Pencil, Users } from 'lucide-react';
-import Link from 'next/link';
-import { OrganizationMembers } from '@/features/organizations/components/members';
+import { notFound, redirect } from "next/navigation";
+import { getOrganization } from "@/features/organizations/actions/organizations";
+import { getOrganizationMembers } from "@/features/organizations/actions/organization-members";
+import { auth } from "@/features/auth/auth";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Pencil, Users } from "lucide-react";
+import Link from "next/link";
+import { OrganizationMembers } from "@/features/organizations/components/members";
 
 interface OrganizationDetailsPageProps {
   params: Promise<{ id: string }>; // Correctly type params as a Promise
@@ -28,7 +28,7 @@ export default async function OrganizationDetailsPage({
   // Check authentication
   const session = await auth();
   if (!session?.user) {
-    redirect('/auth/login');
+    redirect("/auth/login");
   }
 
   // Unwrap params using React.use to get the id
@@ -46,17 +46,17 @@ export default async function OrganizationDetailsPage({
   return (
     <>
       <SiteHeader title={organization.name} />
-      <div className="container py-6 space-y-6">
+      <div className="container space-y-6 py-6">
         <div className="mx-auto max-w-7xl">
           {/* Header Section */}
-          <div className="flex flex-col gap-4 mb-8">
+          <div className="mb-8 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <h1 className="text-3xl font-bold tracking-tight">
                   {organization.name}
                 </h1>
                 <p className="text-muted-foreground">
-                  {organization.acronym} • {organization.district},{' '}
+                  {organization.acronym} • {organization.district},{" "}
                   {organization.country}
                 </p>
               </div>
@@ -86,16 +86,16 @@ export default async function OrganizationDetailsPage({
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Name
                         </span>
                         <span className="font-medium">{organization.name}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Acronym
                         </span>
                         <span className="font-medium">
@@ -103,7 +103,7 @@ export default async function OrganizationDetailsPage({
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Country
                         </span>
                         <span className="font-medium">
@@ -111,7 +111,7 @@ export default async function OrganizationDetailsPage({
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           District
                         </span>
                         <span className="font-medium">
@@ -121,7 +121,7 @@ export default async function OrganizationDetailsPage({
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Sub-county
                         </span>
                         <span className="font-medium">
@@ -129,7 +129,7 @@ export default async function OrganizationDetailsPage({
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Parish
                         </span>
                         <span className="font-medium">
@@ -137,7 +137,7 @@ export default async function OrganizationDetailsPage({
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Village
                         </span>
                         <span className="font-medium">
@@ -145,7 +145,7 @@ export default async function OrganizationDetailsPage({
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-muted-foreground text-sm font-medium">
                           Address
                         </span>
                         <span className="font-medium">

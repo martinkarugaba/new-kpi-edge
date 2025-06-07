@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import toast from 'react-hot-toast';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -15,12 +15,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import Link from 'next/link';
-import { requestPasswordReset } from '../actions/auth';
+} from "@/components/ui/form";
+import Link from "next/link";
+import { requestPasswordReset } from "../actions/auth";
 
 const ForgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 type FormValues = z.infer<typeof ForgotPasswordSchema>;
@@ -33,7 +33,7 @@ export function ForgotPasswordForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -45,24 +45,24 @@ export function ForgotPasswordForm() {
 
       if (result.success) {
         setIsSubmitted(true);
-        toast.success('Password reset instructions sent to your email.');
+        toast.success("Password reset instructions sent to your email.");
       } else {
         // If email sending failed but we have a token, show it directly
         if (result.token) {
           setIsSubmitted(true);
           setResetToken(result.token);
           toast.success(
-            'Email sending failed. Please use the link below to reset your password.'
+            "Email sending failed. Please use the link below to reset your password."
           );
         } else {
           toast.error(
             result.error ||
-              'Failed to request password reset. Please try again.'
+              "Failed to request password reset. Please try again."
           );
         }
       }
     } catch {
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -72,21 +72,21 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="grid gap-6 w-full max-w-md">
+      <div className="grid w-full max-w-md gap-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Check your email</h2>
+          <h2 className="mb-2 text-xl font-semibold">Check your email</h2>
           <p className="text-muted-foreground mb-4">
             We&apos;ve sent password reset instructions to your email address.
           </p>
 
           {resetToken && (
-            <div className="mb-4 p-4 bg-muted rounded-md">
-              <p className="text-sm mb-2">
+            <div className="bg-muted mb-4 rounded-md p-4">
+              <p className="mb-2 text-sm">
                 If you didn&apos;t receive the email, use this link:
               </p>
               <a
                 href={`/auth/reset-password/${resetToken}`}
-                className="text-primary hover:underline break-all text-sm"
+                className="text-primary text-sm break-all hover:underline"
               >
                 Reset Password
               </a>
@@ -95,7 +95,7 @@ export function ForgotPasswordForm() {
 
           <Button
             variant="outline"
-            onClick={() => router.push('/auth/login')}
+            onClick={() => router.push("/auth/login")}
             className="w-full"
           >
             Return to login
@@ -106,7 +106,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <div className="grid gap-6 w-full max-w-md">
+    <div className="grid w-full max-w-md gap-6">
       {/* <div className="text-center mb-2">
         <h2 className="text-xl font-semibold">Forgot your password?</h2>
         <p className="text-muted-foreground mt-1">
@@ -141,7 +141,7 @@ export function ForgotPasswordForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="h-12 text-base cursor-pointer"
+            className="h-12 cursor-pointer text-base"
           >
             {isLoading && (
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -151,7 +151,7 @@ export function ForgotPasswordForm() {
           <div className="text-center">
             <Link
               href="/auth/login"
-              className="text-sm text-primary hover:text-primary/90"
+              className="text-primary hover:text-primary/90 text-sm"
             >
               Back to login
             </Link>

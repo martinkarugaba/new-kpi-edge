@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { municipalities } from '@/lib/db/schema';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ColumnDef } from '@tanstack/react-table';
-import type { InferSelectModel } from 'drizzle-orm';
+import { municipalities } from "@/lib/db/schema";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ColumnDef } from "@tanstack/react-table";
+import type { InferSelectModel } from "drizzle-orm";
 
 type Municipality = InferSelectModel<typeof municipalities> & {
   country: { name: string };
@@ -19,7 +19,7 @@ interface GetMunicipalityTableColumnsProps {
 export function getMunicipalityTableColumns({}: GetMunicipalityTableColumnsProps): ColumnDef<Municipality>[] {
   return [
     {
-      id: 'select',
+      id: "select",
       header: ({ table }) => (
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
@@ -38,32 +38,32 @@ export function getMunicipalityTableColumns({}: GetMunicipalityTableColumnsProps
       enableHiding: false,
     },
     {
-      accessorKey: 'name',
-      header: 'Name',
+      accessorKey: "name",
+      header: "Name",
     },
     {
-      accessorKey: 'code',
-      header: 'Code',
+      accessorKey: "code",
+      header: "Code",
     },
     {
-      id: 'country',
-      header: 'Country',
-      accessorFn: row => row.country?.name ?? 'N/A',
+      id: "country",
+      header: "Country",
+      accessorFn: row => row.country?.name ?? "N/A",
     },
     {
-      id: 'district',
-      header: 'District',
-      accessorFn: row => row.district?.name ?? 'N/A',
+      id: "district",
+      header: "District",
+      accessorFn: row => row.district?.name ?? "N/A",
     },
     {
-      id: 'county',
-      header: 'County',
-      accessorFn: row => row.county?.name ?? 'N/A',
+      id: "county",
+      header: "County",
+      accessorFn: row => row.county?.name ?? "N/A",
     },
     {
-      id: 'subCounty',
-      header: 'Sub County',
-      accessorFn: row => row.subCounty?.name ?? 'N/A',
+      id: "subCounty",
+      header: "Sub County",
+      accessorFn: row => row.subCounty?.name ?? "N/A",
     },
   ];
 }

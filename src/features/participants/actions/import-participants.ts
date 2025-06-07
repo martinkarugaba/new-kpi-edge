@@ -1,23 +1,23 @@
-'use server';
+"use server";
 
-import { auth } from '@/features/auth/auth';
-import { db } from '@/lib/db';
-import { participants } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
-import { type ParticipantFormValues } from '../components/participant-form';
+import { auth } from "@/features/auth/auth";
+import { db } from "@/lib/db";
+import { participants } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { type ParticipantFormValues } from "../components/participant-form";
 
 export async function importParticipants(data: ParticipantFormValues[]) {
   try {
     const session = await auth();
     if (!session?.user) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: "Not authenticated" };
     }
 
     // Ensure all participants have the same organization ID
     const firstOrgId = data[0]?.organization_id;
     if (!firstOrgId) {
-      return { success: false, error: 'Organization ID is required' };
+      return { success: false, error: "Organization ID is required" };
     }
 
     // Verify that the user belongs to this organization
@@ -32,7 +32,7 @@ export async function importParticipants(data: ParticipantFormValues[]) {
     if (!member) {
       return {
         success: false,
-        error: 'Not authorized to import participants for this organization',
+        error: "Not authorized to import participants for this organization",
       };
     }
 
@@ -42,7 +42,7 @@ export async function importParticipants(data: ParticipantFormValues[]) {
       organization_id: firstOrgId,
     }));
 
-    console.log('Starting import with data:', participantsData);
+    console.log("Starting import with data:", participantsData);
 
     // Insert all participants
     const result = await db
@@ -81,18 +81,18 @@ export async function importParticipants(data: ParticipantFormValues[]) {
       )
       .returning();
 
-    console.log('Import result:', result);
+    console.log("Import result:", result);
 
-    revalidatePath('/dashboard/participants');
+    revalidatePath("/dashboard/participants");
     return { success: true, data: result };
   } catch (error) {
-    console.error('Error importing participants:', error);
+    console.error("Error importing participants:", error);
     return {
       success: false,
       error:
         error instanceof Error
           ? error.message
-          : 'Failed to import participants',
+          : "Failed to import participants",
     };
   }
 }

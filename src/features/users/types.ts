@@ -1,4 +1,4 @@
-import { userRole } from '@/lib/db/schema';
+import { userRole } from "@/lib/db/schema";
 
 export type User = {
   id: string;

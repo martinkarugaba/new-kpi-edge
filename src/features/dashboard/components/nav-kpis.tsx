@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { type Icon } from '@tabler/icons-react';
+import { type Icon } from "@tabler/icons-react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
+} from "@/components/ui/sidebar";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 export function NavDocuments({
   items,

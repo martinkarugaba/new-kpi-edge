@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -18,25 +18,25 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { LayoutGrid } from 'lucide-react';
+} from "@tanstack/react-table";
+import { LayoutGrid, Loader2 } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -44,7 +44,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
+interface PaginationData {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
 
 interface ReusableDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,13 +67,20 @@ interface ReusableDataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
   customActions?: React.ReactNode;
   customFilters?: React.ReactNode;
+  // Server-side pagination props
+  serverSidePagination?: boolean;
+  paginationData?: PaginationData;
+  onPaginationChange?: (page: number, pageSize: number) => void;
+  isLoading?: boolean;
+  searchValue?: string;
+  onSearchChange?: (search: string) => void;
 }
 
 export function ReusableDataTable<TData, TValue>({
   columns,
   data,
   filterColumn,
-  filterPlaceholder = 'Filter...',
+  filterPlaceholder = "Filter...",
   showColumnToggle = true,
   showPagination = true,
   pageSize = 10,
@@ -73,6 +88,12 @@ export function ReusableDataTable<TData, TValue>({
   onRowClick,
   customActions,
   customFilters,
+  serverSidePagination = false,
+  paginationData,
+  onPaginationChange,
+  isLoading = false,
+  searchValue,
+  onSearchChange,
 }: ReusableDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -82,9 +103,69 @@ export function ReusableDataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize,
+    pageIndex: serverSidePagination ? (paginationData?.page || 1) - 1 : 0,
+    pageSize: serverSidePagination
+      ? paginationData?.limit || pageSize
+      : pageSize,
   });
+
+  // Handle search for server-side pagination
+  const [searchInput, setSearchInput] = React.useState(searchValue || "");
+
+  // Set up debounced search effect
+  React.useEffect(() => {
+    if (!serverSidePagination) return;
+
+    const handler = setTimeout(() => {
+      if (onSearchChange) {
+        onSearchChange(searchInput);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [searchInput, onSearchChange, serverSidePagination]);
+
+  // Update local pagination state when server pagination data changes
+  React.useEffect(() => {
+    if (serverSidePagination && paginationData) {
+      setPagination(prev => ({
+        ...prev,
+        pageIndex: paginationData.page - 1,
+        pageSize: paginationData.limit,
+      }));
+    }
+  }, [serverSidePagination, paginationData]);
+
+  interface PaginationState {
+    pageIndex: number;
+    pageSize: number;
+  }
+
+  type PaginationUpdater =
+    | PaginationState
+    | ((state: PaginationState) => PaginationState);
+
+  // Handle pagination changes for server-side pagination
+  const handlePaginationChange = React.useCallback(
+    (updater: PaginationUpdater) => {
+      if (serverSidePagination && onPaginationChange) {
+        if (typeof updater === "function") {
+          const newPagination = updater(pagination);
+          onPaginationChange(
+            newPagination.pageIndex + 1,
+            newPagination.pageSize
+          );
+          setPagination(newPagination);
+        } else {
+          onPaginationChange(updater.pageIndex + 1, updater.pageSize);
+          setPagination(updater);
+        }
+      } else {
+        setPagination(updater);
+      }
+    },
+    [serverSidePagination, onPaginationChange, pagination]
+  );
 
   const table = useReactTable({
     data,
@@ -92,12 +173,18 @@ export function ReusableDataTable<TData, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: serverSidePagination
+      ? undefined
+      : getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
+    onPaginationChange: handlePaginationChange,
+    manualPagination: serverSidePagination,
+    pageCount: serverSidePagination
+      ? paginationData?.totalPages || 0
+      : undefined,
     state: {
       sorting,
       columnFilters,
@@ -127,14 +214,21 @@ export function ReusableDataTable<TData, TValue>({
             <Input
               placeholder={filterPlaceholder}
               value={
-                (table.getColumn(filterColumn)?.getFilterValue() as string) ??
-                ''
+                serverSidePagination
+                  ? searchInput
+                  : ((table
+                      .getColumn(filterColumn)
+                      ?.getFilterValue() as string) ?? "")
               }
-              onChange={event =>
-                table
-                  .getColumn(filterColumn)
-                  ?.setFilterValue(event.target.value)
-              }
+              onChange={event => {
+                if (serverSidePagination) {
+                  setSearchInput(event.target.value);
+                } else {
+                  table
+                    .getColumn(filterColumn)
+                    ?.setFilterValue(event.target.value);
+                }
+              }}
               className="max-w-sm"
             />
           )}
@@ -154,7 +248,7 @@ export function ReusableDataTable<TData, TValue>({
                     .getAllColumns()
                     .filter(
                       column =>
-                        typeof column.accessorFn !== 'undefined' &&
+                        typeof column.accessorFn !== "undefined" &&
                         column.getCanHide()
                     )
                     .map(column => {
@@ -177,7 +271,7 @@ export function ReusableDataTable<TData, TValue>({
         </div>
         {customActions}
       </div>
-      <div className="rounded-md overflow-hidden border">
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader className="bg-muted text-muted-foreground">
             {table.getHeaderGroups().map(headerGroup => (
@@ -201,12 +295,23 @@ export function ReusableDataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className={onRowClick ? 'cursor-pointer hover:bg-muted' : ''}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={onRowClick ? "hover:bg-muted cursor-pointer" : ""}
                   onClick={() =>
                     onRowClick && onRowClick(row.original as TData)
                   }
@@ -236,8 +341,8 @@ export function ReusableDataTable<TData, TValue>({
       </div>
       {showPagination && (
         <div className="flex items-center justify-between px-4">
-          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
+          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
@@ -248,7 +353,14 @@ export function ReusableDataTable<TData, TValue>({
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={value => {
-                  table.setPageSize(Number(value));
+                  const newSize = Number(value);
+                  if (serverSidePagination && onPaginationChange) {
+                    onPaginationChange(
+                      table.getState().pagination.pageIndex + 1,
+                      newSize
+                    );
+                  }
+                  table.setPageSize(newSize);
                 }}
               >
                 <SelectTrigger className="w-20" id="rows-per-page">
@@ -266,7 +378,7 @@ export function ReusableDataTable<TData, TValue>({
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{' '}
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">

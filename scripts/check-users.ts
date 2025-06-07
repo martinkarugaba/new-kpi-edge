@@ -1,28 +1,28 @@
-import { config } from 'dotenv';
-import * as path from 'path';
+import { config } from "dotenv";
+import * as path from "path";
 
 // Load environment variables before any other imports
-const result = config({ path: path.resolve(process.cwd(), '.env') });
+const result = config({ path: path.resolve(process.cwd(), ".env") });
 
-console.log('Environment loading result:', result);
-console.log('DATABASE_URL:', process.env.DATABASE_URL);
+console.log("Environment loading result:", result);
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
-import { db } from '../src/lib/db';
+import { db } from "../src/lib/db";
 import {
   users,
   organizationMembers,
   organizations,
-} from '../src/lib/db/schema';
-import { eq } from 'drizzle-orm';
+} from "../src/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 async function main() {
-  console.log('Checking users in the database...');
+  console.log("Checking users in the database...");
 
   try {
     const allUsers = await db.select().from(users);
 
     if (allUsers.length === 0) {
-      console.log('No users found in the database.');
+      console.log("No users found in the database.");
     } else {
       console.log(`Found ${allUsers.length} users:`);
       for (const user of allUsers) {
@@ -63,7 +63,7 @@ async function main() {
       }
     }
   } catch (error) {
-    console.error('Error checking users:', error);
+    console.error("Error checking users:", error);
     process.exit(1);
   }
 }

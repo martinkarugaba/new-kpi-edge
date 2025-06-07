@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm/relations';
+import { relations } from "drizzle-orm/relations";
 import {
   users,
   passwordResetTokens,
@@ -8,7 +8,7 @@ import {
   kpis,
   organizationMembers,
   participants,
-} from './schema';
+} from "./schema";
 
 export const passwordResetTokensRelations = relations(
   passwordResetTokens,

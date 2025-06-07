@@ -1,24 +1,24 @@
-import { SiteHeader } from '@/features/dashboard/components/site-header';
-import { Card, CardContent } from '@/components/ui/card';
-import { auth } from '@/features/auth/auth';
-import { redirect } from 'next/navigation';
-import { getUsers } from '@/features/users/actions/users';
-import { UsersClient } from './page-client';
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { Card, CardContent } from "@/components/ui/card";
+import { auth } from "@/features/auth/auth";
+import { redirect } from "next/navigation";
+import { getUsers } from "@/features/users/actions/users";
+import { UsersClient } from "./page-client";
 
 export default async function Page() {
   const session = await auth();
 
   if (!session) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   try {
-    console.log('Fetching users for dashboard...'); // Debug log
+    console.log("Fetching users for dashboard..."); // Debug log
     const usersResult = await getUsers();
-    console.log('Users result:', usersResult); // Debug log
+    console.log("Users result:", usersResult); // Debug log
 
     if (!usersResult.success) {
-      throw new Error(usersResult.error || 'Failed to fetch users');
+      throw new Error(usersResult.error || "Failed to fetch users");
     }
 
     return (
@@ -34,19 +34,19 @@ export default async function Page() {
       </>
     );
   } catch (error) {
-    console.error('Error in users page:', error); // Debug log
+    console.error("Error in users page:", error); // Debug log
     return (
       <>
         <SiteHeader title="Users" />
-        <div className="container py-6 space-y-6">
+        <div className="container space-y-6 py-6">
           <div className="mx-auto max-w-7xl">
             <Card>
               <CardContent className="pt-6">
                 <p className="text-destructive">
-                  Error loading users data:{' '}
+                  Error loading users data:{" "}
                   {error instanceof Error
                     ? error.message
-                    : 'Unknown error occurred'}
+                    : "Unknown error occurred"}
                 </p>
               </CardContent>
             </Card>

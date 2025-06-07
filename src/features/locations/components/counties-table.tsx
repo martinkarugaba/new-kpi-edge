@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { counties, districts } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { AddCountyDialog } from './dialogs/add-county-dialog';
-import { columns } from './data-table/counties-columns';
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { counties, districts } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { AddCountyDialog } from "./dialogs/add-county-dialog";
+import { columns } from "./data-table/counties-columns";
 
 type District = InferSelectModel<typeof districts>;
 

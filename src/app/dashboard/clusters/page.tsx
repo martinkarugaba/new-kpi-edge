@@ -1,22 +1,22 @@
-import { SiteHeader } from '@/features/dashboard/components/site-header';
-import { getClusters } from '@/features/clusters/actions/clusters';
-import { redirect } from 'next/navigation';
-import { auth } from '@/features/auth/auth';
-import { ClustersTable } from '@/features/clusters/components/clusters-table';
-import { Card, CardContent } from '@/components/ui/card';
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { getClusters } from "@/features/clusters/actions/clusters";
+import { redirect } from "next/navigation";
+import { auth } from "@/features/auth/auth";
+import { ClustersTable } from "@/features/clusters/components/clusters-table";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default async function Page() {
   const session = await auth();
 
   if (!session) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   try {
     const clustersResult = await getClusters();
 
     if (!clustersResult.success) {
-      throw new Error(clustersResult.error || 'Failed to fetch clusters');
+      throw new Error(clustersResult.error || "Failed to fetch clusters");
     }
 
     return (
@@ -35,15 +35,15 @@ export default async function Page() {
     return (
       <>
         <SiteHeader title="Clusters" />
-        <div className="container py-6 space-y-6">
+        <div className="container space-y-6 py-6">
           <div className="mx-auto max-w-7xl">
             <Card>
               <CardContent className="pt-6">
                 <p className="text-destructive">
-                  Error loading clusters data:{' '}
+                  Error loading clusters data:{" "}
                   {error instanceof Error
                     ? error.message
-                    : 'Unknown error occurred'}
+                    : "Unknown error occurred"}
                 </p>
               </CardContent>
             </Card>

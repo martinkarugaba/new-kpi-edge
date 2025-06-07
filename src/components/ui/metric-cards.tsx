@@ -1,5 +1,5 @@
-import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react';
-import { MetricCard } from './metric-card';
+import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
+import { MetricCard } from "./metric-card";
 
 export function MetricCards() {
   return (
@@ -10,11 +10,11 @@ export function MetricCards() {
         trend={{
           value: 12.5,
           isPositive: true,
-          label: 'Trending up this month',
+          label: "Trending up this month",
         }}
         footer={{
-          title: 'Trending up this month',
-          description: 'Visitors for the last 6 months',
+          title: "Trending up this month",
+          description: "Visitors for the last 6 months",
         }}
         icon={<IconTrendingUp className="size-4" />}
       />
@@ -25,11 +25,11 @@ export function MetricCards() {
         trend={{
           value: 20,
           isPositive: false,
-          label: 'Down 20% this period',
+          label: "Down 20% this period",
         }}
         footer={{
-          title: 'Down 20% this period',
-          description: 'Acquisition needs attention',
+          title: "Down 20% this period",
+          description: "Acquisition needs attention",
         }}
         icon={<IconTrendingDown className="size-4" />}
       />
@@ -40,11 +40,11 @@ export function MetricCards() {
         trend={{
           value: 12.5,
           isPositive: true,
-          label: 'Strong user retention',
+          label: "Strong user retention",
         }}
         footer={{
-          title: 'Strong user retention',
-          description: 'Engagement exceed targets',
+          title: "Strong user retention",
+          description: "Engagement exceed targets",
         }}
         icon={<IconTrendingUp className="size-4" />}
       />
@@ -55,11 +55,11 @@ export function MetricCards() {
         trend={{
           value: 4.5,
           isPositive: true,
-          label: 'Steady performance increase',
+          label: "Steady performance increase",
         }}
         footer={{
-          title: 'Steady performance increase',
-          description: 'Meets growth projections',
+          title: "Steady performance increase",
+          description: "Meets growth projections",
         }}
         icon={<IconTrendingUp className="size-4" />}
       />

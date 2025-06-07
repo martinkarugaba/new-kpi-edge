@@ -1,4 +1,4 @@
-declare module 'all-the-cities' {
+declare module "all-the-cities" {
   export interface City {
     name: string;
     country: string;

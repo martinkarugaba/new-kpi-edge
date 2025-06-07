@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Button } from '@/components/ui/button';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { User } from '../types';
-import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { User } from "../types";
+import { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +13,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
-import { MoreHorizontal, Pencil, Trash2, ChevronDown } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
+import { MoreHorizontal, Pencil, Trash2, ChevronDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
-import { userRole } from '@/lib/db/schema';
+import { userRole } from "@/lib/db/schema";
 
 interface UsersTableProps {
   users: User[];
@@ -62,7 +62,7 @@ export function UsersTable({
 
   const columns: ColumnDef<User>[] = [
     {
-      id: 'select',
+      id: "select",
       header: ({ table }) => (
         <div className="flex items-center justify-center">
           <Checkbox
@@ -85,27 +85,27 @@ export function UsersTable({
       enableHiding: false,
     },
     {
-      accessorKey: 'name',
-      header: 'Name',
+      accessorKey: "name",
+      header: "Name",
     },
     {
-      accessorKey: 'email',
-      header: 'Email',
+      accessorKey: "email",
+      header: "Email",
     },
     {
-      accessorKey: 'role',
-      header: 'Role',
+      accessorKey: "role",
+      header: "Role",
       cell: ({ row }) => {
         const user = row.original;
         const role = user.role;
 
         // Array of available roles from the schema
         const availableRoles: (typeof userRole.enumValues)[number][] = [
-          'super_admin',
-          'cluster_manager',
-          'organization_admin',
-          'organization_member',
-          'user',
+          "super_admin",
+          "cluster_manager",
+          "organization_admin",
+          "organization_member",
+          "user",
         ];
 
         return (
@@ -113,10 +113,10 @@ export function UsersTable({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-8 flex items-center gap-1 px-2 justify-between w-40"
+                className="flex h-8 w-40 items-center justify-between gap-1 px-2"
               >
                 <Badge variant="outline" className="capitalize">
-                  {role.replace(/_/g, ' ')}
+                  {role.replace(/_/g, " ")}
                 </Badge>
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
@@ -128,10 +128,10 @@ export function UsersTable({
                 <DropdownMenuItem
                   key={availableRole}
                   onClick={() => handleRoleChange(user, availableRole)}
-                  className={role === availableRole ? 'bg-muted' : ''}
+                  className={role === availableRole ? "bg-muted" : ""}
                 >
                   <span className="capitalize">
-                    {availableRole.replace(/_/g, ' ')}
+                    {availableRole.replace(/_/g, " ")}
                   </span>
                 </DropdownMenuItem>
               ))}
@@ -141,15 +141,15 @@ export function UsersTable({
       },
     },
     {
-      accessorKey: 'created_at',
-      header: 'Created At',
+      accessorKey: "created_at",
+      header: "Created At",
       cell: ({ row }) => {
         const date = new Date(row.original.created_at);
         return date.toLocaleDateString();
       },
     },
     {
-      id: 'actions',
+      id: "actions",
       cell: ({ row }) => {
         const user = row.original;
 

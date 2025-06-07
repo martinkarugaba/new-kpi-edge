@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Organization } from '@/features/organizations/types';
-import { MoreHorizontal, Pencil, Trash2, Users } from 'lucide-react';
-import { useState } from 'react';
-import { Cluster } from '@/features/clusters/components/clusters-table';
+import { Button } from "@/components/ui/button";
+import { Organization } from "@/features/organizations/types";
+import { MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
+import { useState } from "react";
+import { Cluster } from "@/features/clusters/components/clusters-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { EditOrganizationDialog } from '../edit-organization-dialog';
-import { DeleteOrganizationDialog } from '../delete-organization-dialog';
-import Link from 'next/link';
+} from "@/components/ui/dropdown-menu";
+import { EditOrganizationDialog } from "../edit-organization-dialog";
+import { DeleteOrganizationDialog } from "../delete-organization-dialog";
+import Link from "next/link";
 
 interface ActionsCellProps {
   organization: Organization;

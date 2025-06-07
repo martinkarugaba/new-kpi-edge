@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,13 +8,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useState } from 'react';
-import { Organization } from '../types';
-import { deleteOrganization } from '../actions/organizations';
-import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { Organization } from "../types";
+import { deleteOrganization } from "../actions/organizations";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 type DeleteOrganizationDialogProps = {
   organization: Organization;
@@ -42,12 +42,12 @@ export function DeleteOrganizationDialog({
     try {
       const result = await deleteOrganization(organization.id);
       if (!result.success) throw new Error(result.error);
-      toast.success('Organization deleted successfully');
+      toast.success("Organization deleted successfully");
       setOpen(false);
       router.refresh();
       onDelete?.();
     } catch (error) {
-      toast.error('Something went wrong. Please try again.');
+      toast.error("Something went wrong. Please try again.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -88,7 +88,7 @@ export function DeleteOrganizationDialog({
                   Deleting...
                 </>
               ) : (
-                'Delete'
+                "Delete"
               )}
             </Button>
           </DialogFooter>

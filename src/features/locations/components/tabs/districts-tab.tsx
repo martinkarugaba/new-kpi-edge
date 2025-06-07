@@ -1,47 +1,36 @@
-'use client';
+"use client";
 
-import { DistrictsTable } from '../districts-table';
-import { useEffect, useState } from 'react';
-import { countries, districts } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import {
-  getDistricts,
-  getDistrictsByCountry,
-} from '@/features/locations/actions/locations';
-
-type Country = InferSelectModel<typeof countries>;
-
-type District = InferSelectModel<typeof districts> & {
-  country?: Country;
-};
+import { DistrictsTable } from "../districts-table";
+import { useDistricts } from "@/features/locations/hooks/use-locations-query";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface DistrictsTabProps {
   countryId?: string;
 }
 
-export function DistrictsTab({ countryId }: DistrictsTabProps = {}) {
-  const [data, setData] = useState<District[]>([]);
+export function DistrictsTab({ countryId }: DistrictsTabProps) {
+  // Query for fetching districts
+  const { data, isLoading, error } = useDistricts({ countryId });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let result;
-      if (countryId) {
-        result = await getDistrictsByCountry(countryId);
-      } else {
-        result = await getDistricts();
-      }
-      console.log('Districts data:', result.data);
-      if (result.success && result.data) {
-        setData(result.data);
-      }
-    };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center p-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
-    fetchData();
-  }, [countryId]);
+  if (error) {
+    return (
+      <div className="text-destructive p-4">
+        Error loading districts:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
+      </div>
+    );
+  }
 
-  return (
-    <div className="p-4">
-      <DistrictsTable data={data} />
-    </div>
-  );
+  // Extract the districts array from the response
+  const districts = data?.success && data.data?.data ? data.data.data : [];
+
+  return <DistrictsTable initialData={districts} countryId={countryId} />;
 }

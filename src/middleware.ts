@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { auth } from '@/features/auth/auth';
-import { db } from '@/lib/db';
-import { users } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { auth } from "@/features/auth/auth";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function middleware(request: NextRequest) {
   // Only run on dashboard routes
-  if (!request.nextUrl.pathname.startsWith('/dashboard')) {
+  if (!request.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.next();
   }
 
@@ -33,30 +33,30 @@ export async function middleware(request: NextRequest) {
 
         // Create a response that redirects to the sign-in page
         const response = NextResponse.redirect(
-          new URL('/auth/login', request.url)
+          new URL("/auth/login", request.url)
         );
 
         // Set a cookie to indicate the user was logged out due to not existing in the database
-        response.cookies.set('auth-error', 'User account no longer exists', {
+        response.cookies.set("auth-error", "User account no longer exists", {
           maxAge: 60, // 1 minute
-          path: '/',
+          path: "/",
         });
 
         return response;
       }
     } catch (dbError) {
-      console.error('Database connection error in middleware:', dbError);
+      console.error("Database connection error in middleware:", dbError);
       // On database error, we'll let the user proceed but log the issue
       // You could choose to redirect users to an error page instead
     }
 
     return NextResponse.next();
   } catch (error) {
-    console.error('Error in middleware:', error);
+    console.error("Error in middleware:", error);
     return NextResponse.next();
   }
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ["/dashboard/:path*"],
 };

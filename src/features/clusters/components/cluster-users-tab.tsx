@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -15,8 +15,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogTrigger,
@@ -25,9 +25,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { UserPlus, UserX, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import { UserPlus, UserX, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -35,24 +35,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import {
   addUserToCluster,
   removeUserFromCluster,
   getClusterUsers,
-} from '../actions/cluster-users';
-import { getAllUsers } from '@/features/organizations/actions/organization-members';
-import { formatDistanceToNow } from 'date-fns';
+} from "../actions/cluster-users";
+import { getAllUsers } from "@/features/organizations/actions/organization-members";
+import { formatDistanceToNow } from "date-fns";
 
 interface User {
   id: string;
@@ -73,16 +73,16 @@ interface ClusterUser {
 }
 
 const roles = [
-  'super_admin',
-  'cluster_manager',
-  'organization_admin',
-  'organization_member',
-  'user',
+  "super_admin",
+  "cluster_manager",
+  "organization_admin",
+  "organization_member",
+  "user",
 ] as const;
 type UserRole = (typeof roles)[number];
 
 const formSchema = z.object({
-  user_id: z.string().min(1, 'Please select a user'),
+  user_id: z.string().min(1, "Please select a user"),
   role: z.enum(roles),
 });
 
@@ -102,8 +102,8 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user_id: '',
-      role: 'cluster_manager' as UserRole,
+      user_id: "",
+      role: "cluster_manager" as UserRole,
     },
   });
 
@@ -114,12 +114,12 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
     try {
       const result = await getClusterUsers(clusterId);
       if (!result.success) {
-        throw new Error(result.error || 'Failed to fetch cluster users');
+        throw new Error(result.error || "Failed to fetch cluster users");
       }
       setUsers(result.data || []);
     } catch (error) {
-      console.error('Error fetching cluster users:', error);
-      setError('Failed to load cluster users');
+      console.error("Error fetching cluster users:", error);
+      setError("Failed to load cluster users");
       setUsers([]); // Set empty array on error
     } finally {
       setIsLoading(false);
@@ -141,7 +141,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
         setAvailableUsers([]);
       }
     } catch (error) {
-      console.error('Error fetching available users:', error);
+      console.error("Error fetching available users:", error);
       setAvailableUsers([]);
     }
   }, [users]);
@@ -166,16 +166,16 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
       const result = await addUserToCluster(data.user_id, clusterId, data.role);
 
       if (result.success) {
-        toast.success('User added to cluster successfully');
+        toast.success("User added to cluster successfully");
         setDialogOpen(false);
         form.reset();
         fetchUsers(); // Refresh user list
       } else {
-        toast.error(result.error || 'Failed to add user to cluster');
+        toast.error(result.error || "Failed to add user to cluster");
       }
     } catch (error) {
-      console.error('Error adding user to cluster:', error);
-      toast.error('Failed to add user to cluster');
+      console.error("Error adding user to cluster:", error);
+      toast.error("Failed to add user to cluster");
     } finally {
       setIsSubmitting(false);
     }
@@ -189,14 +189,14 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
       const result = await removeUserFromCluster(userId, clusterId);
 
       if (result.success) {
-        toast.success('User removed from cluster');
+        toast.success("User removed from cluster");
         fetchUsers(); // Refresh user list
       } else {
-        toast.error(result.error || 'Failed to remove user from cluster');
+        toast.error(result.error || "Failed to remove user from cluster");
       }
     } catch (error) {
-      console.error('Error removing user from cluster:', error);
-      toast.error('Failed to remove user from cluster');
+      console.error("Error removing user from cluster:", error);
+      toast.error("Failed to remove user from cluster");
     } finally {
       setLoadingStates(prev => ({ ...prev, [userId]: false }));
     }
@@ -212,7 +212,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
-              <UserPlus className="h-4 w-4 mr-2" />
+              <UserPlus className="mr-2 h-4 w-4" />
               Add User
             </Button>
           </DialogTrigger>
@@ -247,7 +247,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                         </FormControl>
                         <SelectContent>
                           {availableUsers.length === 0 ? (
-                            <div className="py-2 px-2 text-sm text-muted-foreground">
+                            <div className="text-muted-foreground px-2 py-2 text-sm">
                               No available users
                             </div>
                           ) : (
@@ -309,7 +309,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                         Adding...
                       </>
                     ) : (
-                      'Add User'
+                      "Add User"
                     )}
                   </Button>
                 </DialogFooter>
@@ -320,13 +320,13 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center items-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
           </div>
         ) : error ? (
-          <div className="text-center py-8 text-destructive">{error}</div>
+          <div className="text-destructive py-8 text-center">{error}</div>
         ) : users.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-muted-foreground py-8 text-center">
             No users have been added to this cluster yet.
           </div>
         ) : (
@@ -351,7 +351,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                       ? formatDistanceToNow(new Date(user.created_at), {
                           addSuffix: true,
                         })
-                      : 'Unknown'}
+                      : "Unknown"}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -363,7 +363,7 @@ export function ClusterUsersTab({ clusterId }: { clusterId: string }) {
                       {loadingStates[user.id] ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
-                        <UserX className="h-4 w-4 text-destructive" />
+                        <UserX className="text-destructive h-4 w-4" />
                       )}
                     </Button>
                   </TableCell>

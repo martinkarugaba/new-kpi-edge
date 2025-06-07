@@ -1,15 +1,15 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
+import { db } from "@/lib/db";
 import {
   countries,
   districts,
   subCounties,
   parishes,
   villages,
-} from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+} from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 // Country actions
 export async function createCountry(data: { name: string; code: string }) {
@@ -18,11 +18,11 @@ export async function createCountry(data: { name: string; code: string }) {
       name: data.name,
       code: data.code,
     });
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error creating country:', error);
-    return { success: false, error: 'Failed to create country' };
+    console.error("Error creating country:", error);
+    return { success: false, error: "Failed to create country" };
   }
 }
 
@@ -31,8 +31,8 @@ export async function getCountries() {
     const results = await db.select().from(countries);
     return { success: true, data: results };
   } catch (error) {
-    console.error('Error fetching countries:', error);
-    return { success: false, error: 'Failed to fetch countries' };
+    console.error("Error fetching countries:", error);
+    return { success: false, error: "Failed to fetch countries" };
   }
 }
 
@@ -48,11 +48,11 @@ export async function createDistrict(data: {
       code: data.code,
       country_id: data.countryId,
     });
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error creating district:', error);
-    return { success: false, error: 'Failed to create district' };
+    console.error("Error creating district:", error);
+    return { success: false, error: "Failed to create district" };
   }
 }
 
@@ -64,8 +64,8 @@ export async function getDistricts(countryId: string) {
       .where(eq(districts.country_id, countryId));
     return { success: true, data: results };
   } catch (error) {
-    console.error('Error fetching districts:', error);
-    return { success: false, error: 'Failed to fetch districts' };
+    console.error("Error fetching districts:", error);
+    return { success: false, error: "Failed to fetch districts" };
   }
 }
 
@@ -80,7 +80,7 @@ export async function createSubCounty(data: {
   try {
     // Ensure all required fields are present
     if (!data.countryId) {
-      return { success: false, error: 'Country ID is required' };
+      return { success: false, error: "Country ID is required" };
     }
 
     await db.insert(subCounties).values({
@@ -90,11 +90,11 @@ export async function createSubCounty(data: {
       district_id: data.districtId,
       county_id: data.countyId,
     });
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error creating sub-county:', error);
-    return { success: false, error: 'Failed to create sub-county' };
+    console.error("Error creating sub-county:", error);
+    return { success: false, error: "Failed to create sub-county" };
   }
 }
 
@@ -106,8 +106,8 @@ export async function getSubCounties(districtId: string) {
       .where(eq(subCounties.district_id, districtId));
     return { success: true, data: results };
   } catch (error) {
-    console.error('Error fetching sub-counties:', error);
-    return { success: false, error: 'Failed to fetch sub-counties' };
+    console.error("Error fetching sub-counties:", error);
+    return { success: false, error: "Failed to fetch sub-counties" };
   }
 }
 
@@ -129,11 +129,11 @@ export async function createParish(data: {
       county_id: data.countyId,
       country_id: data.countryId,
     });
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error creating parish:', error);
-    return { success: false, error: 'Failed to create parish' };
+    console.error("Error creating parish:", error);
+    return { success: false, error: "Failed to create parish" };
   }
 }
 
@@ -145,8 +145,8 @@ export async function getParishes(subCountyId: string) {
       .where(eq(parishes.sub_county_id, subCountyId));
     return { success: true, data: results };
   } catch (error) {
-    console.error('Error fetching parishes:', error);
-    return { success: false, error: 'Failed to fetch parishes' };
+    console.error("Error fetching parishes:", error);
+    return { success: false, error: "Failed to fetch parishes" };
   }
 }
 
@@ -170,11 +170,11 @@ export async function createVillage(data: {
       district_id: data.districtId,
       country_id: data.countryId,
     });
-    revalidatePath('/dashboard/locations');
+    revalidatePath("/dashboard/locations");
     return { success: true };
   } catch (error) {
-    console.error('Error creating village:', error);
-    return { success: false, error: 'Failed to create village' };
+    console.error("Error creating village:", error);
+    return { success: false, error: "Failed to create village" };
   }
 }
 
@@ -186,7 +186,55 @@ export async function getVillages(parishId: string) {
       .where(eq(villages.parish_id, parishId));
     return { success: true, data: results };
   } catch (error) {
-    console.error('Error fetching villages:', error);
-    return { success: false, error: 'Failed to fetch villages' };
+    console.error("Error fetching villages:", error);
+    return { success: false, error: "Failed to fetch villages" };
+  }
+}
+
+export async function getWards(unitCode: string) {
+  try {
+    const data = await db
+      .select({
+        id: districts.id,
+        name: districts.name,
+        code: districts.code,
+      })
+      .from(districts)
+      .where(eq(districts.code, unitCode));
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error("Error fetching wards:", error);
+    return {
+      success: false,
+      error: "Failed to fetch wards",
+    };
+  }
+}
+
+export async function getDivisions(unitCode: string) {
+  try {
+    const data = await db
+      .select({
+        id: districts.id,
+        name: districts.name,
+        code: districts.code,
+      })
+      .from(districts)
+      .where(eq(districts.code, unitCode));
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error("Error fetching divisions:", error);
+    return {
+      success: false,
+      error: "Failed to fetch divisions",
+    };
   }
 }

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { ReactNode } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -7,8 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export interface MetricCardProps {
   title: string;
@@ -36,7 +36,7 @@ export function MetricCard({
   className,
 }: MetricCardProps) {
   return (
-    <Card className={cn('@container/card', className)}>
+    <Card className={cn("@container/card", className)}>
       <CardHeader>
         <CardDescription>{title}</CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -46,7 +46,7 @@ export function MetricCard({
           <CardAction>
             <Badge variant="outline">
               {icon}
-              {trend.isPositive ? '+' : '-'}
+              {trend.isPositive ? "+" : "-"}
               {Math.abs(trend.value)}%
             </Badge>
           </CardAction>

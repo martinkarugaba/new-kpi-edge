@@ -1,10 +1,10 @@
-import { SiteHeader } from '@/features/dashboard/components/site-header';
-import { ParticipantsClient } from '@/features/participants/components/participants-client';
-import { Suspense } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { getProjects } from '@/features/projects/actions/projects';
-import { getOrganizationId, getUserClusterId } from '@/features/auth/actions';
-import { getClusters } from '@/features/clusters/actions/clusters';
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { ParticipantsClient } from "@/features/participants/components/participants-client";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProjects } from "@/features/projects/actions/projects";
+import { getOrganizationId, getUserClusterId } from "@/features/auth/actions";
+import { getClusters } from "@/features/clusters/actions/clusters";
 
 function ParticipantsTableSkeleton() {
   return (
@@ -52,8 +52,8 @@ export default async function Page() {
     <>
       <SiteHeader title="Participants" />
       <div className="flex flex-1 flex-col">
-        <div className="@container/main flex flex-1 flex-col gap-2">
-          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className="@container/main flex flex-1 flex-col gap-2 border p-4 @xl/main:px-6">
+          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-0">
             <Suspense fallback={<ParticipantsTableSkeleton />}>
               <ParticipantsClient
                 clusterId={clusterId}

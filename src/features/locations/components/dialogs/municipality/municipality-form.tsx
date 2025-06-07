@@ -1,26 +1,26 @@
-import { Form } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Popover } from '@/components/ui/popover';
-import { Command } from '@/components/ui/command';
-import { cn } from '@/lib/utils';
-import { PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Popover } from "@/components/ui/popover";
+import { Command } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import {
   CommandInput,
   CommandEmpty,
   CommandGroup,
   CommandItem,
-} from '@/components/ui/command';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { type UseFormReturn, type SubmitHandler } from 'react-hook-form';
-import { useState } from 'react';
+} from "@/components/ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { type UseFormReturn, type SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 
 interface Country {
   id: string;
@@ -127,7 +127,7 @@ export function MunicipalityForm({
                         ? countryList.find(
                             country => country.id === field.value
                           )?.name
-                        : 'Select a country'}
+                        : "Select a country"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -151,10 +151,10 @@ export function MunicipalityForm({
                         >
                           <Check
                             className={cn(
-                              'mr-2 h-4 w-4',
+                              "mr-2 h-4 w-4",
                               field.value === country.id
-                                ? 'opacity-100'
-                                : 'opacity-0'
+                                ? "opacity-100"
+                                : "opacity-0"
                             )}
                           />
                           {country.name}
@@ -183,13 +183,13 @@ export function MunicipalityForm({
                       role="combobox"
                       aria-expanded={openDistrict}
                       className="w-full justify-between"
-                      disabled={!form.watch('countryId')}
+                      disabled={!form.watch("countryId")}
                     >
                       {field.value
                         ? districtList.find(
                             district => district.id === field.value
                           )?.name
-                        : 'Select a district'}
+                        : "Select a district"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -199,10 +199,10 @@ export function MunicipalityForm({
                     <CommandInput placeholder="Search districts..." />
                     <CommandEmpty>
                       {isLoading
-                        ? 'Loading districts...'
-                        : form.watch('countryId')
-                          ? 'No districts found for this country.'
-                          : 'Please select a country first.'}
+                        ? "Loading districts..."
+                        : form.watch("countryId")
+                          ? "No districts found for this country."
+                          : "Please select a country first."}
                     </CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
                       {districtList.map(district => (
@@ -219,10 +219,10 @@ export function MunicipalityForm({
                         >
                           <Check
                             className={cn(
-                              'mr-2 h-4 w-4',
+                              "mr-2 h-4 w-4",
                               field.value === district.id
-                                ? 'opacity-100'
-                                : 'opacity-0'
+                                ? "opacity-100"
+                                : "opacity-0"
                             )}
                           />
                           {district.name}
@@ -251,12 +251,12 @@ export function MunicipalityForm({
                       role="combobox"
                       aria-expanded={openCounty}
                       className="w-full justify-between"
-                      disabled={!form.watch('districtId')}
+                      disabled={!form.watch("districtId")}
                     >
                       {field.value
                         ? countyList.find(county => county.id === field.value)
                             ?.name
-                        : 'Select a county'}
+                        : "Select a county"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -266,10 +266,10 @@ export function MunicipalityForm({
                     <CommandInput placeholder="Search counties..." />
                     <CommandEmpty>
                       {isLoading
-                        ? 'Loading counties...'
-                        : form.watch('districtId')
-                          ? 'No counties found for this district.'
-                          : 'Please select a district first.'}
+                        ? "Loading counties..."
+                        : form.watch("districtId")
+                          ? "No counties found for this district."
+                          : "Please select a district first."}
                     </CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
                       {countyList.map(county => (
@@ -286,10 +286,10 @@ export function MunicipalityForm({
                         >
                           <Check
                             className={cn(
-                              'mr-2 h-4 w-4',
+                              "mr-2 h-4 w-4",
                               field.value === county.id
-                                ? 'opacity-100'
-                                : 'opacity-0'
+                                ? "opacity-100"
+                                : "opacity-0"
                             )}
                           />
                           {county.name}
@@ -318,13 +318,13 @@ export function MunicipalityForm({
                       role="combobox"
                       aria-expanded={openSubCounty}
                       className="w-full justify-between"
-                      disabled={!form.watch('countyId')}
+                      disabled={!form.watch("countyId")}
                     >
                       {field.value
                         ? subCountyList.find(
                             subCounty => subCounty.id === field.value
                           )?.name
-                        : 'Select a sub county'}
+                        : "Select a sub county"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -334,10 +334,10 @@ export function MunicipalityForm({
                     <CommandInput placeholder="Search sub counties..." />
                     <CommandEmpty>
                       {isLoading
-                        ? 'Loading sub counties...'
-                        : form.watch('countyId')
-                          ? 'No sub counties found for this county.'
-                          : 'Please select a county first.'}
+                        ? "Loading sub counties..."
+                        : form.watch("countyId")
+                          ? "No sub counties found for this county."
+                          : "Please select a county first."}
                     </CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
                       {subCountyList.map(subCounty => (
@@ -351,10 +351,10 @@ export function MunicipalityForm({
                         >
                           <Check
                             className={cn(
-                              'mr-2 h-4 w-4',
+                              "mr-2 h-4 w-4",
                               field.value === subCounty.id
-                                ? 'opacity-100'
-                                : 'opacity-0'
+                                ? "opacity-100"
+                                : "opacity-0"
                             )}
                           />
                           {subCounty.name}
@@ -389,7 +389,7 @@ export function MunicipalityForm({
         />
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Adding...' : 'Add Municipality'}
+          {isLoading ? "Adding..." : "Add Municipality"}
         </Button>
       </form>
     </Form>

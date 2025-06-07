@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Check, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Check, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Cluster } from '@/features/clusters/types';
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Cluster } from "@/features/clusters/types";
 
 interface MultiClusterSelectProps {
   clusters: Cluster[];
@@ -55,13 +55,13 @@ export function MultiClusterSelect({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              'h-12 w-full justify-between text-base rounded-lg border-gray-300 focus:border-black focus:ring-black',
-              !selectedClusterIds.length && 'text-muted-foreground'
+              "h-12 w-full justify-between rounded-lg border-gray-300 text-base focus:border-black focus:ring-black",
+              !selectedClusterIds.length && "text-muted-foreground"
             )}
             disabled={disabled}
           >
             Select clusters
-            <span className="ml-2 rounded-md bg-primary/10 px-1.5 py-0.5 text-xs font-semibold">
+            <span className="bg-primary/10 ml-2 rounded-md px-1.5 py-0.5 text-xs font-semibold">
               {selectedClusterIds.length} selected
             </span>
           </Button>
@@ -80,7 +80,7 @@ export function MultiClusterSelect({
                 >
                   <div>{cluster.name}</div>
                   {selectedClusterIds.includes(cluster.id) && (
-                    <Check className="h-4 w-4 text-primary" />
+                    <Check className="text-primary h-4 w-4" />
                   )}
                 </CommandItem>
               ))}
@@ -90,7 +90,7 @@ export function MultiClusterSelect({
       </Popover>
 
       {selectedClusterIds.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
+        <div className="mt-2 flex flex-wrap gap-2">
           {selectedClusterIds.map(clusterId => {
             const cluster = clusters.find(c => c.id === clusterId);
             return (
@@ -104,7 +104,7 @@ export function MultiClusterSelect({
                   <button
                     type="button"
                     onClick={() => removeCluster(clusterId)}
-                    className="ml-1 rounded-full outline-none focus:ring-2 focus:ring-primary"
+                    className="focus:ring-primary ml-1 rounded-full outline-none focus:ring-2"
                     disabled={disabled}
                   >
                     <X className="h-3 w-3" />

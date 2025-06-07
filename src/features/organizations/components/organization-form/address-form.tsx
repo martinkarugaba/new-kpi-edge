@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   FormField,
@@ -6,16 +6,16 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card';
-import { useOrganizationForm } from './form-context/form-provider';
+} from "@/components/ui/card";
+import { useOrganizationForm } from "./form-context/form-provider";
 
 export function AddressForm() {
   const { form, isLoading } = useOrganizationForm();
@@ -40,7 +40,7 @@ export function AddressForm() {
                 <Input
                   placeholder="Enter parish"
                   {...field}
-                  value={field.value || ''}
+                  value={field.value || ""}
                   disabled={isLoading}
                 />
               </FormControl>
@@ -60,7 +60,7 @@ export function AddressForm() {
                 <Input
                   placeholder="Enter village"
                   {...field}
-                  value={field.value || ''}
+                  value={field.value || ""}
                   disabled={isLoading}
                 />
               </FormControl>
@@ -80,7 +80,7 @@ export function AddressForm() {
                 <Input
                   placeholder="Enter physical address"
                   {...field}
-                  value={field.value || ''}
+                  value={field.value || ""}
                   disabled={isLoading}
                 />
               </FormControl>

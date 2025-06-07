@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { type ColumnDef, type Table, type Row } from '@tanstack/react-table';
-import { type Participant } from '../../types/types';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ActionCell } from './action-cell';
+import { type ColumnDef, type Table, type Row } from "@tanstack/react-table";
+import { type Participant } from "../../types/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ActionCell } from "./action-cell";
 
 interface GetColumnsProps {
   onEdit: (participant: Participant) => void;
@@ -16,13 +16,13 @@ export function getColumns({
 }: GetColumnsProps): ColumnDef<Participant>[] {
   return [
     {
-      id: 'select',
+      id: "select",
       header: ({ table }: { table: Table<Participant> }) => (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center px-4">
           <Checkbox
             checked={
               table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
+              (table.getIsSomePageRowsSelected() && "indeterminate")
             }
             onCheckedChange={(value: boolean) =>
               table.toggleAllPageRowsSelected(!!value)
@@ -44,8 +44,8 @@ export function getColumns({
       enableHiding: false,
     },
     {
-      id: 'fullName',
-      header: 'Name',
+      id: "fullName",
+      header: "Name",
       enableHiding: true,
       accessorFn: row => `${row.firstName} ${row.lastName}`, // This enables sorting and filtering
       cell: ({ row }) => (
@@ -55,38 +55,106 @@ export function getColumns({
       ),
     },
     {
-      accessorKey: 'sex',
-      header: 'Sex',
+      accessorKey: "sex",
+      header: "Sex",
       enableHiding: true,
     },
     {
-      accessorKey: 'age',
-      header: 'Age',
+      accessorKey: "age",
+      header: "Age",
       enableHiding: true,
     },
     {
-      accessorKey: 'district',
-      header: 'District',
+      id: "district",
+      header: "District",
+      enableHiding: true,
+      accessorFn: row => row.districtName || row.district,
+      cell: ({ row }) => {
+        const displayValue = row.original.districtName || row.original.district;
+        return (
+          <div className="max-w-[200px] truncate" title={displayValue}>
+            {displayValue}
+          </div>
+        );
+      },
+    },
+    {
+      id: "subCounty",
+      header: "Sub County",
+      enableHiding: true,
+      accessorFn: row => row.subCountyName || row.subCounty,
+      cell: ({ row }) => {
+        const displayValue =
+          row.original.subCountyName || row.original.subCounty;
+        return (
+          <div className="max-w-[200px] truncate" title={displayValue}>
+            {displayValue}
+          </div>
+        );
+      },
+    },
+    {
+      id: "country",
+      header: "Country",
+      enableHiding: true,
+      accessorFn: row => row.countyName || row.country || "",
+      cell: ({ row }) => {
+        const displayValue =
+          row.original.countyName || row.original.country || "—";
+        return (
+          <div className="max-w-[200px] truncate" title={displayValue}>
+            {displayValue}
+          </div>
+        );
+      },
+    },
+    {
+      id: "organization",
+      header: "Organization",
+      enableHiding: true,
+      accessorFn: row => row.organizationName || row.organization_id,
+      cell: ({ row }) => {
+        const displayValue =
+          row.original.organizationName || row.original.organization_id;
+        return (
+          <div className="max-w-[200px] truncate" title={displayValue}>
+            {displayValue}
+          </div>
+        );
+      },
+    },
+    {
+      id: "project",
+      header: "Project",
+      enableHiding: true,
+      accessorFn: row => row.projectName || "Unknown",
+      cell: ({ row }) => {
+        const displayValue = row.original.projectName || "Unknown";
+        return (
+          <div className="max-w-[200px] truncate" title={displayValue}>
+            {displayValue}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "designation",
+      header: "Designation",
       enableHiding: true,
     },
     {
-      accessorKey: 'designation',
-      header: 'Designation',
+      accessorKey: "enterprise",
+      header: "Enterprise",
       enableHiding: true,
     },
     {
-      accessorKey: 'enterprise',
-      header: 'Enterprise',
+      accessorKey: "contact",
+      header: "Contact",
       enableHiding: true,
     },
     {
-      accessorKey: 'contact',
-      header: 'Contact',
-      enableHiding: true,
-    },
-    {
-      id: 'actions',
-      header: 'Actions',
+      id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => (
         <ActionCell

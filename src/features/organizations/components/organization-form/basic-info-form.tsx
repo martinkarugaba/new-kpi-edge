@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   FormField,
@@ -6,24 +6,24 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { MultiClusterSelect } from '@/features/clusters/components/multi-cluster-select';
-import { useOrganizationForm } from './form-context/form-provider';
+} from "@/components/ui/select";
+import { MultiClusterSelect } from "@/features/clusters/components/multi-cluster-select";
+import { useOrganizationForm } from "./form-context/form-provider";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 
 export function BasicInfoForm() {
   const {
@@ -102,7 +102,7 @@ export function BasicInfoForm() {
               <Select
                 disabled={isLoading}
                 onValueChange={field.onChange}
-                value={field.value || 'none'}
+                value={field.value || "none"}
               >
                 <FormControl>
                   <SelectTrigger>

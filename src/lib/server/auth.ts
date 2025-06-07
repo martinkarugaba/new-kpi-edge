@@ -1,7 +1,7 @@
-import { auth } from '@/features/auth/auth';
-import { redirect } from 'next/navigation';
-import { hasAnyRole, hasAllRoles, AuthConfig } from '@/lib/auth';
-import { userRole } from '@/lib/db/schema';
+import { auth } from "@/features/auth/auth";
+import { redirect } from "next/navigation";
+import { hasAnyRole, hasAllRoles, AuthConfig } from "@/lib/auth";
+import { userRole } from "@/lib/db/schema";
 
 type Role = (typeof userRole.enumValues)[number];
 
@@ -9,7 +9,7 @@ export async function requireAuth(config?: AuthConfig) {
   const session = await auth();
 
   if (!session?.user) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   if (config?.roles) {
@@ -18,7 +18,7 @@ export async function requireAuth(config?: AuthConfig) {
       : hasAnyRole(session.user.role as Role, config.roles);
 
     if (!hasAccess) {
-      redirect('/unauthorized');
+      redirect("/unauthorized");
     }
   }
 
@@ -29,11 +29,11 @@ export async function requireRole(role: Role) {
   const session = await auth();
 
   if (!session?.user) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   if (session.user.role !== role) {
-    redirect('/unauthorized');
+    redirect("/unauthorized");
   }
 
   return session;
@@ -43,11 +43,11 @@ export async function requireAnyRole(roles: Role[]) {
   const session = await auth();
 
   if (!session?.user) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   if (!hasAnyRole(session.user.role as Role, roles)) {
-    redirect('/unauthorized');
+    redirect("/unauthorized");
   }
 
   return session;
@@ -57,11 +57,11 @@ export async function requireAllRoles(roles: Role[]) {
   const session = await auth();
 
   if (!session?.user) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   if (!hasAllRoles(session.user.role as Role, roles)) {
-    redirect('/unauthorized');
+    redirect("/unauthorized");
   }
 
   return session;

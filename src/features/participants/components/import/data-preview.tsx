@@ -1,4 +1,4 @@
-import { type ParticipantFormValues } from '../participant-form';
+import { type ParticipantFormValues } from "../participant-form";
 import {
   Table,
   TableBody,
@@ -6,47 +6,59 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/card";
+import { Combobox } from "@/components/ui/combobox";
+import { Label } from "@/components/ui/label";
 
 interface DataPreviewProps {
   data: ParticipantFormValues[];
   projects: { id: string; name: string }[];
+  countryOptions: { value: string; label: string }[];
+  selectedCountry: string;
   selectedProject: string;
   selectedDistrict: string;
   selectedSubCounty: string;
+  onCountrySelect: (value: string) => void;
   onProjectSelect: (value: string) => void;
   onDistrictSelect: (value: string) => void;
   onSubCountySelect: (value: string) => void;
-  districts: string[];
-  subCounties: string[];
+  onSearchCountry: (searchTerm: string) => void;
+  onSearchDistrict: (searchTerm: string) => void;
+  onSearchSubCounty: (searchTerm: string) => void;
+  districtOptions: { value: string; label: string }[];
+  subCountyOptions: { value: string; label: string }[];
+  isLoadingCountries: boolean;
+  isLoadingDistricts: boolean;
+  isLoadingSubCounties: boolean;
 }
 
 export function DataPreview({
   data,
-  projects = [], // Add default empty array
+  projects = [],
+  countryOptions = [],
+  selectedCountry,
   selectedProject,
   selectedDistrict,
   selectedSubCounty,
+  onCountrySelect,
   onProjectSelect,
   onDistrictSelect,
   onSubCountySelect,
-  districts = [], // Add default empty array for consistency
-  subCounties = [], // Add default empty array for consistency
+  onSearchCountry,
+  onSearchDistrict,
+  onSearchSubCounty,
+  districtOptions = [],
+  subCountyOptions = [],
+  isLoadingCountries = false,
+  isLoadingDistricts = false,
+  isLoadingSubCounties = false,
 }: DataPreviewProps) {
   return (
     <Card className="w-full">
@@ -56,97 +68,135 @@ export function DataPreview({
           Showing first 5 of {data.length} participants
         </CardDescription>
 
-        <div className="space-y-6 mt-4">
+        <div className="mt-4 space-y-6">
           <div className="space-y-2">
             <Label htmlFor="project">Select Project for All Participants</Label>
-            <Select value={selectedProject} onValueChange={onProjectSelect}>
-              <SelectTrigger id="project" className="w-full">
-                <SelectValue placeholder="Select a project" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.isArray(projects) &&
-                  projects.map(project => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+            <Combobox
+              options={projects.map(project => ({
+                value: project.id,
+                label: project.name,
+              }))}
+              value={selectedProject}
+              onValueChange={onProjectSelect}
+              placeholder="Select a project"
+              emptyMessage="No projects found."
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="country">Select Country for All Participants</Label>
+            <Combobox
+              options={countryOptions}
+              value={selectedCountry}
+              onValueChange={onCountrySelect}
+              onSearchChange={onSearchCountry}
+              placeholder="Type to search countries"
+              emptyMessage={
+                isLoadingCountries
+                  ? "Loading countries..."
+                  : "No matching countries found"
+              }
+              disabled={isLoadingCountries}
+              className="w-full"
+            />
+            {isLoadingCountries && (
+              <div className="text-muted-foreground flex animate-pulse items-center gap-2 text-sm">
+                <div className="bg-muted h-2 w-2 rounded-full"></div>
+                <span>Loading countries, please wait...</span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="district">
               Select District for All Participants
             </Label>
-            <Select value={selectedDistrict} onValueChange={onDistrictSelect}>
-              <SelectTrigger id="district" className="w-full">
-                <SelectValue placeholder="Select a district" />
-              </SelectTrigger>
-              <SelectContent>
-                {districts.map(district => (
-                  <SelectItem key={district} value={district}>
-                    {district}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Combobox
+              options={districtOptions}
+              value={selectedDistrict}
+              onValueChange={onDistrictSelect}
+              onSearchChange={onSearchDistrict}
+              placeholder={
+                !selectedCountry
+                  ? "Select a country first"
+                  : "Type to search districts"
+              }
+              emptyMessage={
+                !selectedCountry
+                  ? "Please select a country first"
+                  : isLoadingDistricts
+                    ? "Loading..."
+                    : "No districts found for this country"
+              }
+              disabled={!selectedCountry || isLoadingDistricts}
+              className="w-full"
+            />
+            {isLoadingDistricts && (
+              <div className="text-muted-foreground flex animate-pulse items-center gap-2 text-sm">
+                <div className="bg-muted h-2 w-2 rounded-full"></div>
+                <span>Loading districts, please wait...</span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="subCounty">
               Select Sub-County for All Participants
             </Label>
-            <Select
+            <Combobox
+              options={subCountyOptions}
               value={selectedSubCounty}
               onValueChange={onSubCountySelect}
-              disabled={!selectedDistrict}
-            >
-              <SelectTrigger id="subCounty" className="w-full">
-                <SelectValue placeholder="Select a sub-county" />
-              </SelectTrigger>
-              <SelectContent>
-                {subCounties.map(subCounty => (
-                  <SelectItem key={subCounty} value={subCounty}>
-                    {subCounty}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onSearchChange={onSearchSubCounty}
+              placeholder={
+                !selectedDistrict
+                  ? "Select a district first"
+                  : "Type to search sub-counties"
+              }
+              emptyMessage={
+                !selectedDistrict
+                  ? "Please select a district first"
+                  : isLoadingSubCounties
+                    ? "Loading..."
+                    : "No sub-counties found for this district"
+              }
+              disabled={!selectedDistrict || isLoadingSubCounties}
+              className="w-full"
+            />
+            {isLoadingSubCounties && (
+              <div className="text-muted-foreground flex animate-pulse items-center gap-2 text-sm">
+                <div className="bg-muted h-2 w-2 rounded-full"></div>
+                <span>Loading sub-counties, please wait...</span>
+              </div>
+            )}
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="rounded-md">
-        <div className="rounded-md overflow-auto">
-          <Table className="shadow-md">
-            <TableHeader className="bg-muted text-muted-foreground">
-              <TableRow>
-                <TableHead>Row</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Sex</TableHead>
-                <TableHead>Age</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Employment</TableHead>
-                <TableHead>Income</TableHead>
-                <TableHead>Skills</TableHead>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Sex</TableHead>
+              <TableHead>Age</TableHead>
+              <TableHead>Contact</TableHead>
+              <TableHead>Designation</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.slice(0, 5).map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+                <TableCell>{row.sex}</TableCell>
+                <TableCell>{row.age}</TableCell>
+                <TableCell>{row.contact}</TableCell>
+                <TableCell>{row.designation}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.slice(0, 5).map((participant, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{`${participant.firstName} ${participant.lastName}`}</TableCell>
-                  <TableCell>{participant.sex}</TableCell>
-                  <TableCell>{participant.age}</TableCell>
-                  <TableCell>{participant.contact}</TableCell>
-                  <TableCell>{participant.employmentStatus}</TableCell>
-                  <TableCell>{participant.monthlyIncome} UGX</TableCell>
-                  <TableCell>{participant.skillOfInterest}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

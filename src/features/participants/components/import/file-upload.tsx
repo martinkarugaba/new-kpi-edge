@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Download } from 'lucide-react';
-import { downloadTemplate } from '../../lib/excel-utils';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Download } from "lucide-react";
+import { downloadTemplate } from "../../lib/excel-utils";
 
 interface FileUploadProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
@@ -29,7 +29,7 @@ export function FileUpload({ onFileUpload, isLoading }: FileUploadProps) {
         <Download className="h-4 w-4" />
       </Button>
       {isLoading && (
-        <span className="text-sm text-muted-foreground">Processing...</span>
+        <span className="text-muted-foreground text-sm">Processing...</span>
       )}
     </div>
   );

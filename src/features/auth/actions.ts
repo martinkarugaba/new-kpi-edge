@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { auth } from './auth';
-import { db } from '@/lib/db';
-import { organizationMembers, users, organizations } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { auth } from "./auth";
+import { db } from "@/lib/db";
+import { organizationMembers, users, organizations } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function getUserClusterId() {
   try {
@@ -26,20 +26,20 @@ export async function getUserClusterId() {
 
     return org?.cluster_id || null;
   } catch (error) {
-    console.error('Error getting cluster ID:', error);
+    console.error("Error getting cluster ID:", error);
     return null;
   }
 }
 
 export async function getOrganizationId() {
   try {
-    console.log('Getting organization ID - Starting auth check...');
+    console.log("Getting organization ID - Starting auth check...");
     const session = await auth();
     if (!session?.user?.id) {
-      console.log('No authenticated user session found');
+      console.log("No authenticated user session found");
       return null;
     }
-    console.log('Found user session for user:', session.user.id);
+    console.log("Found user session for user:", session.user.id);
 
     // Check if user exists in database
     const user = await db.query.users.findFirst({
@@ -51,23 +51,23 @@ export async function getOrganizationId() {
       console.log(`User ${session.user.id} not found in database`);
       return null;
     }
-    console.log('Found user in database:', user.id);
+    console.log("Found user in database:", user.id);
 
-    console.log('Looking up organization membership...');
+    console.log("Looking up organization membership...");
     const [member] = await db
       .select({ organization_id: organizationMembers.organization_id })
       .from(organizationMembers)
       .where(eq(organizationMembers.user_id, session.user.id));
 
     if (!member) {
-      console.log('No organization membership found for user');
+      console.log("No organization membership found for user");
       return null;
     }
 
-    console.log('Found organization membership:', member.organization_id);
+    console.log("Found organization membership:", member.organization_id);
     return member.organization_id;
   } catch (error) {
-    console.error('Error getting organization ID:', error);
+    console.error("Error getting organization ID:", error);
     return null;
   }
 }

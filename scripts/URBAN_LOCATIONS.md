@@ -1,6 +1,7 @@
 # Urban Locations Seeding for Uganda
 
-This documentation explains how to seed and test urban locations (municipalities and cities) data for Uganda.
+This documentation explains how to seed and test urban locations (municipalities
+and cities) data for Uganda.
 
 ## Data Structure
 

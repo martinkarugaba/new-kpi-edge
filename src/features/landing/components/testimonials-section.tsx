@@ -1,30 +1,30 @@
-import { Container } from '@/components/ui/container';
+import { Container } from "@/components/ui/container";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const testimonials = [
   {
     quote:
       "This KPI tracking tool has transformed how we monitor our business performance. The insights we've gained have directly contributed to a 25% increase in our core metrics.",
-    author: 'Sarah Johnson',
-    role: 'CEO, TechInnovate',
+    author: "Sarah Johnson",
+    role: "CEO, TechInnovate",
   },
   {
     quote:
       "The custom dashboards and real-time analytics have made it so easy to keep our entire team aligned on our most important metrics. I can't imagine running our business without it now.",
-    author: 'Michael Chen',
-    role: 'Operations Director, GrowthFast',
+    author: "Michael Chen",
+    role: "Operations Director, GrowthFast",
   },
   {
     quote:
-      'The automated reporting feature alone has saved our team countless hours each month. Now we can focus on acting on insights rather than gathering data.',
-    author: 'Alex Rivera',
-    role: 'Marketing Lead, BrandPulse',
+      "The automated reporting feature alone has saved our team countless hours each month. Now we can focus on acting on insights rather than gathering data.",
+    author: "Alex Rivera",
+    role: "Marketing Lead, BrandPulse",
   },
 ];
 
@@ -32,19 +32,19 @@ export function TestimonialsSection() {
   return (
     <section className="py-20">
       <Container>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight mb-2">
+        <div className="mb-12 text-center">
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">
             What Our Customers Say
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
             Trusted by businesses worldwide to track and improve their
             performance
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="border border-border/40">
+            <Card key={index} className="border-border/40 border">
               <CardHeader className="pb-2">
                 <div className="flex justify-start space-x-1">
                   {[1, 2, 3, 4, 5].map(star => (
@@ -67,7 +67,7 @@ export function TestimonialsSection() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-base italic mb-6">
+                <p className="mb-6 text-base italic">
                   &quot;{testimonial.quote}&quot;
                 </p>
               </CardContent>
@@ -75,7 +75,7 @@ export function TestimonialsSection() {
                 <div className="text-base font-semibold">
                   {testimonial.author}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                   {testimonial.role}
                 </div>
               </CardFooter>
@@ -88,23 +88,23 @@ export function TestimonialsSection() {
             <span className="text-primary">97%</span> of customers report
             improved decision-making
           </div>
-          <Separator className="my-8 mx-auto w-1/2" />
+          <Separator className="mx-auto my-8 w-1/2" />
           <div className="flex flex-wrap justify-center gap-x-12 gap-y-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">500+</div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-primary text-3xl font-bold">500+</div>
+              <div className="text-muted-foreground text-sm">
                 Active businesses
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">10,000+</div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-primary text-3xl font-bold">10,000+</div>
+              <div className="text-muted-foreground text-sm">
                 KPIs tracked monthly
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">30%</div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-primary text-3xl font-bold">30%</div>
+              <div className="text-muted-foreground text-sm">
                 Average performance increase
               </div>
             </div>

@@ -1,13 +1,13 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { organizations, clusters, projects } from '@/lib/db/schema';
-import { eq, inArray } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+import { db } from "@/lib/db";
+import { organizations, clusters, projects } from "@/lib/db/schema";
+import { eq, inArray } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import {
   createOrganizationSchema,
   type CreateOrganizationInput,
-} from '../schemas/organization-schema';
+} from "../schemas/organization-schema";
 
 // Type that aligns with what the database expects for organization insert
 type OrganizationInsertType = typeof organizations.$inferInsert;
@@ -19,9 +19,9 @@ export async function createOrganization(data: CreateOrganizationInput) {
     // Ensure optional fields have default values to satisfy DB schema not-null constraints
     const organizationData = {
       ...validatedData,
-      parish: validatedData.parish || '',
-      village: validatedData.village || '',
-      address: validatedData.address || '',
+      parish: validatedData.parish || "",
+      village: validatedData.village || "",
+      address: validatedData.address || "",
     };
 
     // Handle schema discrepancy - check if we need to adapt to old schema format
@@ -33,18 +33,18 @@ export async function createOrganization(data: CreateOrganizationInput) {
         .values(organizationData)
         .returning();
 
-      revalidatePath('/dashboard/organizations');
+      revalidatePath("/dashboard/organizations");
       return { success: true, data: organization };
     } catch (error) {
       const schemaError = error as Error;
       // If error mentions 'sub_county' column, it means we need to use the old schema
       if (
         schemaError.message &&
-        (schemaError.message.includes('sub_county_id') ||
-          schemaError.message.includes('operation_sub_counties') ||
-          schemaError.message.includes('sub_county'))
+        (schemaError.message.includes("sub_county_id") ||
+          schemaError.message.includes("operation_sub_counties") ||
+          schemaError.message.includes("sub_county"))
       ) {
-        console.warn('Using fallback schema format for organization creation');
+        console.warn("Using fallback schema format for organization creation");
 
         // Adapt to old schema format using the sub_county_id as the single sub_county value
         // Use type assertion with Record<string, unknown> to handle the dynamic property manipulation
@@ -62,7 +62,7 @@ export async function createOrganization(data: CreateOrganizationInput) {
           .values(oldFormatData as OrganizationInsertType)
           .returning();
 
-        revalidatePath('/dashboard/organizations');
+        revalidatePath("/dashboard/organizations");
         return { success: true, data: organization };
       }
 
@@ -70,8 +70,8 @@ export async function createOrganization(data: CreateOrganizationInput) {
       throw schemaError;
     }
   } catch (error) {
-    console.error('Error creating organization:', error);
-    return { success: false, error: 'Failed to create organization' };
+    console.error("Error creating organization:", error);
+    return { success: false, error: "Failed to create organization" };
   }
 }
 
@@ -115,15 +115,15 @@ export async function getOrganizations(cluster_id?: string) {
         ? {
             id: org.project.id,
             name: org.project.name,
-            acronym: org.project.acronym || '',
+            acronym: org.project.acronym || "",
           }
         : null,
     }));
 
     return { success: true, data: transformedOrgs };
   } catch (error) {
-    console.error('Error fetching organizations:', error);
-    return { success: false, error: 'Failed to fetch organizations' };
+    console.error("Error fetching organizations:", error);
+    return { success: false, error: "Failed to fetch organizations" };
   }
 }
 
@@ -161,7 +161,7 @@ export async function getOrganization(id: string) {
       .where(eq(organizations.id, id));
 
     if (!organization) {
-      return { success: false, error: 'Organization not found' };
+      return { success: false, error: "Organization not found" };
     }
 
     // Transform the data to match the Organization interface
@@ -171,15 +171,15 @@ export async function getOrganization(id: string) {
         ? {
             id: organization.project.id,
             name: organization.project.name,
-            acronym: organization.project.acronym || '',
+            acronym: organization.project.acronym || "",
           }
         : null,
     };
 
     return { success: true, data: transformedOrg };
   } catch (error) {
-    console.error('Error fetching organization:', error);
-    return { success: false, error: 'Failed to fetch organization' };
+    console.error("Error fetching organization:", error);
+    return { success: false, error: "Failed to fetch organization" };
   }
 }
 
@@ -197,11 +197,11 @@ export async function updateOrganization(
       .where(eq(organizations.id, id))
       .returning();
 
-    revalidatePath('/dashboard/organizations');
+    revalidatePath("/dashboard/organizations");
     return { success: true, data: organization };
   } catch (error) {
-    console.error('Error updating organization:', error);
-    return { success: false, error: 'Failed to update organization' };
+    console.error("Error updating organization:", error);
+    return { success: false, error: "Failed to update organization" };
   }
 }
 
@@ -209,11 +209,11 @@ export async function deleteOrganization(id: string) {
   try {
     await db.delete(organizations).where(eq(organizations.id, id));
 
-    revalidatePath('/dashboard/organizations');
+    revalidatePath("/dashboard/organizations");
     return { success: true };
   } catch (error) {
-    console.error('Error deleting organization:', error);
-    return { success: false, error: 'Failed to delete organization' };
+    console.error("Error deleting organization:", error);
+    return { success: false, error: "Failed to delete organization" };
   }
 }
 
@@ -221,11 +221,11 @@ export async function deleteOrganizations(ids: string[]) {
   try {
     await db.delete(organizations).where(inArray(organizations.id, ids));
 
-    revalidatePath('/dashboard/organizations');
+    revalidatePath("/dashboard/organizations");
     return { success: true };
   } catch (error) {
-    console.error('Error deleting organizations:', error);
-    return { success: false, error: 'Failed to delete organizations' };
+    console.error("Error deleting organizations:", error);
+    return { success: false, error: "Failed to delete organizations" };
   }
 }
 
@@ -265,7 +265,7 @@ export async function getCurrentOrganizationWithCluster(
       .where(eq(organizations.id, organizationId));
 
     if (!organization) {
-      return { success: false, error: 'Organization not found' };
+      return { success: false, error: "Organization not found" };
     }
 
     // Transform the data to match the Organization interface
@@ -275,15 +275,15 @@ export async function getCurrentOrganizationWithCluster(
         ? {
             id: organization.project.id,
             name: organization.project.name,
-            acronym: organization.project.acronym || '',
+            acronym: organization.project.acronym || "",
           }
         : null,
     };
 
     return { success: true, data: transformedOrg };
   } catch (error) {
-    console.error('Error fetching organization:', error);
-    return { success: false, error: 'Failed to fetch organization' };
+    console.error("Error fetching organization:", error);
+    return { success: false, error: "Failed to fetch organization" };
   }
 }
 
@@ -322,7 +322,7 @@ export async function getOrganizationsByCluster(clusterId: string) {
 
     return { success: true, data: orgs };
   } catch (error) {
-    console.error('Error fetching organizations:', error);
-    return { success: false, error: 'Failed to fetch organizations' };
+    console.error("Error fetching organizations:", error);
+    return { success: false, error: "Failed to fetch organizations" };
   }
 }

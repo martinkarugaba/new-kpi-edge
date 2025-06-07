@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { Form } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
-import { DialogFooter } from '@/components/ui/dialog';
-import { UseFormReturn } from 'react-hook-form';
-import { Country, District, FormValues } from './schema';
-import { NameInput } from './name-input';
-import { CountrySelector } from './country-selector';
-import { DistrictSelector } from './district-selector';
-import { CodeInput } from './code-input';
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
+import { UseFormReturn } from "react-hook-form";
+import { Country, District, FormValues } from "./schema";
+import { NameInput } from "./name-input";
+import { CountrySelector } from "./country-selector";
+import { DistrictSelector } from "./district-selector";
+import { CodeInput } from "./code-input";
 
 interface SubCountyFormProps {
   form: UseFormReturn<FormValues>;
@@ -35,7 +35,7 @@ export function SubCountyForm({
   onCountrySelect,
   onDistrictSelect,
 }: SubCountyFormProps) {
-  const selectedCountryId = form.watch('countryId');
+  const selectedCountryId = form.watch("countryId");
 
   return (
     <Form {...form}>
@@ -61,7 +61,7 @@ export function SubCountyForm({
           districtCode={districtCode}
         />
         <DialogFooter>
-          <Button className="cursor-pointer w-full mt-2" type="submit">
+          <Button className="mt-2 w-full cursor-pointer" type="submit">
             Add Sub County
           </Button>
         </DialogFooter>
