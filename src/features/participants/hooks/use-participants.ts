@@ -27,7 +27,14 @@ export function useParticipants(
   }
 ) {
   return useQuery({
-    queryKey: ["participants", clusterId, params],
+    queryKey: [
+      "participants",
+      clusterId,
+      params?.page,
+      params?.limit, // used as pageSize in the API call
+      params?.search,
+      JSON.stringify(params?.filters), // stringify to ensure changes trigger refetch
+    ],
     queryFn: () => getParticipants(clusterId, params),
   });
 }

@@ -204,6 +204,36 @@ export function ReusableDataTable<TData, TValue>({
     }
   }, [rowSelection, onRowSelectionChange, table]);
 
+  // Get server-side pagination information
+  const getPageInfo = React.useCallback(() => {
+    if (serverSidePagination && paginationData) {
+      return {
+        currentPage: paginationData.page,
+        pageCount: paginationData.totalPages,
+        hasPrev: paginationData.hasPrev,
+        hasNext: paginationData.hasNext,
+      };
+    }
+    return {
+      currentPage: table.getState().pagination.pageIndex + 1,
+      pageCount: table.getPageCount(),
+      hasPrev: table.getCanPreviousPage(),
+      hasNext: table.getCanNextPage(),
+    };
+  }, [serverSidePagination, paginationData, table]);
+
+  // Handle navigation between pages
+  const handleGoToPage = React.useCallback(
+    (page: number) => {
+      if (serverSidePagination && onPaginationChange) {
+        onPaginationChange(page, pagination.pageSize);
+      } else {
+        table.setPageIndex(page - 1);
+      }
+    },
+    [serverSidePagination, onPaginationChange, pagination.pageSize, table]
+  );
+
   // Get columns that can be hidden for the column toggle dropdown
 
   return (
@@ -351,16 +381,14 @@ export function ReusableDataTable<TData, TValue>({
                 Rows per page
               </Label>
               <Select
-                value={`${table.getState().pagination.pageSize}`}
+                value={`${pagination.pageSize}`}
                 onValueChange={value => {
                   const newSize = Number(value);
                   if (serverSidePagination && onPaginationChange) {
-                    onPaginationChange(
-                      table.getState().pagination.pageIndex + 1,
-                      newSize
-                    );
+                    onPaginationChange(getPageInfo().currentPage, newSize);
+                  } else {
+                    table.setPageSize(newSize);
                   }
-                  table.setPageSize(newSize);
                 }}
               >
                 <SelectTrigger className="w-20" id="rows-per-page">
@@ -378,15 +406,15 @@ export function ReusableDataTable<TData, TValue>({
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+              {/* Show the correct page number and total pages based on pagination mode */}
+              {`Page ${getPageInfo().currentPage} of ${getPageInfo().pageCount}`}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button
                 variant="outline"
                 className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
+                onClick={() => handleGoToPage(1)}
+                disabled={!getPageInfo().hasPrev}
               >
                 <span className="sr-only">Go to first page</span>
                 <ChevronsLeftIcon className="size-4" />
@@ -395,8 +423,11 @@ export function ReusableDataTable<TData, TValue>({
                 variant="outline"
                 className="size-8"
                 size="icon"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
+                onClick={() => {
+                  const pageInfo = getPageInfo();
+                  handleGoToPage(Math.max(pageInfo.currentPage - 1, 1));
+                }}
+                disabled={!getPageInfo().hasPrev}
               >
                 <span className="sr-only">Go to previous page</span>
                 <ChevronLeftIcon className="size-4" />
@@ -405,8 +436,13 @@ export function ReusableDataTable<TData, TValue>({
                 variant="outline"
                 className="size-8"
                 size="icon"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
+                onClick={() => {
+                  const pageInfo = getPageInfo();
+                  handleGoToPage(
+                    Math.min(pageInfo.currentPage + 1, pageInfo.pageCount)
+                  );
+                }}
+                disabled={!getPageInfo().hasNext}
               >
                 <span className="sr-only">Go to next page</span>
                 <ChevronRightIcon className="size-4" />
@@ -415,8 +451,8 @@ export function ReusableDataTable<TData, TValue>({
                 variant="outline"
                 className="hidden size-8 lg:flex"
                 size="icon"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
+                onClick={() => handleGoToPage(getPageInfo().pageCount)}
+                disabled={!getPageInfo().hasNext}
               >
                 <span className="sr-only">Go to last page</span>
                 <ChevronsRightIcon className="size-4" />

@@ -55,9 +55,16 @@ export function getColumns({
       ),
     },
     {
-      accessorKey: "sex",
+      id: "sex",
       header: "Sex",
       enableHiding: true,
+      accessorFn: row => row.sex,
+      cell: ({ row }) => {
+        const sex = row.original.sex;
+        return sex
+          ? sex.charAt(0).toUpperCase() + sex.slice(1).toLowerCase()
+          : "";
+      },
     },
     {
       accessorKey: "age",
@@ -114,11 +121,20 @@ export function getColumns({
       enableHiding: true,
       accessorFn: row => row.organizationName || row.organization_id,
       cell: ({ row }) => {
-        const displayValue =
+        const name =
           row.original.organizationName || row.original.organization_id;
+        // We could add logic here to find the organization by ID and get its acronym
+        // For now, showing 3-letter acronym from name
+        const acronym = name
+          .split(/\s+/)
+          .map(word => word[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 3);
         return (
-          <div className="max-w-[200px] truncate" title={displayValue}>
-            {displayValue}
+          <div className="max-w-[200px] truncate" title={name}>
+            <span className="font-medium">{acronym}</span>
+            {/* <span className="text-muted-foreground ml-2 text-xs">({name})</span> */}
           </div>
         );
       },
@@ -129,10 +145,19 @@ export function getColumns({
       enableHiding: true,
       accessorFn: row => row.projectName || "Unknown",
       cell: ({ row }) => {
-        const displayValue = row.original.projectName || "Unknown";
+        const name = row.original.projectName || "Unknown";
+        // We could add logic here to find the project and get its acronym
+        // For now, showing 3-letter acronym from name
+        const acronym = name
+          .split(/\s+/)
+          .map(word => word[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 3);
         return (
-          <div className="max-w-[200px] truncate" title={displayValue}>
-            {displayValue}
+          <div className="max-w-[200px] truncate" title={name}>
+            <span className="font-medium">{acronym}</span>
+            {/* <span className="text-muted-foreground ml-2 text-xs">({name})</span> */}
           </div>
         );
       },

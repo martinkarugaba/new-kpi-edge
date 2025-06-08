@@ -13,6 +13,7 @@ export function ParticipantContainer({
   clusterId,
   projects,
   clusters,
+  searchParams,
 }: ParticipantContainerProps) {
   // UI state
   const [isOpen, setIsOpen] = useState(false);
@@ -28,11 +29,15 @@ export function ParticipantContainer({
     filters,
     handleFilterChange,
     handlePageChange,
+    handlePageSizeChange,
     handleSearchChange,
     searchTerm,
     districts,
     sexOptions,
-  } = useParticipantData({ clusterId });
+  } = useParticipantData({
+    clusterId,
+    initialSearchParams: searchParams,
+  });
 
   // Get form handling functions
   const {
@@ -52,41 +57,44 @@ export function ParticipantContainer({
   const clusterOrganizations = extractClusterOrganizations(clusterId, clusters);
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="@container/main flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <ParticipantMetrics
-          participants={participantsData}
-          isLoading={isLoadingParticipants}
+    <div className="container mx-auto max-w-7xl py-10">
+      <div className="flex flex-col gap-4 md:gap-6">
+        <div className="w-full">
+          <ParticipantMetrics
+            participants={participantsData}
+            isLoading={isLoadingParticipants}
+          />
+        </div>
+
+        <ParticipantsTable
+          data={participantsData}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onAdd={handleAdd}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          editingParticipant={editingParticipant}
+          handleSubmit={handleSubmit}
+          onImportParticipants={handleImportParticipants}
+          isLoading={isLoading || isLoadingParticipants}
+          tableIsLoading={isLoadingParticipants}
+          tableError={
+            !participantsResult?.success ? participantsResult?.error : ""
+          }
+          projects={projects}
+          organizations={clusterOrganizations}
+          clusters={clusters}
+          districts={districts}
+          sexOptions={sexOptions}
+          filters={filters}
+          setFilters={handleFilterChange}
+          pagination={participantsResult?.data?.pagination}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          onSearchChange={handleSearchChange}
+          searchTerm={searchTerm}
         />
       </div>
-
-      <ParticipantsTable
-        data={participantsData}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onAdd={handleAdd}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        editingParticipant={editingParticipant}
-        handleSubmit={handleSubmit}
-        onImportParticipants={handleImportParticipants}
-        isLoading={isLoading || isLoadingParticipants}
-        tableIsLoading={isLoadingParticipants}
-        tableError={
-          !participantsResult?.success ? participantsResult?.error : ""
-        }
-        projects={projects}
-        organizations={clusterOrganizations}
-        clusters={clusters}
-        districts={districts}
-        sexOptions={sexOptions}
-        filters={filters}
-        setFilters={handleFilterChange}
-        pagination={participantsResult?.data?.pagination}
-        onPageChange={handlePageChange}
-        onSearchChange={handleSearchChange}
-        searchTerm={searchTerm}
-      />
     </div>
   );
 }

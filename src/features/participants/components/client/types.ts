@@ -63,4 +63,13 @@ export interface ParticipantContainerProps {
   clusterId: string;
   projects: Project[];
   clusters: ClusterWithOrganizations[];
+  searchParams?: {
+    page?: number;
+    per_page?: number;
+    search?: string;
+    project?: string;
+    district?: string;
+    sex?: string;
+    isPWD?: string;
+  };
 }
