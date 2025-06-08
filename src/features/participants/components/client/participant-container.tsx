@@ -26,6 +26,10 @@ export function ParticipantContainer({
     participantsData,
     isLoadingParticipants,
     participantsResult,
+    metricsData,
+    isLoadingMetrics,
+    applyFiltersToMetrics,
+    toggleMetricsFilters,
     filters,
     handleFilterChange,
     handlePageChange,
@@ -61,8 +65,10 @@ export function ParticipantContainer({
       <div className="flex flex-col gap-4 md:gap-6">
         <div className="w-full">
           <ParticipantMetrics
-            participants={participantsData}
-            isLoading={isLoadingParticipants}
+            participants={metricsData}
+            isLoading={isLoadingMetrics}
+            isFiltered={applyFiltersToMetrics}
+            onToggleFiltered={toggleMetricsFilters}
           />
         </div>
 

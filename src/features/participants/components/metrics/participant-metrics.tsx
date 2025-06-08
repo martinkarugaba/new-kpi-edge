@@ -4,15 +4,20 @@ import { TotalMetric } from "./components/total-metric";
 import { GenderMetrics } from "./components/gender-metrics";
 import { AgeMetrics } from "./components/age-metrics";
 import { DisabilityMetrics } from "./components/disability-metrics";
+import { Switch } from "@/components/ui/switch";
 
 interface ParticipantMetricsProps {
   participants: Participant[];
   isLoading: boolean;
+  isFiltered?: boolean;
+  onToggleFiltered?: () => void;
 }
 
 export function ParticipantMetrics({
   participants,
   isLoading,
+  isFiltered = false,
+  onToggleFiltered,
 }: ParticipantMetricsProps) {
   // Get all metrics using the hook
   const metrics = useParticipantMetrics(participants);
@@ -43,7 +48,24 @@ export function ParticipantMetrics({
 
   return (
     <section className="w-full">
-      <h3 className="mb-4 text-lg font-medium">Participant Overview</h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-medium">Participant Overview</h3>
+        {onToggleFiltered && (
+          <div className="flex items-center gap-2">
+            <label
+              className="text-muted-foreground text-sm"
+              htmlFor="filter-toggle"
+            >
+              Apply filters to metrics
+            </label>
+            <Switch
+              id="filter-toggle"
+              checked={isFiltered}
+              onCheckedChange={onToggleFiltered}
+            />
+          </div>
+        )}
+      </div>
       <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-0 @xl/main:grid-cols-2 @3xl/main:grid-cols-3 @5xl/main:grid-cols-4">
         {/* Total Metrics */}
         <TotalMetric

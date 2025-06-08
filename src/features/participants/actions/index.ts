@@ -248,3 +248,36 @@ export async function deleteParticipant(
     };
   }
 }
+
+export async function getAllParticipantsForMetrics(
+  clusterId: string
+): Promise<ParticipantsResponse> {
+  try {
+    // Get all participants for the cluster without pagination or filters
+    const allParticipants = await db.query.participants.findMany({
+      where: eq(participants.cluster_id, clusterId),
+      orderBy: asc(participants.id),
+    });
+
+    return {
+      success: true,
+      data: {
+        data: allParticipants,
+        pagination: {
+          page: 1,
+          limit: allParticipants.length,
+          total: allParticipants.length,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching all participants for metrics:", error);
+    return {
+      success: false,
+      error: "Failed to fetch participants metrics",
+    };
+  }
+}

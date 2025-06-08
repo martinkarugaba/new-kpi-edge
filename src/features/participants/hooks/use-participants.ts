@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ParticipantFormValues } from "../components/participant-form";
 import {
   getParticipants,
+  getAllParticipantsForMetrics,
   createParticipant,
   updateParticipant,
   deleteParticipant,
@@ -36,6 +37,32 @@ export function useParticipants(
       JSON.stringify(params?.filters), // stringify to ensure changes trigger refetch
     ],
     queryFn: () => getParticipants(clusterId, params),
+  });
+}
+
+export function useParticipantsMetrics(
+  clusterId: string,
+  params?: {
+    filters?: {
+      cluster?: string;
+      project?: string;
+      district?: string;
+      sex?: string;
+      isPWD?: string;
+    };
+    applyFilters: boolean;
+  }
+) {
+  return useQuery({
+    queryKey: [
+      "participants-metrics",
+      clusterId,
+      params?.applyFilters ? JSON.stringify(params?.filters) : "all",
+    ],
+    queryFn: () =>
+      params?.applyFilters
+        ? getParticipants(clusterId, { filters: params?.filters })
+        : getAllParticipantsForMetrics(clusterId),
   });
 }
 

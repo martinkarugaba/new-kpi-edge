@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useParticipants } from "../../hooks/use-participants";
-import { type QueryParams, type ParticipantFilters } from "./types";
+import {
+  useParticipants,
+  useParticipantsMetrics,
+} from "../../hooks/use-participants";
+import { type ParticipantFilters } from "./types";
 
 interface UseParticipantDataProps {
   clusterId: string;
@@ -40,6 +43,10 @@ export function useParticipantData({
     sex: initialSearchParams?.sex || searchParams.get("sex") || "",
     isPWD: initialSearchParams?.isPWD || searchParams.get("isPWD") || "",
   });
+
+  // State to control whether metrics should use filters
+  const [applyFiltersToMetrics, setApplyFiltersToMetrics] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const [pageSize, setPageSize] = useState(getInitialPerPage());
   const [searchTerm, setSearchTerm] = useState(getInitialSearch());
@@ -80,6 +87,11 @@ export function useParticipantData({
       sex: newFilters.sex,
       isPWD: newFilters.isPWD,
     });
+  };
+
+  // Toggle whether filters apply to metrics
+  const toggleMetricsFilters = () => {
+    setApplyFiltersToMetrics(prev => !prev);
   };
 
   // Handle pagination changes with URL update
@@ -135,24 +147,32 @@ export function useParticipantData({
     }));
   }, [searchParams]);
 
-  // Prepare query parameters including filters
-  const queryParams: QueryParams = {
-    page: currentPage,
-    limit: pageSize,
-    search: searchTerm,
-    filters: {
-      project: filters.project,
-      district: filters.district,
-      sex: filters.sex,
-      isPWD: filters.isPWD,
-    },
-  };
-
-  // Fetch participants data
+  // Get paginated data for table
   const { data: participantsResult, isLoading: isLoadingParticipants } =
-    useParticipants(clusterId, queryParams);
+    useParticipants(clusterId, {
+      page: currentPage,
+      limit: pageSize,
+      search: searchTerm,
+      filters: {
+        project: filters.project,
+        district: filters.district,
+        sex: filters.sex,
+        isPWD: filters.isPWD,
+      },
+    });
 
-  // Extract data for components
+  // Get metrics data, which may or may not use filters
+  const { data: metricsResult, isLoading: isLoadingMetrics } =
+    useParticipantsMetrics(clusterId, {
+      filters: {
+        project: filters.project,
+        district: filters.district,
+        sex: filters.sex,
+        isPWD: filters.isPWD,
+      },
+      applyFilters: applyFiltersToMetrics,
+    });
+
   const participantsData = participantsResult?.data?.data || [];
   const districts = Array.from(new Set(participantsData.map(p => p.district)))
     .filter(Boolean)
@@ -162,9 +182,18 @@ export function useParticipantData({
   ).filter(Boolean);
 
   return {
+    // Table data
     participantsData,
     isLoadingParticipants,
     participantsResult,
+
+    // Metrics data
+    metricsData: metricsResult?.data?.data || [],
+    isLoadingMetrics,
+    applyFiltersToMetrics,
+    toggleMetricsFilters,
+
+    // Filters and handlers
     filters,
     handleFilterChange,
     handlePageChange,
