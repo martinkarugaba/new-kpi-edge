@@ -1,14 +1,14 @@
-'use server';
+"use server";
 
-import { revalidatePath } from 'next/cache';
-import { db } from '@/lib/db';
-import { participants, organizations, clusterMembers } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { revalidatePath } from "next/cache";
+import { db } from "@/lib/db";
+import { participants, organizations, clusterMembers } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 import {
   type NewParticipant,
   type ParticipantResponse,
   type ParticipantsResponse,
-} from '../types/types';
+} from "../types/types";
 
 export async function getParticipants(
   clusterId: string
@@ -23,10 +23,10 @@ export async function getParticipants(
       data,
     };
   } catch (error) {
-    console.error('Error getting participants:', error);
+    console.error("Error getting participants:", error);
     return {
       success: false,
-      error: 'Failed to get participants',
+      error: "Failed to get participants",
     };
   }
 }
@@ -38,7 +38,7 @@ export async function createParticipant(
     if (!data.cluster_id || !data.project_id || !data.organization_id) {
       return {
         success: false,
-        error: 'cluster_id, project_id, and organization_id are required',
+        error: "cluster_id, project_id, and organization_id are required",
       };
     }
 
@@ -50,7 +50,7 @@ export async function createParticipant(
     if (!organization) {
       return {
         success: false,
-        error: 'Organization not found',
+        error: "Organization not found",
       };
     }
 
@@ -65,7 +65,7 @@ export async function createParticipant(
     if (!clusterMember) {
       return {
         success: false,
-        error: 'Organization does not belong to the specified cluster',
+        error: "Organization does not belong to the specified cluster",
       };
     }
 
@@ -85,11 +85,11 @@ export async function createParticipant(
       data: participant,
     };
   } catch (error) {
-    console.error('Error creating participant:', error);
+    console.error("Error creating participant:", error);
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : 'Failed to create participant',
+        error instanceof Error ? error.message : "Failed to create participant",
     };
   }
 }
@@ -111,10 +111,10 @@ export async function updateParticipant(
       data: participant,
     };
   } catch (error) {
-    console.error('Error updating participant:', error);
+    console.error("Error updating participant:", error);
     return {
       success: false,
-      error: 'Failed to update participant',
+      error: "Failed to update participant",
     };
   }
 }
@@ -134,10 +134,10 @@ export async function deleteParticipant(
       data: participant,
     };
   } catch (error) {
-    console.error('Error deleting participant:', error);
+    console.error("Error deleting participant:", error);
     return {
       success: false,
-      error: 'Failed to delete participant',
+      error: "Failed to delete participant",
     };
   }
 }
