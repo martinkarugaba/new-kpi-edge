@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { clusterMembers } from '@/lib/db/schema';
-import { eq, and, inArray } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+import { db } from "@/lib/db";
+import { clusterMembers } from "@/lib/db/schema";
+import { eq, and, inArray } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function updateOrganizationClusters(
   organizationId: string,
@@ -58,13 +58,13 @@ export async function updateOrganizationClusters(
     });
 
     // Revalidate related paths
-    revalidatePath('/dashboard/organizations');
+    revalidatePath("/dashboard/organizations");
     revalidatePath(`/dashboard/organizations/${organizationId}`);
-    revalidatePath('/dashboard/clusters');
+    revalidatePath("/dashboard/clusters");
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating organization clusters:', error);
-    return { success: false, error: 'Failed to update organization clusters' };
+    console.error("Error updating organization clusters:", error);
+    return { success: false, error: "Failed to update organization clusters" };
   }
 }

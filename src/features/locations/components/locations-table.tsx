@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ColumnDef } from '@tanstack/react-table';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { Plus, MoreHorizontal, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { ColumnDef } from "@tanstack/react-table";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { Plus, MoreHorizontal, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +12,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Location {
   id: string;
@@ -70,13 +70,13 @@ export function LocationsTable({ locations }: LocationsTableProps) {
 
   const columns: ColumnDef<Location>[] = [
     {
-      id: 'select',
+      id: "select",
       header: ({ table }) => (
         <div className="flex items-center justify-center">
           <Checkbox
             checked={
               table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
+              (table.getIsSomePageRowsSelected() && "indeterminate")
             }
             onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Select all"
@@ -96,13 +96,13 @@ export function LocationsTable({ locations }: LocationsTableProps) {
       enableHiding: false,
     },
     {
-      accessorKey: 'name',
-      header: 'Name',
+      accessorKey: "name",
+      header: "Name",
       enableHiding: true,
     },
     {
-      accessorKey: 'type',
-      header: 'Type',
+      accessorKey: "type",
+      header: "Type",
       enableHiding: true,
       cell: ({ row }) => (
         <Badge variant="outline" className="capitalize">
@@ -111,28 +111,28 @@ export function LocationsTable({ locations }: LocationsTableProps) {
       ),
     },
     {
-      accessorKey: 'district',
-      header: 'District',
+      accessorKey: "district",
+      header: "District",
       enableHiding: true,
     },
     {
-      accessorKey: 'subCounty',
-      header: 'Sub County',
+      accessorKey: "subCounty",
+      header: "Sub County",
       enableHiding: true,
     },
     {
-      accessorKey: 'parish',
-      header: 'Parish',
+      accessorKey: "parish",
+      header: "Parish",
       enableHiding: true,
     },
     {
-      accessorKey: 'village',
-      header: 'Village',
+      accessorKey: "village",
+      header: "Village",
       enableHiding: true,
     },
     {
-      id: 'actions',
-      header: 'Actions',
+      id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => <ActionsCell location={row.original} />,
     },

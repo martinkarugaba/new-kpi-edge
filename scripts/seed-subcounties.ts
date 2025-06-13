@@ -1,42 +1,42 @@
-import { db } from '../src/lib/db';
-import { sql } from 'drizzle-orm';
-import { districts, subCounties, counties } from '../src/lib/db/schema';
-import subcounties from 'ug-locale/subcounties.json';
-import districtsData from 'ug-locale/districts.json';
-import countiesData from 'ug-locale/counties.json';
-import * as dotenv from 'dotenv';
-import path from 'path';
+import { db } from "../src/lib/db";
+import { sql } from "drizzle-orm";
+import { districts, subCounties, counties } from "../src/lib/db/schema";
+import subcounties from "ug-locale/subcounties.json";
+import districtsData from "ug-locale/districts.json";
+import countiesData from "ug-locale/counties.json";
+import * as dotenv from "dotenv";
+import path from "path";
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 function normalizeDistrictName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, '');
+  const base = name.toLowerCase().replace(/[^a-z]/g, "");
 
   // Create variations by removing common district suffixes/prefixes
   const variations = [
     base,
-    base.replace('district', ''),
-    base.replace('municipality', ''),
-    base.replace('city', ''),
-    base.replace('subcounty', ''),
-    base.replace('tc', ''),
-    base.replace('towncounty', ''),
+    base.replace("district", ""),
+    base.replace("municipality", ""),
+    base.replace("city", ""),
+    base.replace("subcounty", ""),
+    base.replace("tc", ""),
+    base.replace("towncounty", ""),
   ];
 
   // Special cases for district name variations
-  if (base.includes('kampala')) variations.push('kcca');
-  if (base.includes('fortportal')) variations.push('kabarole');
-  if (base.includes('fortportal')) variations.push('fortportalcity');
-  if (base.includes('arua')) variations.push('aruacity');
-  if (base.includes('gulu')) variations.push('gulucity');
-  if (base.includes('jinja')) variations.push('jinjacity');
-  if (base.includes('lira')) variations.push('liracity');
-  if (base.includes('masaka')) variations.push('masakacity');
-  if (base.includes('mbale')) variations.push('mbalecity');
-  if (base.includes('mbarara')) variations.push('mbararacity');
-  if (base.includes('soroti')) variations.push('soroticity');
+  if (base.includes("kampala")) variations.push("kcca");
+  if (base.includes("fortportal")) variations.push("kabarole");
+  if (base.includes("fortportal")) variations.push("fortportalcity");
+  if (base.includes("arua")) variations.push("aruacity");
+  if (base.includes("gulu")) variations.push("gulucity");
+  if (base.includes("jinja")) variations.push("jinjacity");
+  if (base.includes("lira")) variations.push("liracity");
+  if (base.includes("masaka")) variations.push("masakacity");
+  if (base.includes("mbale")) variations.push("mbalecity");
+  if (base.includes("mbarara")) variations.push("mbararacity");
+  if (base.includes("soroti")) variations.push("soroticity");
 
   // Filter out duplicates and empty strings
   return [...new Set(variations.filter(v => v))];
@@ -44,7 +44,7 @@ function normalizeDistrictName(name: string): string[] {
 
 async function seedSubCounties() {
   try {
-    console.log('Starting subcounties seeding...');
+    console.log("Starting subcounties seeding...");
 
     // Get all districts first
     const districtRecords = await db.select().from(districts);
@@ -75,12 +75,12 @@ async function seedSubCounties() {
     });
 
     console.log(
-      'Available districts:',
-      Array.from(districtMap.keys()).sort().join(', ')
+      "Available districts:",
+      Array.from(districtMap.keys()).sort().join(", ")
     );
 
     // Log some sample subcounties to debug
-    console.log('Sample subcounties:', subcounties.slice(0, 5));
+    console.log("Sample subcounties:", subcounties.slice(0, 5));
 
     console.log(`Found ${districtRecords.length} district records`);
 
@@ -164,7 +164,7 @@ async function seedSubCounties() {
         let countyRecord = countyDbRecordsByName.get(county.name.toLowerCase());
 
         // If county name with "County" suffix doesn't match, try without suffix
-        if (!countyRecord && county.name.toLowerCase().endsWith(' county')) {
+        if (!countyRecord && county.name.toLowerCase().endsWith(" county")) {
           const nameWithoutCounty = county.name.slice(0, -7).toLowerCase();
           countyRecord = countyDbRecordsByName.get(nameWithoutCounty);
         }
@@ -185,12 +185,12 @@ async function seedSubCounties() {
         // Format subcounty name properly (first letter of each word uppercase, rest lowercase)
         const formattedName = subcounty.name
           .toLowerCase()
-          .split(' ')
+          .split(" ")
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
+          .join(" ");
 
         // Clean name for code generation (remove spaces and special characters)
-        const cleanedName = subcounty.name.replace(/[^a-zA-Z]/g, '');
+        const cleanedName = subcounty.name.replace(/[^a-zA-Z]/g, "");
 
         // Get first, last, and middle letter for the code
         const firstLetter = cleanedName[0];
@@ -274,9 +274,9 @@ async function seedSubCounties() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log('Subcounties seeding completed successfully');
+    console.log("Subcounties seeding completed successfully");
   } catch (error) {
-    console.error('Error seeding subcounties:', error);
+    console.error("Error seeding subcounties:", error);
     throw error;
   }
 }
@@ -285,11 +285,11 @@ async function seedSubCounties() {
 if (require.main === module) {
   seedSubCounties()
     .then(() => {
-      console.log('Subcounties seeding completed');
+      console.log("Subcounties seeding completed");
       process.exit(0);
     })
     .catch(error => {
-      console.error('Subcounties seeding failed:', error);
+      console.error("Subcounties seeding failed:", error);
       process.exit(1);
     });
 }

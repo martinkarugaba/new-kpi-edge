@@ -1,11 +1,11 @@
-import { Metadata } from 'next';
-import { ResetPasswordForm } from '@/features/auth/components/ResetPasswordForm';
-import { notFound } from 'next/navigation';
-import { verifyResetToken } from '@/features/auth/actions/auth';
+import { Metadata } from "next";
+import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
+import { notFound } from "next/navigation";
+import { verifyResetToken } from "@/features/auth/actions/auth";
 
 export const metadata: Metadata = {
-  title: 'Reset Password | KPI Tracking',
-  description: 'Reset your password',
+  title: "Reset Password | KPI Tracking",
+  description: "Reset your password",
 };
 
 // Correctly define Props with params as a promise
@@ -24,16 +24,16 @@ export default async function Page({ params }: Props) {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/50">
+    <div className="from-background to-muted/50 relative flex min-h-screen items-center justify-center bg-gradient-to-br">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,var(--primary)_0,transparent_100%)] opacity-10" />
 
-      <div className="container relative mx-auto flex w-full max-w-[480px] flex-col items-center justify-center p-4">
-        <div className="w-full rounded-xl border bg-card p-8 shadow-lg">
+      <div className="relative container mx-auto flex w-full max-w-[480px] flex-col items-center justify-center p-4">
+        <div className="bg-card w-full rounded-xl border p-8 shadow-lg">
           <div className="mb-6 text-center">
             <h1 className="text-2xl font-bold tracking-tight">
               Reset your password
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-2 text-sm">
               Enter your new password below
             </p>
           </div>

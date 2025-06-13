@@ -1,18 +1,18 @@
-import { Container } from '@/components/ui/container';
+import { Container } from "@/components/ui/container";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import * as motion from 'motion/react-client';
+} from "@/components/ui/card";
+import * as motion from "motion/react-client";
 
 const features = [
   {
-    title: 'Custom Dashboards',
+    title: "Custom Dashboards",
     description:
-      'Create personalized dashboards with drag-and-drop simplicity to visualize the metrics that matter most to your business.',
+      "Create personalized dashboards with drag-and-drop simplicity to visualize the metrics that matter most to your business.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -32,9 +32,9 @@ const features = [
     ),
   },
   {
-    title: 'Real-time Analytics',
+    title: "Real-time Analytics",
     description:
-      'Monitor your KPIs in real-time with automatic data syncing, ensuring you always have the latest insights.',
+      "Monitor your KPIs in real-time with automatic data syncing, ensuring you always have the latest insights.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -53,9 +53,9 @@ const features = [
     ),
   },
   {
-    title: 'Goal Tracking',
+    title: "Goal Tracking",
     description:
-      'Set targets for your KPIs and track progress over time, with alerts when goals are met or missed.',
+      "Set targets for your KPIs and track progress over time, with alerts when goals are met or missed.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -78,9 +78,9 @@ const features = [
     ),
   },
   {
-    title: 'Data Integration',
+    title: "Data Integration",
     description:
-      'Connect to your existing tools and data sources to automatically pull in metrics from across your organization.',
+      "Connect to your existing tools and data sources to automatically pull in metrics from across your organization.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -101,9 +101,9 @@ const features = [
     ),
   },
   {
-    title: 'Automated Reporting',
+    title: "Automated Reporting",
     description:
-      'Schedule and distribute reports automatically to keep stakeholders informed without manual effort.',
+      "Schedule and distribute reports automatically to keep stakeholders informed without manual effort.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -126,9 +126,9 @@ const features = [
     ),
   },
   {
-    title: 'Customizable Alerts',
+    title: "Customizable Alerts",
     description:
-      'Configure alerts for critical changes in your KPIs, delivered via email, SMS, or integrated notifications.',
+      "Configure alerts for critical changes in your KPIs, delivered via email, SMS, or integrated notifications.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -166,19 +166,19 @@ const item = {
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-20 bg-secondary/10 scroll-mt-16">
+    <section id="features" className="bg-secondary/10 scroll-mt-16 py-20">
       <Container>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="mb-12 text-center"
         >
-          <h2 className="text-3xl font-bold tracking-tight mb-2">
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">
             Powerful Features
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
             Everything you need to track, analyze, and improve your key
             performance indicators
           </p>
@@ -189,19 +189,19 @@ export function FeaturesSection() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
           {features.map((feature, index) => (
             <motion.div key={index} variants={item}>
-              <Card className="group relative overflow-hidden border border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Card className="group border-border/40 bg-card/50 hover:border-primary/50 hover:shadow-primary/5 relative overflow-hidden border backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+                <div className="from-primary/5 to-secondary/5 absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 <CardHeader>
-                  <div className="mb-4 text-primary transition-transform duration-300 group-hover:scale-110">
+                  <div className="text-primary mb-4 transition-transform duration-300 group-hover:scale-110">
                     {feature.icon}
                   </div>
                   <CardTitle className="relative">
                     {feature.title}
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></div>
+                    <div className="bg-primary absolute bottom-0 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full"></div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

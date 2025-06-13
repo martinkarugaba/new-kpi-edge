@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { columns } from '@/features/locations/components/data-table/subcounties-columns';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { subCounties, districts, counties, countries } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { AddSubCountyDialog } from '@/features/locations/components/dialogs/add-subcounty-dialog';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { columns } from "@/features/locations/components/data-table/subcounties-columns";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { subCounties, districts, counties, countries } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { AddSubCountyDialog } from "@/features/locations/components/dialogs/add-subcounty-dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 type SubCounty = InferSelectModel<typeof subCounties> & {
   district?: InferSelectModel<typeof districts>;

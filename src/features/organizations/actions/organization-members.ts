@@ -1,23 +1,23 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { organizationMembers, users, userRole } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
-import { auth } from '@/features/auth/auth';
+import { db } from "@/lib/db";
+import { organizationMembers, users, userRole } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { auth } from "@/features/auth/auth";
 
 export async function getOrganizationMembers(organizationId: string) {
   try {
-    console.log('Fetching members for organization:', organizationId);
+    console.log("Fetching members for organization:", organizationId);
 
     const members = await db.query.organizationMembers.findMany({
       where: eq(organizationMembers.organization_id, organizationId),
     });
 
-    console.log('Raw members data:', members);
+    console.log("Raw members data:", members);
 
     if (!members || members.length === 0) {
-      console.log('No members found for organization');
+      console.log("No members found for organization");
       return { success: true, data: [] };
     }
 
@@ -36,7 +36,7 @@ export async function getOrganizationMembers(organizationId: string) {
 
           return {
             id: member.user_id,
-            name: user.name || 'Unknown User',
+            name: user.name || "Unknown User",
             email: user.email,
             role: member.role,
             created_at:
@@ -59,13 +59,13 @@ export async function getOrganizationMembers(organizationId: string) {
       (member): member is NonNullable<typeof member> => member !== null
     );
 
-    console.log('Members with user details:', validMembers);
+    console.log("Members with user details:", validMembers);
     return { success: true, data: validMembers };
   } catch (error) {
-    console.error('Error in getOrganizationMembers:', error);
+    console.error("Error in getOrganizationMembers:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to fetch members',
+      error: error instanceof Error ? error.message : "Failed to fetch members",
       data: [],
     };
   }
@@ -74,13 +74,13 @@ export async function getOrganizationMembers(organizationId: string) {
 export async function addOrganizationMember(
   organizationId: string,
   userId: string,
-  role: (typeof userRole.enumValues)[number] = 'organization_member'
+  role: (typeof userRole.enumValues)[number] = "organization_member"
 ) {
   try {
     const session = await auth();
 
     if (!session?.user) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: "Not authenticated" };
     }
 
     // Check if user is already a member
@@ -93,7 +93,7 @@ export async function addOrganizationMember(
     if (existingMember) {
       return {
         success: false,
-        error: 'User is already a member of this organization',
+        error: "User is already a member of this organization",
       };
     }
 
@@ -104,13 +104,13 @@ export async function addOrganizationMember(
       role: role,
     });
 
-    revalidatePath('/dashboard/organizations/[id]', 'page');
+    revalidatePath("/dashboard/organizations/[id]", "page");
     return { success: true };
   } catch (error) {
-    console.error('Error adding organization member:', error);
+    console.error("Error adding organization member:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to add member',
+      error: error instanceof Error ? error.message : "Failed to add member",
     };
   }
 }
@@ -124,7 +124,7 @@ export async function updateOrganizationMemberRole(
     const session = await auth();
 
     if (!session?.user) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: "Not authenticated" };
     }
 
     await db
@@ -135,14 +135,14 @@ export async function updateOrganizationMemberRole(
           eq(organizationMembers.user_id, userId)
       );
 
-    revalidatePath('/dashboard/organizations/[id]', 'page');
+    revalidatePath("/dashboard/organizations/[id]", "page");
     return { success: true };
   } catch (error) {
-    console.error('Error updating organization member role:', error);
+    console.error("Error updating organization member role:", error);
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : 'Failed to update member role',
+        error instanceof Error ? error.message : "Failed to update member role",
     };
   }
 }
@@ -155,7 +155,7 @@ export async function removeOrganizationMember(
     const session = await auth();
 
     if (!session?.user) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: "Not authenticated" };
     }
 
     await db
@@ -165,20 +165,20 @@ export async function removeOrganizationMember(
           eq(organizationMembers.user_id, userId)
       );
 
-    revalidatePath('/dashboard/organizations/[id]', 'page');
+    revalidatePath("/dashboard/organizations/[id]", "page");
     return { success: true };
   } catch (error) {
-    console.error('Error removing organization member:', error);
+    console.error("Error removing organization member:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to remove member',
+      error: error instanceof Error ? error.message : "Failed to remove member",
     };
   }
 }
 
 export async function getAllUsers() {
   try {
-    console.log('Fetching all users from database');
+    console.log("Fetching all users from database");
     const allUsers = await db.query.users.findMany({
       columns: {
         id: true,
@@ -186,11 +186,11 @@ export async function getAllUsers() {
         email: true,
       },
     });
-    console.log('Users fetched:', allUsers);
+    console.log("Users fetched:", allUsers);
 
     return { success: true, data: allUsers };
   } catch (error) {
-    console.error('Error fetching users:', error);
-    return { success: false, error: 'Failed to fetch users' };
+    console.error("Error fetching users:", error);
+    return { success: false, error: "Failed to fetch users" };
   }
 }
