@@ -22,13 +22,13 @@ function ParticipantsTableSkeleton() {
   );
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
+export default async function Page(props: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // Search params will be passed directly to the ParticipantsClient component
+  // Need to await the searchParams promise to match Next.js 14+ types
+  const searchParams = await props.searchParams;
 
+  // Search params will be passed directly to the ParticipantsClient component
   const organizationId = await getOrganizationId();
   const clusterId = await getUserClusterId();
   const projectsResult = await getProjects(organizationId ?? undefined);

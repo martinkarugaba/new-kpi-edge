@@ -8,12 +8,14 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { ActiveThemeProvider } from "@/features/themes/components/active-theme";
 import { QueryProvider } from "@/providers/query-provider";
 
-// Configure the Inter font with display options to avoid flickering
+// Configure the Inter font with fallback options
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  preload: true,
+  preload: false, // Disable preload to prevent build issues
+  adjustFontFallback: true,
   fallback: ["system-ui", "Arial", "sans-serif"],
+  variable: "--font-inter", // Use CSS variable for more flexibility
 });
 
 export const metadata: Metadata = {
@@ -28,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className}`} suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans`} suppressHydrationWarning>
         <SessionProvider>
           <QueryProvider>
             <ThemeProvider

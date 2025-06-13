@@ -2,15 +2,17 @@ import { notFound } from "next/navigation";
 import { getCountryById } from "@/features/locations/actions/countries";
 import { CountryDetailClient } from "./client";
 
-interface Props {
-  params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-export default async function CountryDetailPage({ params }: Props) {
+export default async function CountryDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   try {
+    // Await the params promise to get the id
+    const { id } = await params;
+
     // Pre-fetch the data for SSR
-    const result = await getCountryById(params.id);
+    const result = await getCountryById(id);
 
     if (!result.success || !result.data) {
       return notFound();
