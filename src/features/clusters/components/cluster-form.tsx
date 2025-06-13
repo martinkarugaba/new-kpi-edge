@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,22 +9,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { createCluster, updateCluster } from '../actions/clusters';
-import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { createCluster, updateCluster } from "../actions/clusters";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, "Name is required"),
   about: z.string().optional(),
-  country: z.string().min(1, 'Country is required'),
-  districts: z.string().min(1, 'At least one district is required'),
+  country: z.string().min(1, "Country is required"),
+  districts: z.string().min(1, "At least one district is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -52,10 +52,10 @@ export function ClusterForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name || '',
-      about: initialData?.about || '',
-      country: initialData?.country || '',
-      districts: initialData?.districts.join(', ') || '',
+      name: initialData?.name || "",
+      about: initialData?.about || "",
+      country: initialData?.country || "",
+      districts: initialData?.districts.join(", ") || "",
     },
   });
 
@@ -65,7 +65,7 @@ export function ClusterForm({
     try {
       const clusterData = {
         ...data,
-        districts: data.districts.split(',').map(d => d.trim()),
+        districts: data.districts.split(",").map(d => d.trim()),
       };
 
       if (initialData) {
@@ -74,17 +74,17 @@ export function ClusterForm({
           ...clusterData,
         });
         if (!result.success) throw new Error(result.error);
-        toast.success('Cluster updated successfully');
+        toast.success("Cluster updated successfully");
       } else {
         const result = await createCluster(clusterData);
         if (!result.success) throw new Error(result.error);
-        toast.success('Cluster created successfully');
+        toast.success("Cluster created successfully");
       }
 
       router.refresh();
       onSuccess?.();
     } catch (error) {
-      toast.error('Something went wrong. Please try again.');
+      toast.error("Something went wrong. Please try again.");
       console.error(error);
     } finally {
       if (setIsLoading) setIsLoading(false);
@@ -108,7 +108,7 @@ export function ClusterForm({
                       placeholder="Enter cluster name"
                       {...field}
                       disabled={isLoading}
-                      className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                      className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                     />
                   </FormControl>
                   <FormMessage className="text-sm text-red-500" />
@@ -125,7 +125,7 @@ export function ClusterForm({
                   <FormControl>
                     <Textarea
                       placeholder="Describe this cluster"
-                      className="resize-none min-h-[120px] text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                      className="min-h-[120px] resize-none rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                       {...field}
                       disabled={isLoading}
                     />
@@ -135,7 +135,7 @@ export function ClusterForm({
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="country"
@@ -149,7 +149,7 @@ export function ClusterForm({
                         placeholder="Enter country"
                         {...field}
                         disabled={isLoading}
-                        className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                        className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500" />
@@ -170,7 +170,7 @@ export function ClusterForm({
                         placeholder="District 1, District 2, District 3"
                         {...field}
                         disabled={isLoading}
-                        className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                        className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                       />
                     </FormControl>
                     <FormDescription className="text-sm text-gray-500">
@@ -183,21 +183,21 @@ export function ClusterForm({
             </div>
           </div>
 
-          <div className="flex justify-end pt-4 border-t border-gray-200">
+          <div className="flex justify-end border-t border-gray-200 pt-4">
             <Button
               type="submit"
               disabled={isLoading}
-              className="h-12 px-6 text-base cursor-pointer w-full font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
+              className="h-12 w-full cursor-pointer rounded-lg bg-black px-6 text-base font-medium text-white hover:bg-gray-800"
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {initialData ? 'Updating...' : 'Creating...'}
+                  {initialData ? "Updating..." : "Creating..."}
                 </>
               ) : initialData ? (
-                'Update Cluster'
+                "Update Cluster"
               ) : (
-                'Create Cluster'
+                "Create Cluster"
               )}
             </Button>
           </div>

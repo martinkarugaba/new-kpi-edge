@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { SubCountiesTable } from '../subcounties-table';
-import { useEffect, useState } from 'react';
-import { subCounties, districts, counties, countries } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { getSubCounties } from '@/features/locations/actions/locations';
+import { SubCountiesTable } from "../subcounties-table";
+import { useEffect, useState } from "react";
+import { subCounties, districts, counties, countries } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { getSubCounties } from "@/features/locations/actions/subcounties";
 
 type SubCounty = InferSelectModel<typeof subCounties> & {
   district?: InferSelectModel<typeof districts>;
@@ -12,23 +12,33 @@ type SubCounty = InferSelectModel<typeof subCounties> & {
   country?: InferSelectModel<typeof countries>;
 };
 
-export function SubCountiesTab() {
+interface SubCountiesTabProps {
+  districtId?: string;
+  countyId?: string;
+  countryId?: string;
+}
+
+export function SubCountiesTab({
+  districtId,
+  countyId,
+  countryId,
+}: SubCountiesTabProps) {
   const [data, setData] = useState<SubCounty[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getSubCounties();
-      if (result.success && result.data) {
-        setData(result.data);
+      const result = await getSubCounties({
+        districtId,
+        countyId,
+        countryId,
+      });
+      if (result.success && result.data?.data) {
+        setData(result.data.data);
       }
     };
 
     fetchData();
-  }, []);
+  }, [districtId, countyId, countryId]);
 
-  return (
-    <div className="p-4">
-      <SubCountiesTable data={data} />
-    </div>
-  );
+  return <SubCountiesTable data={data} />;
 }

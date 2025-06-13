@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { ColumnDef } from '@tanstack/react-table';
-import { counties, districts, countries } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { ColumnDef } from "@tanstack/react-table";
+import { counties, districts, countries } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +13,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { toast } from 'sonner';
-import { deleteCounty } from '../../actions/counties';
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
+import { deleteCounty } from "../../actions/counties";
 
 type District = InferSelectModel<typeof districts>;
 type Country = InferSelectModel<typeof countries>;
@@ -27,13 +27,13 @@ type County = InferSelectModel<typeof counties> & {
 
 export const columns: ColumnDef<County>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -53,31 +53,31 @@ export const columns: ColumnDef<County>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: 'code',
-    header: 'Code',
+    accessorKey: "code",
+    header: "Code",
   },
   {
-    id: 'district',
-    header: 'District',
+    id: "district",
+    header: "District",
     cell: ({ row }) => {
-      return row.original.district?.name || '-';
+      return row.original.district?.name || "-";
     },
   },
   {
-    id: 'country',
-    header: 'Country',
+    id: "country",
+    header: "Country",
     cell: ({ row }) => {
-      return row.original.country?.name || '-';
+      return row.original.country?.name || "-";
     },
   },
 
   {
-    id: 'actions',
-    header: 'Actions',
+    id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const county = row.original;
 
@@ -94,7 +94,7 @@ export const columns: ColumnDef<County>[] = [
             <DropdownMenuItem
               onClick={() => {
                 // TODO: Implement edit functionality
-                toast.info('Edit functionality coming soon');
+                toast.info("Edit functionality coming soon");
               }}
             >
               <Pencil className="mr-2 h-4 w-4" />
@@ -106,9 +106,9 @@ export const columns: ColumnDef<County>[] = [
               onClick={async () => {
                 try {
                   await deleteCounty(county.id);
-                  toast.success('County deleted successfully');
+                  toast.success("County deleted successfully");
                 } catch {
-                  toast.error('Failed to delete county');
+                  toast.error("Failed to delete county");
                 }
               }}
             >

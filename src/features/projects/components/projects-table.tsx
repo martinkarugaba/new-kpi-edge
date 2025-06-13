@@ -1,32 +1,32 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Project } from '@/features/projects/types';
-import { CreateProjectDialog } from './create-project-dialog';
-import { Plus, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Button } from "@/components/ui/button";
+import { Project } from "@/features/projects/types";
+import { CreateProjectDialog } from "./create-project-dialog";
+import { Plus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/select";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { EditProjectDialog } from './edit-project-dialog';
-import { DeleteProjectDialog } from './delete-project-dialog';
+} from "@/components/ui/dropdown-menu";
+import { EditProjectDialog } from "./edit-project-dialog";
+import { DeleteProjectDialog } from "./delete-project-dialog";
 
 interface ProjectsTableProps {
   projects: Project[];
@@ -103,13 +103,13 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
   // Define the columns for the projects table
   const columns: ColumnDef<Project>[] = [
     {
-      id: 'select',
+      id: "select",
       header: ({ table }) => (
         <div className="flex items-center justify-center">
           <Checkbox
             checked={
               table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
+              (table.getIsSomePageRowsSelected() && "indeterminate")
             }
             onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Select all"
@@ -129,36 +129,36 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
       enableHiding: false,
     },
     {
-      accessorKey: 'acronym',
-      header: 'Acronym',
+      accessorKey: "acronym",
+      header: "Acronym",
       enableHiding: true,
     },
     {
-      accessorKey: 'name',
-      header: 'Name',
+      accessorKey: "name",
+      header: "Name",
       enableHiding: true,
     },
     {
-      accessorKey: 'description',
-      header: 'Description',
+      accessorKey: "description",
+      header: "Description",
       enableHiding: true,
-      cell: ({ row }) => row.original.description || '-',
+      cell: ({ row }) => row.original.description || "-",
     },
     {
-      id: 'status',
-      header: 'Status',
+      id: "status",
+      header: "Status",
       enableHiding: true,
       cell: ({ row }) => {
         const status = row.original.status;
-        let variant: 'default' | 'outline' | 'secondary' | 'destructive' =
-          'outline';
+        let variant: "default" | "outline" | "secondary" | "destructive" =
+          "outline";
 
-        if (status === 'active') {
-          variant = 'default';
-        } else if (status === 'completed') {
-          variant = 'secondary';
-        } else if (status === 'on-hold') {
-          variant = 'destructive';
+        if (status === "active") {
+          variant = "default";
+        } else if (status === "completed") {
+          variant = "secondary";
+        } else if (status === "on-hold") {
+          variant = "destructive";
         }
 
         return (
@@ -169,26 +169,26 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
       },
     },
     {
-      accessorKey: 'startDate',
-      header: 'Start Date',
+      accessorKey: "startDate",
+      header: "Start Date",
       enableHiding: true,
       cell: ({ row }) => {
         const date = row.original.startDate;
-        return date ? new Date(date).toLocaleDateString() : '-';
+        return date ? new Date(date).toLocaleDateString() : "-";
       },
     },
     {
-      accessorKey: 'endDate',
-      header: 'End Date',
+      accessorKey: "endDate",
+      header: "End Date",
       enableHiding: true,
       cell: ({ row }) => {
         const date = row.original.endDate;
-        return date ? new Date(date).toLocaleDateString() : '-';
+        return date ? new Date(date).toLocaleDateString() : "-";
       },
     },
     {
-      id: 'actions',
-      header: 'Actions',
+      id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const project = row.original;

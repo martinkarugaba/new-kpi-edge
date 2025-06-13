@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
+import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +9,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
-import { deleteCity } from '../../actions/cities';
-import { toast } from 'sonner';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { deleteCity } from "../../actions/cities";
+import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type City = {
   id: string;
@@ -34,13 +34,13 @@ export type City = {
 
 export const columns: ColumnDef<City>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -60,31 +60,31 @@ export const columns: ColumnDef<City>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: 'code',
-    header: 'Code',
+    accessorKey: "code",
+    header: "Code",
   },
   {
-    accessorKey: 'district_name',
-    header: 'District',
+    accessorKey: "district_name",
+    header: "District",
   },
   {
-    accessorKey: 'county_name',
-    header: 'County',
+    accessorKey: "county_name",
+    header: "County",
   },
   {
-    accessorKey: 'subcounty_name',
-    header: 'Sub County',
+    accessorKey: "subcounty_name",
+    header: "Sub County",
   },
   {
-    accessorKey: 'municipality_name',
-    header: 'Municipality',
+    accessorKey: "municipality_name",
+    header: "Municipality",
   },
   {
-    id: 'actions',
+    id: "actions",
     cell: ({ row }) => {
       const city = row.original;
 
@@ -101,7 +101,7 @@ export const columns: ColumnDef<City>[] = [
             <DropdownMenuItem
               onClick={() => {
                 // Open edit dialog with city data
-                const event = new CustomEvent('editCity', {
+                const event = new CustomEvent("editCity", {
                   detail: city,
                 });
                 window.dispatchEvent(event);
@@ -116,13 +116,13 @@ export const columns: ColumnDef<City>[] = [
                 try {
                   const result = await deleteCity(city.id);
                   if (result.success) {
-                    toast.success('City deleted successfully');
+                    toast.success("City deleted successfully");
                   } else {
-                    toast.error('Failed to delete city');
+                    toast.error("Failed to delete city");
                   }
                 } catch (error) {
-                  console.error('Error deleting city:', error);
-                  toast.error('Failed to delete city');
+                  console.error("Error deleting city:", error);
+                  toast.error("Failed to delete city");
                 }
               }}
               className="text-red-600"

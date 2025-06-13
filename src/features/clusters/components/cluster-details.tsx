@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ClusterMembersTab } from './cluster-members-tab';
-import { ClusterUsersTab } from './cluster-users-tab';
+} from "@/components/ui/card";
+import { ClusterMembersTab } from "./cluster-members-tab";
+import { ClusterUsersTab } from "./cluster-users-tab";
 
 interface ClusterDetailsProps {
   cluster: {
@@ -26,7 +26,7 @@ interface ClusterDetailsProps {
 // Export the component
 export function ClusterDetails({ cluster }: ClusterDetailsProps) {
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6 py-6">
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -43,31 +43,31 @@ export function ClusterDetails({ cluster }: ClusterDetailsProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">
+                  <h3 className="text-muted-foreground text-sm font-medium">
                     Name
                   </h3>
                   <p className="text-base">{cluster.name}</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">
+                  <h3 className="text-muted-foreground text-sm font-medium">
                     Country
                   </h3>
                   <p className="text-base">{cluster.country}</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">
+                  <h3 className="text-muted-foreground text-sm font-medium">
                     Districts
                   </h3>
                   <p className="text-base">
                     {cluster.districts && cluster.districts.length > 0
-                      ? cluster.districts.join(', ')
-                      : 'No districts specified'}
+                      ? cluster.districts.join(", ")
+                      : "No districts specified"}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">
+                  <h3 className="text-muted-foreground text-sm font-medium">
                     Created
                   </h3>
                   <p className="text-base">
@@ -79,7 +79,7 @@ export function ClusterDetails({ cluster }: ClusterDetailsProps) {
               </div>
               {cluster.about && (
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">
+                  <h3 className="text-muted-foreground text-sm font-medium">
                     About
                   </h3>
                   <p className="text-base">{cluster.about}</p>

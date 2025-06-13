@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { Organization } from '@/features/organizations/types';
-import { Cluster } from '@/features/clusters/types';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { deleteOrganizations } from '@/features/organizations/actions/organizations';
-import { CreateOrganizationDialog } from '../create-organization-dialog';
-import { TableFilters } from './TableFilters';
-import { getOrganizationTableColumns } from './table-columns';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Organization } from "@/features/organizations/types";
+import { Cluster } from "@/features/clusters/types";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { deleteOrganizations } from "@/features/organizations/actions/organizations";
+import { CreateOrganizationDialog } from "../create-organization-dialog";
+import { TableFilters } from "./TableFilters";
+import { getOrganizationTableColumns } from "./table-columns";
 
 interface OrganizationsTableProps {
   organizations: Organization[];
@@ -47,14 +47,14 @@ export function OrganizationsTable({
     try {
       const result = await deleteOrganizations(selectedRows.map(row => row.id));
       if (result.success) {
-        toast.success('Organizations deleted successfully');
+        toast.success("Organizations deleted successfully");
         setSelectedRows([]);
         router.refresh();
       } else {
-        toast.error(result.error || 'Failed to delete organizations');
+        toast.error(result.error || "Failed to delete organizations");
       }
     } catch {
-      toast.error('Failed to delete organizations');
+      toast.error("Failed to delete organizations");
     }
   };
 

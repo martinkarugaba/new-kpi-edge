@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import * as React from "react";
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { deleteCluster } from '../actions/clusters';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { CreateClusterDialog } from './create-cluster-dialog';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
+} from "@/components/ui/dropdown-menu";
+import { deleteCluster } from "../actions/clusters";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { CreateClusterDialog } from "./create-cluster-dialog";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
 
 export type Cluster = {
   id: string;
@@ -29,13 +29,13 @@ export type Cluster = {
 
 const columns: ColumnDef<Cluster>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -55,24 +55,24 @@ const columns: ColumnDef<Cluster>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: 'country',
-    header: 'Country',
+    accessorKey: "country",
+    header: "Country",
   },
   {
-    accessorKey: 'districts',
-    header: 'Districts',
+    accessorKey: "districts",
+    header: "Districts",
     cell: ({ row }) => {
-      const districts = row.getValue('districts') as string[];
-      return districts.join(', ');
+      const districts = row.getValue("districts") as string[];
+      return districts.join(", ");
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const cluster = row.original;
       return <ClusterActions cluster={cluster} />;
@@ -87,10 +87,10 @@ function ClusterActions({ cluster }: { cluster: Cluster }) {
     try {
       const result = await deleteCluster(cluster.id);
       if (!result.success) throw new Error(result.error);
-      toast.success('Cluster deleted successfully');
+      toast.success("Cluster deleted successfully");
       router.refresh();
     } catch {
-      toast.error('Failed to delete cluster');
+      toast.error("Failed to delete cluster");
     }
   }
 

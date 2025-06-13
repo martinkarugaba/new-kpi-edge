@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
-import { ClusterForm } from './cluster-form';
-import { Plus } from 'lucide-react';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
+import { ClusterForm } from "./cluster-form";
+import { Plus } from "lucide-react";
 
 type CreateClusterDialogProps = {
   children?: React.ReactNode;

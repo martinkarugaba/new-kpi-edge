@@ -1,25 +1,25 @@
-import { userRole } from './db/schema';
+import { userRole } from "./db/schema";
 
 type Role = (typeof userRole.enumValues)[number];
 
 // Define the role hierarchy
 const roleHierarchy: Record<Role, Role[]> = {
   super_admin: [
-    'super_admin',
-    'cluster_manager',
-    'organization_admin',
-    'organization_member',
-    'user',
+    "super_admin",
+    "cluster_manager",
+    "organization_admin",
+    "organization_member",
+    "user",
   ],
   cluster_manager: [
-    'cluster_manager',
-    'organization_admin',
-    'organization_member',
-    'user',
+    "cluster_manager",
+    "organization_admin",
+    "organization_member",
+    "user",
   ],
-  organization_admin: ['organization_admin', 'organization_member', 'user'],
-  organization_member: ['organization_member', 'user'],
-  user: ['user'],
+  organization_admin: ["organization_admin", "organization_member", "user"],
+  organization_member: ["organization_member", "user"],
+  user: ["user"],
 };
 
 // Check if a user has a specific role

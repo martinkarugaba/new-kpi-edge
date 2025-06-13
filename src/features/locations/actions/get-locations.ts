@@ -1,15 +1,15 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
+import { db } from "@/lib/db";
 import {
   countries,
   districts,
   subCounties,
   parishes,
   villages,
-} from '@/lib/db/schema';
-import { sql } from 'drizzle-orm';
-import { LocationData } from '../components/columns';
+} from "@/lib/db/schema";
+import { sql } from "drizzle-orm";
+import { LocationData } from "../components/columns";
 
 export async function getLocations() {
   try {
@@ -85,7 +85,7 @@ export async function getLocations() {
       id: String(row.id),
       name: String(row.name),
       code: String(row.code),
-      type: String(row.type) as LocationData['type'],
+      type: String(row.type) as LocationData["type"],
       parentName: row.parent_name ? String(row.parent_name) : undefined,
       created_at: row.created_at
         ? new Date(String(row.created_at))
@@ -97,7 +97,7 @@ export async function getLocations() {
 
     return { success: true, data: locations };
   } catch (error) {
-    console.error('Error fetching locations:', error);
-    return { success: false, error: 'Failed to fetch locations' };
+    console.error("Error fetching locations:", error);
+    return { success: false, error: "Failed to fetch locations" };
   }
 }

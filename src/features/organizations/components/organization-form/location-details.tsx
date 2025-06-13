@@ -1,29 +1,29 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
-import { UseFormReturn } from 'react-hook-form';
-import { OrganizationFormValues } from './form-context/types';
-import { ICity, ICountry, IState } from 'country-state-city';
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown, X } from "lucide-react";
+import { UseFormReturn } from "react-hook-form";
+import { OrganizationFormValues } from "./form-context/types";
+import { ICity, ICountry, IState } from "country-state-city";
 
 interface LocationDetailsProps {
   form: UseFormReturn<OrganizationFormValues>;
@@ -74,11 +74,11 @@ export function LocationDetails({
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        'w-full justify-between',
-                        !field.value && 'text-muted-foreground'
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value?.[0] || 'Select a country'}
+                      {field.value?.[0] || "Select a country"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -110,7 +110,7 @@ export function LocationDetails({
 
         {/* District and Sub-counties Selection */}
         {currentCountry && (
-          <div className="space-y-4 animate-in slide-in-from-top-2 duration-300">
+          <div className="animate-in slide-in-from-top-2 space-y-4 duration-300">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-medium">
                 Selected Country: {currentCountry.name}
@@ -139,8 +139,8 @@ export function LocationDetails({
                             variant="outline"
                             role="combobox"
                             className={cn(
-                              'w-full justify-between',
-                              !field.value && 'text-muted-foreground'
+                              "w-full justify-between",
+                              !field.value && "text-muted-foreground"
                             )}
                           >
                             Select a district
@@ -176,7 +176,7 @@ export function LocationDetails({
                 )}
               />
             ) : (
-              <div className="space-y-4 animate-in slide-in-from-top-2 duration-300">
+              <div className="animate-in slide-in-from-top-2 space-y-4 duration-300">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium">
                     Current District: {currentDistrict.name}
@@ -204,8 +204,8 @@ export function LocationDetails({
                               variant="outline"
                               role="combobox"
                               className={cn(
-                                'w-full justify-between',
-                                !field.value && 'text-muted-foreground'
+                                "w-full justify-between",
+                                !field.value && "text-muted-foreground"
                               )}
                             >
                               Select sub-counties
@@ -228,14 +228,14 @@ export function LocationDetails({
                                 >
                                   <Check
                                     className={cn(
-                                      'mr-2 h-4 w-4',
+                                      "mr-2 h-4 w-4",
                                       (
                                         districtSubCounties[
                                           currentDistrict.code
                                         ] || []
                                       ).includes(subCounty.name)
-                                        ? 'opacity-100'
-                                        : 'opacity-0'
+                                        ? "opacity-100"
+                                        : "opacity-0"
                                     )}
                                   />
                                   {subCounty.name}
@@ -246,7 +246,7 @@ export function LocationDetails({
                         </PopoverContent>
                       </Popover>
                       <div className="mt-2">
-                        <h5 className="text-sm font-medium mb-2">
+                        <h5 className="mb-2 text-sm font-medium">
                           Selected Sub-Counties:
                         </h5>
                         <div className="flex flex-wrap gap-2">
@@ -256,7 +256,7 @@ export function LocationDetails({
                             <Badge
                               key={subCountyName}
                               variant="secondary"
-                              className="cursor-pointer animate-in fade-in-0 duration-300"
+                              className="animate-in fade-in-0 cursor-pointer duration-300"
                               onClick={() => {
                                 const updatedSubCounties = districtSubCounties[
                                   currentDistrict.code
@@ -266,13 +266,13 @@ export function LocationDetails({
                                   [currentDistrict.code]: updatedSubCounties,
                                 });
                                 const currentValues =
-                                  form.getValues('operation_sub_counties') ||
+                                  form.getValues("operation_sub_counties") ||
                                   [];
                                 const allSubCounties = currentValues.filter(
                                   (sc: string) => sc !== subCountyName
                                 );
                                 form.setValue(
-                                  'operation_sub_counties',
+                                  "operation_sub_counties",
                                   allSubCounties
                                 );
                               }}
@@ -293,15 +293,15 @@ export function LocationDetails({
         )}
 
         {/* Summary of selected locations */}
-        {(form.getValues('country')?.length > 0 ||
-          form.getValues('district')?.length > 0) && (
-          <div className="mt-4 p-4 border rounded-lg animate-in fade-in-50 duration-300">
-            <h4 className="text-sm font-medium mb-2">Selected Locations:</h4>
-            {form.getValues('country')?.map(countryName => (
+        {(form.getValues("country")?.length > 0 ||
+          form.getValues("district")?.length > 0) && (
+          <div className="animate-in fade-in-50 mt-4 rounded-lg border p-4 duration-300">
+            <h4 className="mb-2 text-sm font-medium">Selected Locations:</h4>
+            {form.getValues("country")?.map(countryName => (
               <div key={countryName} className="mb-4">
-                <h5 className="font-medium text-sm">{countryName}</h5>
+                <h5 className="text-sm font-medium">{countryName}</h5>
                 <div className="ml-4">
-                  {form.getValues('district')?.map(districtName => (
+                  {form.getValues("district")?.map(districtName => (
                     <div key={districtName} className="mt-2">
                       <span className="text-sm">{districtName}</span>
                       <div className="ml-4 flex flex-wrap gap-1">

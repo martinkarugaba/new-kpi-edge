@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { type Project } from '@/features/projects/types';
+import { type Project } from "@/features/projects/types";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface TableFiltersProps {
   organizations: { id: string; name: string }[];
@@ -41,9 +41,9 @@ export function ParticipantTableFilters({
   setFilters,
 }: TableFiltersProps) {
   return (
-    <div className="space-y-2">
+    <div className="w-full space-y-4">
       <h2 className="text-lg font-semibold">Filters</h2>
-      <div className="flex justify-between items-center space-x-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
         {/* View Selector */}
         <Select defaultValue="all">
           <SelectTrigger>
@@ -58,11 +58,11 @@ export function ParticipantTableFilters({
 
         {/* Cluster filter */}
         <Select
-          value={filters.cluster || 'all'}
+          value={filters.cluster || "all"}
           onValueChange={value =>
             setFilters(prev => ({
               ...prev,
-              cluster: value === 'all' ? '' : value,
+              cluster: value === "all" ? "" : value,
             }))
           }
         >
@@ -81,11 +81,11 @@ export function ParticipantTableFilters({
 
         {/* Project filter */}
         <Select
-          value={filters.project || 'all'}
+          value={filters.project || "all"}
           onValueChange={value =>
             setFilters(prev => ({
               ...prev,
-              project: value === 'all' ? '' : value,
+              project: value === "all" ? "" : value,
             }))
           }
         >
@@ -104,11 +104,11 @@ export function ParticipantTableFilters({
 
         {/* District filter */}
         <Select
-          value={filters.district || 'all'}
+          value={filters.district || "all"}
           onValueChange={value =>
             setFilters(prev => ({
               ...prev,
-              district: value === 'all' ? '' : value,
+              district: value === "all" ? "" : value,
             }))
           }
         >
@@ -127,11 +127,11 @@ export function ParticipantTableFilters({
 
         {/* Gender filter */}
         <Select
-          value={filters.sex || 'all'}
+          value={filters.sex || "all"}
           onValueChange={value =>
             setFilters(prev => ({
               ...prev,
-              sex: value === 'all' ? '' : value,
+              sex: value === "all" ? "" : value,
             }))
           }
         >
