@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { columns } from '@/features/locations/components/data-table/cities-columns';
-import { AddCityDialog } from '@/features/locations/components/dialogs/add-city-dialog';
-import type { City } from '@/features/locations/components/data-table/cities-columns';
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { columns } from "@/features/locations/components/data-table/cities-columns";
+import { AddCityDialog } from "@/features/locations/components/dialogs/add-city-dialog";
+import type { City } from "@/features/locations/components/data-table/cities-columns";
 
 interface CitiesTableProps {
   data: City[];

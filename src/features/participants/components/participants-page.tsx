@@ -1,7 +1,7 @@
-import { getProjects } from '@/features/projects/actions/projects';
-import { ParticipantsClient } from './participants-client';
-import { getOrganizationId, getUserClusterId } from '@/features/auth/actions';
-import { getClusters } from '@/features/clusters/actions/clusters';
+import { getProjects } from "@/features/projects/actions/projects";
+import { ParticipantsClient } from "./participants-client";
+import { getOrganizationId, getUserClusterId } from "@/features/auth/actions";
+import { getClusters } from "@/features/clusters/actions/clusters";
 
 export default async function ParticipantsPage() {
   const organizationId = await getOrganizationId();
@@ -18,7 +18,7 @@ export default async function ParticipantsPage() {
   }
 
   if (!clusterId) {
-    throw new Error('No cluster assigned to user');
+    throw new Error("No cluster assigned to user");
   }
 
   return (

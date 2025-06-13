@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import * as React from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 
 interface DatePickerProps {
   date: Date | null;
@@ -30,8 +30,8 @@ export function DatePicker({
   return (
     <div
       className={cn(
-        'relative w-full',
-        disabled && 'opacity-50 cursor-not-allowed',
+        "relative w-full",
+        disabled && "cursor-not-allowed opacity-50",
         className
       )}
       onClick={() => !disabled && setOpen(true)}
@@ -42,14 +42,14 @@ export function DatePicker({
             <Button
               variant="outline"
               className={cn(
-                'w-full justify-start text-left font-normal h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black',
-                !date && 'text-muted-foreground'
+                "h-12 w-full justify-start rounded-lg border-gray-300 text-left text-base font-normal focus:border-black focus:ring-black",
+                !date && "text-muted-foreground"
               )}
               disabled={disabled}
               type="button"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, 'PPP') : <span>Pick a date</span>}
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
             </Button>
           </div>
         </PopoverTrigger>

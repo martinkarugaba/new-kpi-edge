@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,7 +8,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
+} from "@/components/ui/navigation-menu";
 
 export function MainNavigationMenu() {
   return (
@@ -25,12 +25,12 @@ export function MainNavigationMenu() {
               <NavigationMenuLink asChild>
                 <Link
                   href="#features"
-                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  className="hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
                 >
-                  <div className="text-sm font-medium leading-none">
+                  <div className="text-sm leading-none font-medium">
                     Features Overview
                   </div>
-                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                  <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
                     Discover all the powerful features of our KPI tracking
                     solution
                   </p>
@@ -39,12 +39,12 @@ export function MainNavigationMenu() {
               <NavigationMenuLink asChild>
                 <Link
                   href="#features"
-                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  className="hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
                 >
-                  <div className="text-sm font-medium leading-none">
+                  <div className="text-sm leading-none font-medium">
                     Dashboard & Analytics
                   </div>
-                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                  <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
                     Visualize and analyze your key performance indicators
                   </p>
                 </Link>
@@ -52,12 +52,12 @@ export function MainNavigationMenu() {
               <NavigationMenuLink asChild>
                 <Link
                   href="#features"
-                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  className="hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
                 >
-                  <div className="text-sm font-medium leading-none">
+                  <div className="text-sm leading-none font-medium">
                     Integrations & Reporting
                   </div>
-                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                  <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
                     Connect your data sources and generate insights
                   </p>
                 </Link>

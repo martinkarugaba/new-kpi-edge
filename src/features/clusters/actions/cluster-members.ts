@@ -1,8 +1,8 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { clusterMembers, organizations, clusters } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { clusterMembers, organizations, clusters } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 
 // Get organizations that are members of a specific cluster
 export async function getClusterOrganizations(clusterId: string) {
@@ -50,8 +50,8 @@ export async function getClusterOrganizations(clusterId: string) {
 
     return { success: true, data: formattedOrgs };
   } catch (error) {
-    console.error('Error fetching cluster organizations:', error);
-    return { success: false, error: 'Failed to fetch cluster organizations' };
+    console.error("Error fetching cluster organizations:", error);
+    return { success: false, error: "Failed to fetch cluster organizations" };
   }
 }
 
@@ -70,10 +70,10 @@ export async function isOrganizationInCluster(
 
     return { success: true, data: !!member };
   } catch (error) {
-    console.error('Error checking organization cluster membership:', error);
+    console.error("Error checking organization cluster membership:", error);
     return {
       success: false,
-      error: 'Failed to check organization cluster membership',
+      error: "Failed to check organization cluster membership",
     };
   }
 }
@@ -107,8 +107,8 @@ export async function addOrganizationToCluster(
 
     return { success: true, data: newMember };
   } catch (error) {
-    console.error('Error adding organization to cluster:', error);
-    return { success: false, error: 'Failed to add organization to cluster' };
+    console.error("Error adding organization to cluster:", error);
+    return { success: false, error: "Failed to add organization to cluster" };
   }
 }
 
@@ -129,10 +129,10 @@ export async function removeOrganizationFromCluster(
 
     return { success: true };
   } catch (error) {
-    console.error('Error removing organization from cluster:', error);
+    console.error("Error removing organization from cluster:", error);
     return {
       success: false,
-      error: 'Failed to remove organization from cluster',
+      error: "Failed to remove organization from cluster",
     };
   }
 }

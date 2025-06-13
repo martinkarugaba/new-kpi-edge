@@ -1,21 +1,21 @@
-import Link from 'next/link';
-import { Container } from '@/components/ui/container';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="py-20 relative overflow-hidden">
+    <section className="relative overflow-hidden py-20">
       <Container>
-        <div className="relative z-10 bg-primary/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm border border-primary/20">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">
+        <div className="bg-primary/10 border-primary/20 relative z-10 rounded-3xl border p-8 backdrop-blur-sm md:p-12">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight">
               Ready to transform how you track performance?
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-xl">
               Join thousands of organizations using KPI Tracker to make better
               decisions with their data.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
                 <Link href="/signup">Get Started for Free</Link>
               </Button>

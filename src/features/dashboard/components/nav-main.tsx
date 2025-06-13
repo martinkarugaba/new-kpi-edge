@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { type Icon } from '@tabler/icons-react';
+import { type Icon } from "@tabler/icons-react";
 
 import {
   SidebarGroup,
@@ -8,9 +8,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+} from "@/components/ui/sidebar";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function NavMain({
   items,

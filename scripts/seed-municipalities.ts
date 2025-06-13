@@ -1,16 +1,16 @@
-import { db } from '../src/lib/db';
-import { sql } from 'drizzle-orm';
+import { db } from "../src/lib/db";
+import { sql } from "drizzle-orm";
 import {
   districts,
   municipalities as dbMunicipalities,
   countries,
   counties,
   subCounties,
-} from '../src/lib/db/schema';
-import municipalitiesData from './municipalities.json';
-import * as dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
+} from "../src/lib/db/schema";
+import municipalitiesData from "./municipalities.json";
+import * as dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
 
 // Define interfaces
 interface Municipality {
@@ -50,28 +50,28 @@ interface CountyRecord {
 }
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 // Allow passing database URL via command line argument
 const args = process.argv.slice(2);
-const dbUrlArg = args.find(arg => arg.startsWith('--database-url='));
+const dbUrlArg = args.find(arg => arg.startsWith("--database-url="));
 if (dbUrlArg) {
-  const dbUrl = dbUrlArg.split('=')[1];
+  const dbUrl = dbUrlArg.split("=")[1];
   process.env.DATABASE_URL = dbUrl;
-  console.log('Using database URL from command line argument');
+  console.log("Using database URL from command line argument");
 }
 
 // Load municipalities data from JSON file
 // If using a custom municipalities file, it can be specified via --data=path
-const dataFileArg = args.find(arg => arg.startsWith('--data='));
+const dataFileArg = args.find(arg => arg.startsWith("--data="));
 let ugandaMunicipalities: Municipality[] = [];
 
 try {
   if (dataFileArg) {
-    const dataFilePath = dataFileArg.split('=')[1];
+    const dataFilePath = dataFileArg.split("=")[1];
     const jsonPath = path.resolve(process.cwd(), dataFilePath);
     console.log(`Loading municipalities data from ${jsonPath}`);
-    const fileContent = fs.readFileSync(jsonPath, 'utf8');
+    const fileContent = fs.readFileSync(jsonPath, "utf8");
     ugandaMunicipalities = JSON.parse(fileContent);
   } else {
     // Use the default municipalities.json in the scripts directory
@@ -79,7 +79,7 @@ try {
   }
   console.log(`Loaded ${ugandaMunicipalities.length} municipalities`);
 } catch (error) {
-  console.error('Error loading municipalities data:', error);
+  console.error("Error loading municipalities data:", error);
   process.exit(1);
 }
 
@@ -87,172 +87,172 @@ try {
 if (ugandaMunicipalities.length === 0) {
   ugandaMunicipalities = [
     {
-      name: 'Busia',
-      district: 'Busia',
-      county: 'Samia Bugwe',
-      subcounty: 'Busia',
+      name: "Busia",
+      district: "Busia",
+      county: "Samia Bugwe",
+      subcounty: "Busia",
     },
     {
-      name: 'Iganga',
-      district: 'Iganga',
-      county: 'Kigulu',
-      subcounty: 'Iganga',
+      name: "Iganga",
+      district: "Iganga",
+      county: "Kigulu",
+      subcounty: "Iganga",
     },
     {
-      name: 'Soroti',
-      district: 'Soroti',
-      county: 'Soroti',
-      subcounty: 'Soroti',
+      name: "Soroti",
+      district: "Soroti",
+      county: "Soroti",
+      subcounty: "Soroti",
     },
     {
-      name: 'Tororo',
-      district: 'Tororo',
-      county: 'Tororo',
-      subcounty: 'Tororo',
+      name: "Tororo",
+      district: "Tororo",
+      county: "Tororo",
+      subcounty: "Tororo",
     },
     {
-      name: 'Mbale',
-      district: 'Mbale',
-      county: 'Bungokho',
-      subcounty: 'Industrial Division',
+      name: "Mbale",
+      district: "Mbale",
+      county: "Bungokho",
+      subcounty: "Industrial Division",
     },
-    { name: 'Kumi', district: 'Kumi', county: 'Kumi', subcounty: 'Kumi' },
+    { name: "Kumi", district: "Kumi", county: "Kumi", subcounty: "Kumi" },
 
     // Central Region
     {
-      name: 'Mukono',
-      district: 'Mukono',
-      county: 'Mukono',
-      subcounty: 'Mukono',
+      name: "Mukono",
+      district: "Mukono",
+      county: "Mukono",
+      subcounty: "Mukono",
     },
     {
-      name: 'Masaka',
-      district: 'Masaka',
-      county: 'Masaka',
-      subcounty: 'Masaka',
+      name: "Masaka",
+      district: "Masaka",
+      county: "Masaka",
+      subcounty: "Masaka",
     },
     {
-      name: 'Entebbe',
-      district: 'Wakiso',
-      county: 'Entebbe',
-      subcounty: 'Entebbe',
+      name: "Entebbe",
+      district: "Wakiso",
+      county: "Entebbe",
+      subcounty: "Entebbe",
     },
     {
-      name: 'Lugazi',
-      district: 'Buikwe',
-      county: 'Buikwe',
-      subcounty: 'Lugazi',
+      name: "Lugazi",
+      district: "Buikwe",
+      county: "Buikwe",
+      subcounty: "Lugazi",
     },
     {
-      name: 'Mityana',
-      district: 'Mityana',
-      county: 'Mityana',
-      subcounty: 'Mityana',
+      name: "Mityana",
+      district: "Mityana",
+      county: "Mityana",
+      subcounty: "Mityana",
     },
     {
-      name: 'Mubende',
-      district: 'Mubende',
-      county: 'Mubende',
-      subcounty: 'Mubende',
+      name: "Mubende",
+      district: "Mubende",
+      county: "Mubende",
+      subcounty: "Mubende",
     },
 
     // Western Region
     {
-      name: 'Fort Portal',
-      district: 'Kabarole',
-      county: 'Fort Portal',
-      subcounty: 'Fort Portal',
+      name: "Fort Portal",
+      district: "Kabarole",
+      county: "Fort Portal",
+      subcounty: "Fort Portal",
     },
-    { name: 'Hoima', district: 'Hoima', county: 'Hoima', subcounty: 'Hoima' },
+    { name: "Hoima", district: "Hoima", county: "Hoima", subcounty: "Hoima" },
     {
-      name: 'Kasese',
-      district: 'Kasese',
-      county: 'Kasese',
-      subcounty: 'Kasese',
-    },
-    {
-      name: 'Masindi',
-      district: 'Masindi',
-      county: 'Masindi',
-      subcounty: 'Masindi',
+      name: "Kasese",
+      district: "Kasese",
+      county: "Kasese",
+      subcounty: "Kasese",
     },
     {
-      name: 'Kabale',
-      district: 'Kabale',
-      county: 'Kabale',
-      subcounty: 'Kabale',
+      name: "Masindi",
+      district: "Masindi",
+      county: "Masindi",
+      subcounty: "Masindi",
     },
     {
-      name: 'Bushenyi-Ishaka',
-      district: 'Bushenyi',
-      county: 'Bushenyi',
-      subcounty: 'Ishaka',
+      name: "Kabale",
+      district: "Kabale",
+      county: "Kabale",
+      subcounty: "Kabale",
     },
     {
-      name: 'Ntungamo',
-      district: 'Ntungamo',
-      county: 'Ntungamo',
-      subcounty: 'Ntungamo',
+      name: "Bushenyi-Ishaka",
+      district: "Bushenyi",
+      county: "Bushenyi",
+      subcounty: "Ishaka",
     },
     {
-      name: 'Ibanda',
-      district: 'Ibanda',
-      county: 'Ibanda',
-      subcounty: 'Ibanda',
+      name: "Ntungamo",
+      district: "Ntungamo",
+      county: "Ntungamo",
+      subcounty: "Ntungamo",
+    },
+    {
+      name: "Ibanda",
+      district: "Ibanda",
+      county: "Ibanda",
+      subcounty: "Ibanda",
     },
 
     // Northern Region
-    { name: 'Gulu', district: 'Gulu', county: 'Gulu', subcounty: 'Gulu' },
-    { name: 'Lira', district: 'Lira', county: 'Lira', subcounty: 'Lira' },
-    { name: 'Arua', district: 'Arua', county: 'Arua', subcounty: 'Arua' },
+    { name: "Gulu", district: "Gulu", county: "Gulu", subcounty: "Gulu" },
+    { name: "Lira", district: "Lira", county: "Lira", subcounty: "Lira" },
+    { name: "Arua", district: "Arua", county: "Arua", subcounty: "Arua" },
     {
-      name: 'Kitgum',
-      district: 'Kitgum',
-      county: 'Kitgum',
-      subcounty: 'Kitgum',
+      name: "Kitgum",
+      district: "Kitgum",
+      county: "Kitgum",
+      subcounty: "Kitgum",
     },
     {
-      name: 'Adjumani',
-      district: 'Adjumani',
-      county: 'Adjumani',
-      subcounty: 'Adjumani',
+      name: "Adjumani",
+      district: "Adjumani",
+      county: "Adjumani",
+      subcounty: "Adjumani",
     },
     {
-      name: 'Moroto',
-      district: 'Moroto',
-      county: 'Moroto',
-      subcounty: 'Moroto',
+      name: "Moroto",
+      district: "Moroto",
+      county: "Moroto",
+      subcounty: "Moroto",
     },
   ];
 }
 
 function normalizeDistrictName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, '');
+  const base = name.toLowerCase().replace(/[^a-z]/g, "");
 
   // Create variations by removing common district suffixes/prefixes
   const variations = [
     base,
-    base.replace('district', ''),
-    base.replace('municipality', ''),
-    base.replace('city', ''),
-    base.replace('subcounty', ''),
-    base.replace('tc', ''),
-    base.replace('towncounty', ''),
+    base.replace("district", ""),
+    base.replace("municipality", ""),
+    base.replace("city", ""),
+    base.replace("subcounty", ""),
+    base.replace("tc", ""),
+    base.replace("towncounty", ""),
   ];
 
   // Special cases for district name variations
-  if (base.includes('kampala')) variations.push('kcca');
-  if (base.includes('fortportal')) variations.push('kabarole');
-  if (base.includes('fortportal')) variations.push('fortportalcity');
-  if (base.includes('arua')) variations.push('aruacity');
-  if (base.includes('gulu')) variations.push('gulucity');
-  if (base.includes('jinja')) variations.push('jinjacity');
-  if (base.includes('lira')) variations.push('liracity');
-  if (base.includes('masaka')) variations.push('masakacity');
-  if (base.includes('mbale')) variations.push('mbalecity');
-  if (base.includes('mbarara')) variations.push('mbararacity');
-  if (base.includes('soroti')) variations.push('soroticity');
+  if (base.includes("kampala")) variations.push("kcca");
+  if (base.includes("fortportal")) variations.push("kabarole");
+  if (base.includes("fortportal")) variations.push("fortportalcity");
+  if (base.includes("arua")) variations.push("aruacity");
+  if (base.includes("gulu")) variations.push("gulucity");
+  if (base.includes("jinja")) variations.push("jinjacity");
+  if (base.includes("lira")) variations.push("liracity");
+  if (base.includes("masaka")) variations.push("masakacity");
+  if (base.includes("mbale")) variations.push("mbalecity");
+  if (base.includes("mbarara")) variations.push("mbararacity");
+  if (base.includes("soroti")) variations.push("soroticity");
 
   // Filter out duplicates and empty strings
   return [...new Set(variations.filter(v => v))];
@@ -322,7 +322,7 @@ async function createMissingSubcounty(
 
 async function seedMunicipalities() {
   try {
-    console.log('Starting municipalities seeding...');
+    console.log("Starting municipalities seeding...");
 
     // First, get the Uganda country ID
     const [uganda] = await db
@@ -332,11 +332,11 @@ async function seedMunicipalities() {
 
     if (!uganda) {
       throw new Error(
-        'Uganda country record not found. Please seed countries first.'
+        "Uganda country record not found. Please seed countries first."
       );
     }
 
-    console.log('Found Uganda country record');
+    console.log("Found Uganda country record");
 
     // Get all districts
     const districtRecords = await db.select().from(districts);
@@ -384,28 +384,28 @@ async function seedMunicipalities() {
     console.log(`Found ${subcountyRecords.length} subcounty records`);
 
     // First create missing subcounties
-    console.log('Creating missing subcounties...');
+    console.log("Creating missing subcounties...");
     const missingSubcounties = [
-      { name: 'Gulu', district: 'Gulu', county: 'Gulu' },
-      { name: 'Kitgum', district: 'Kitgum', county: 'Kitgum' },
-      { name: 'Arua', district: 'Arua', county: 'Arua' },
-      { name: 'Moroto', district: 'Moroto', county: 'Moroto' },
-      { name: 'Jinja', district: 'Jinja', county: 'Jinja' },
-      { name: 'Kapchorwa', district: 'Kapchorwa', county: 'Kapchorwa' },
-      { name: 'Kamuli', district: 'Kamuli', county: 'Bugabula' },
-      { name: 'Nakasongola', district: 'Nakasongola', county: 'Nakasongola' },
-      { name: 'Rakai', district: 'Rakai', county: 'Rakai' },
-      { name: 'Kiboga', district: 'Kiboga', county: 'Kiboga' },
-      { name: 'Rukungiri', district: 'Rukungiri', county: 'Rukungiri' },
-      { name: 'Kanungu', district: 'Kanungu', county: 'Kanungu' },
-      { name: 'Kyenjojo', district: 'Kyenjojo', county: 'Kyenjojo' },
-      { name: 'Kibaale', district: 'Kibaale', county: 'Kibaale' },
-      { name: 'Kisoro', district: 'Kisoro', county: 'Kisoro' },
-      { name: 'Adjumani', district: 'Adjumani', county: 'Adjumani' },
-      { name: 'Bundibugyo', district: 'Bundibugyo', county: 'Bundibugyo' },
-      { name: 'Amuria', district: 'Amuria', county: 'Amuria' },
-      { name: 'Yumbe', district: 'Yumbe', county: 'Yumbe' },
-      { name: 'Industrial Division', district: 'Mbale', county: 'Bungokho' },
+      { name: "Gulu", district: "Gulu", county: "Gulu" },
+      { name: "Kitgum", district: "Kitgum", county: "Kitgum" },
+      { name: "Arua", district: "Arua", county: "Arua" },
+      { name: "Moroto", district: "Moroto", county: "Moroto" },
+      { name: "Jinja", district: "Jinja", county: "Jinja" },
+      { name: "Kapchorwa", district: "Kapchorwa", county: "Kapchorwa" },
+      { name: "Kamuli", district: "Kamuli", county: "Bugabula" },
+      { name: "Nakasongola", district: "Nakasongola", county: "Nakasongola" },
+      { name: "Rakai", district: "Rakai", county: "Rakai" },
+      { name: "Kiboga", district: "Kiboga", county: "Kiboga" },
+      { name: "Rukungiri", district: "Rukungiri", county: "Rukungiri" },
+      { name: "Kanungu", district: "Kanungu", county: "Kanungu" },
+      { name: "Kyenjojo", district: "Kyenjojo", county: "Kyenjojo" },
+      { name: "Kibaale", district: "Kibaale", county: "Kibaale" },
+      { name: "Kisoro", district: "Kisoro", county: "Kisoro" },
+      { name: "Adjumani", district: "Adjumani", county: "Adjumani" },
+      { name: "Bundibugyo", district: "Bundibugyo", county: "Bundibugyo" },
+      { name: "Amuria", district: "Amuria", county: "Amuria" },
+      { name: "Yumbe", district: "Yumbe", county: "Yumbe" },
+      { name: "Industrial Division", district: "Mbale", county: "Bungokho" },
     ];
 
     for (const subcounty of missingSubcounties) {
@@ -495,7 +495,7 @@ async function seedMunicipalities() {
 
       // Generate a unique code for the municipality
       // Clean name for code generation (remove spaces and special characters)
-      const cleanedName = municipality.name.replace(/[^a-zA-Z]/g, '');
+      const cleanedName = municipality.name.replace(/[^a-zA-Z]/g, "");
 
       // Get first, last, and middle letter for the code
       const firstLetter = cleanedName[0];
@@ -538,12 +538,12 @@ async function seedMunicipalities() {
     );
 
     if (notFoundItems.length > 0) {
-      console.log('Some items could not be matched. Details:');
+      console.log("Some items could not be matched. Details:");
       notFoundItems.forEach(item => console.log(`- ${item}`));
     }
 
     if (municipalitiesData.length === 0) {
-      console.log('No municipalities data to insert. Aborting.');
+      console.log("No municipalities data to insert. Aborting.");
       return;
     }
 
@@ -564,9 +564,9 @@ async function seedMunicipalities() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log('Municipalities seeding completed successfully');
+    console.log("Municipalities seeding completed successfully");
   } catch (error) {
-    console.error('Error seeding municipalities:', error);
+    console.error("Error seeding municipalities:", error);
     throw error;
   }
 }
@@ -574,10 +574,10 @@ async function seedMunicipalities() {
 // Run the seeding
 seedMunicipalities()
   .then(() => {
-    console.log('✅ Municipalities seeding completed');
+    console.log("✅ Municipalities seeding completed");
     process.exit(0);
   })
   .catch(error => {
-    console.error('❌ Municipalities seeding failed:', error);
+    console.error("❌ Municipalities seeding failed:", error);
     process.exit(1);
   });

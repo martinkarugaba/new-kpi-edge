@@ -1,10 +1,10 @@
-import { SiteHeader } from '@/features/dashboard/components/site-header';
-import { ParticipantsClient } from '@/features/participants/components/participants-client';
-import { Suspense } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { getProjects } from '@/features/projects/actions/projects';
-import { getOrganizationId, getUserClusterId } from '@/features/auth/actions';
-import { getClusters } from '@/features/clusters/actions/clusters';
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { ParticipantsClient } from "@/features/participants/components/participants-client";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProjects } from "@/features/projects/actions/projects";
+import { getOrganizationId, getUserClusterId } from "@/features/auth/actions";
+import { getClusters } from "@/features/clusters/actions/clusters";
 
 function ParticipantsTableSkeleton() {
   return (
@@ -22,7 +22,13 @@ function ParticipantsTableSkeleton() {
   );
 }
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  // Search params will be passed directly to the ParticipantsClient component
+
   const organizationId = await getOrganizationId();
   const clusterId = await getUserClusterId();
   const projectsResult = await getProjects(organizationId ?? undefined);
@@ -52,13 +58,24 @@ export default async function Page() {
     <>
       <SiteHeader title="Participants" />
       <div className="flex flex-1 flex-col">
-        <div className="@container/main flex flex-1 flex-col gap-2">
-          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className="@container/main flex flex-1 flex-col gap-2 p-4 @xl/main:px-6">
+          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-0">
             <Suspense fallback={<ParticipantsTableSkeleton />}>
               <ParticipantsClient
                 clusterId={clusterId}
                 projects={projectsResult.data ?? []}
                 clusters={clustersResult.data ?? []}
+                searchParams={{
+                  page: searchParams["page"] ? Number(searchParams["page"]) : 1,
+                  per_page: searchParams["per_page"]
+                    ? Number(searchParams["per_page"])
+                    : 10,
+                  search: searchParams["search"] as string,
+                  project: searchParams["project"] as string,
+                  district: searchParams["district"] as string,
+                  sex: searchParams["sex"] as string,
+                  isPWD: searchParams["isPWD"] as string,
+                }}
               />
             </Suspense>
           </div>

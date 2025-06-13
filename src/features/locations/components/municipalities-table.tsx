@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { municipalities } from '@/lib/db/schema';
-import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { ReusableDataTable } from '@/components/ui/reusable-data-table';
-import { deleteMunicipality } from '@/features/locations/actions/municipalities';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { getMunicipalityTableColumns } from './municipalities-table-columns';
-import type { InferSelectModel } from 'drizzle-orm';
+import { municipalities } from "@/lib/db/schema";
+import { Button } from "@/components/ui/button";
+import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { ReusableDataTable } from "@/components/ui/reusable-data-table";
+import { deleteMunicipality } from "@/features/locations/actions/municipalities";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { getMunicipalityTableColumns } from "./municipalities-table-columns";
+import type { InferSelectModel } from "drizzle-orm";
 
 type Municipality = InferSelectModel<typeof municipalities> & {
   country: { name: string };
@@ -33,11 +33,11 @@ export function MunicipalitiesTable({
 
     try {
       await Promise.all(selectedRows.map(row => deleteMunicipality(row.id)));
-      toast.success('Municipalities deleted successfully');
+      toast.success("Municipalities deleted successfully");
       setSelectedRows([]);
       router.refresh();
     } catch {
-      toast.error('Failed to delete municipalities');
+      toast.error("Failed to delete municipalities");
     }
   };
 

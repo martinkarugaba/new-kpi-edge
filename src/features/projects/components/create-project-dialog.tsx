@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { ProjectForm } from './project-form';
-import { useState } from 'react';
-import { Plus } from 'lucide-react';
-import { Modal } from '@/components/ui/modal';
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { ProjectForm } from "./project-form";
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Modal } from "@/components/ui/modal";
 
 type CreateProjectDialogProps = {
   children?: React.ReactNode;
@@ -30,7 +30,7 @@ export function CreateProjectDialog({ children }: CreateProjectDialogProps) {
         onOpenChange={setOpen}
         title="Create Project"
         description="Add a new project to manage organizations and KPIs."
-        className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto"
+        className="max-h-[80vh] overflow-y-auto sm:max-w-[700px]"
       >
         <ProjectForm
           onSuccess={() => setOpen(false)}

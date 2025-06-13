@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { Project } from '../types';
-import { deleteProject } from '../actions/projects';
-import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
-import { Modal } from '@/components/ui/modal';
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Project } from "../types";
+import { deleteProject } from "../actions/projects";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { Modal } from "@/components/ui/modal";
 
 type DeleteProjectDialogProps = {
   project: Project;
@@ -35,12 +35,12 @@ export function DeleteProjectDialog({
     try {
       const result = await deleteProject(project.id);
       if (!result.success) throw new Error(result.error);
-      toast.success('Project deleted successfully');
+      toast.success("Project deleted successfully");
       router.refresh();
       onDelete?.();
       setOpen(false);
     } catch (error) {
-      toast.error('Something went wrong. Please try again.');
+      toast.error("Something went wrong. Please try again.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -68,7 +68,7 @@ export function DeleteProjectDialog({
             Deleting...
           </>
         ) : (
-          'Delete'
+          "Delete"
         )}
       </Button>
     </>
