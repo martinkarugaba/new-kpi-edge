@@ -107,7 +107,7 @@ export function ParticipantContainer({
               )}
             </Button>
           </div>
-
+          
           {metricsVisible && (
             <div className="animate-in slide-in-from-top duration-300">
               <ParticipantMetrics
@@ -126,13 +126,13 @@ export function ParticipantContainer({
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
           >
-            <Users className="text-primary h-3.5 w-3.5" />
+            <Users className="h-3.5 w-3.5 text-primary" />
             <span>
               Total:{" "}
               <strong>{isLoadingMetrics ? "..." : totalParticipants}</strong>
             </span>
           </Badge>
-
+          
           <Badge
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
@@ -147,7 +147,7 @@ export function ParticipantContainer({
               </strong>
             </span>
           </Badge>
-
+          
           <Badge
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
@@ -162,7 +162,7 @@ export function ParticipantContainer({
               </strong>
             </span>
           </Badge>
-
+          
           <Badge
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
@@ -171,8 +171,8 @@ export function ParticipantContainer({
             <span>
               PWD:{" "}
               <strong>
-                {isLoadingMetrics
-                  ? "..."
+                {isLoadingMetrics 
+                  ? "..." 
                   : `${formatPercent(disabledPercent)}%`}
               </strong>
             </span>

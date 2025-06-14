@@ -136,8 +136,7 @@ export function ParticipantContainer({
           <Badge
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
-          >
-            <UserCheck className="h-3.5 w-3.5 text-pink-400" />
+          >            <UserCheck className="h-3.5 w-3.5 text-pink-400" />
             <span>
               Female:{" "}
               <strong>
@@ -147,7 +146,7 @@ export function ParticipantContainer({
               </strong>
             </span>
           </Badge>
-
+          
           <Badge
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
@@ -162,7 +161,7 @@ export function ParticipantContainer({
               </strong>
             </span>
           </Badge>
-
+          
           <Badge
             variant="outline"
             className="flex items-center gap-1.5 px-3 py-1"
