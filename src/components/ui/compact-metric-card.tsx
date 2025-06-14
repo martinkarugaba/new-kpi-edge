@@ -5,7 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export interface CompactMetricCardProps {
   title: string;
-  value: string | number;
+  value?: string | number;
+  count?: number;
+  percent?: number;
   subtitle?: string;
   trend?: {
     value: number;
@@ -20,6 +22,8 @@ export interface CompactMetricCardProps {
 export function CompactMetricCard({
   title,
   value,
+  count,
+  percent,
   subtitle,
   trend,
   icon,
@@ -47,14 +51,29 @@ export function CompactMetricCard({
           {isLoading ? (
             <Skeleton className="h-7 w-20" />
           ) : (
-            <div className="flex items-center gap-1.5">
-              <p className="text-2xl font-semibold tracking-tight tabular-nums">
-                {value}
-              </p>
-              {subtitle && (
-                <span className="text-muted-foreground text-sm">
-                  {subtitle}
-                </span>
+            <div className="flex flex-col">
+              {count !== undefined && percent !== undefined ? (
+                <>
+                  <div className="flex w-full items-baseline justify-between">
+                    <p className="text-2xl font-semibold tracking-tight tabular-nums">
+                      {count}
+                    </p>
+                    <span className="text-muted-foreground text-sm">
+                      {percent}%
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex w-full items-center justify-between">
+                  <p className="text-2xl font-semibold tracking-tight tabular-nums">
+                    {value}
+                  </p>
+                  {subtitle && (
+                    <span className="text-muted-foreground text-sm">
+                      {subtitle}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           )}

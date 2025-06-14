@@ -4,22 +4,22 @@ import { useState } from "react";
 import { type Participant } from "../../types/types";
 import { ParticipantsTable } from "../participants-table";
 import { CompactParticipantMetrics } from "../metrics/compact-participant-metrics";
+import { DetailedParticipantMetrics } from "../metrics/detailed-participant-metrics";
 import { useParticipantData } from "./participant-data-provider";
 import { useParticipantFormHandlers } from "./participant-form-handlers";
 import { extractClusterOrganizations } from "./participant-transformer";
 import { type ParticipantContainerProps } from "./types";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
-  ChevronDown,
-  ChevronUp,
-  Users,
-  UserCheck,
-  CircleUser,
-  Gauge,
-} from "lucide-react";
-import { useParticipantMetrics } from "../metrics/hooks/use-participant-metrics";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ChevronDown } from "lucide-react";
 
 export function ParticipantContainer({
   clusterId,
@@ -32,7 +32,6 @@ export function ParticipantContainer({
   const [isLoading, setIsLoading] = useState(false);
   const [editingParticipant, setEditingParticipant] =
     useState<Participant | null>(null);
-  const [metricsVisible, setMetricsVisible] = useState(false);
 
   // Get participant data and related state
   const {
@@ -73,128 +72,68 @@ export function ParticipantContainer({
   // Get organizations data
   const clusterOrganizations = extractClusterOrganizations(clusterId, clusters);
 
-  // Calculate key metrics for the contextual badges
-  const metrics = useParticipantMetrics(metricsData);
-  const {
-    totalParticipants,
-    totalFemales,
-    totalMales,
-    femalePercent,
-    malePercent,
-    disabledPercent,
-    formatPercent,
-  } = metrics;
+  // We no longer need to extract metrics here since CompactParticipantMetrics handles it
 
   return (
     <div className="container mx-auto max-w-7xl py-10">
       <div className="flex flex-col gap-4 md:gap-6">
-        {/* Collapsible Metrics Panel */}
+        {/* Compact Metrics Panel */}
         <div className="w-full">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-medium">Participant Overview</h3>
-            <Button
-              variant="ghost"
-              onClick={() => setMetricsVisible(!metricsVisible)}
-              className="flex items-center gap-2"
-            >
-              {metricsVisible ? (
-                <>
-                  Hide Details <ChevronUp className="h-4 w-4" />
-                </>
-              ) : (
-                <>
-                  Show Details <ChevronDown className="h-4 w-4" />
-                </>
-              )}
-            </Button>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-1.5"
+                >
+                  <ChevronDown className="h-3.5 w-3.5" />
+                  Show Detailed Metrics
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl">
+                <SheetHeader className="mb-6">
+                  <SheetTitle>Participant Metrics</SheetTitle>
+                  <SheetDescription>
+                    Detailed breakdown of participant demographics and
+                    statistics
+                  </SheetDescription>
+                  {toggleMetricsFilters && (
+                    <div className="mt-4 flex items-center justify-end">
+                      <div className="flex items-center gap-2">
+                        <label
+                          className="text-muted-foreground text-sm"
+                          htmlFor="filter-toggle"
+                        >
+                          Apply filters to metrics
+                        </label>
+                        <Switch
+                          id="filter-toggle"
+                          checked={applyFiltersToMetrics}
+                          onCheckedChange={toggleMetricsFilters}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </SheetHeader>
+                <div className="overflow-y-auto pr-1">
+                  <DetailedParticipantMetrics
+                    participants={metricsData}
+                    isLoading={isLoadingMetrics}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
-          {metricsVisible && (
-            <div className="animate-in slide-in-from-top duration-300">
-              <div className="mb-5">
-                <CompactParticipantMetrics
-                  participants={metricsData}
-                  isLoading={isLoadingMetrics}
-                />
-              </div>
-              {toggleMetricsFilters && (
-                <div className="mb-4 flex items-center justify-end">
-                  <div className="flex items-center gap-2">
-                    <label
-                      className="text-muted-foreground text-sm"
-                      htmlFor="filter-toggle"
-                    >
-                      Apply filters to metrics
-                    </label>
-                    <Switch
-                      id="filter-toggle"
-                      checked={applyFiltersToMetrics}
-                      onCheckedChange={toggleMetricsFilters}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Contextual Badges */}
-        <div className="mb-2 flex flex-wrap items-center gap-3">
-          <Badge
-            variant="outline"
-            className="flex items-center gap-1.5 px-3 py-1"
-          >
-            <Users className="text-primary h-3.5 w-3.5" />
-            <span>
-              Total:{" "}
-              <strong>{isLoadingMetrics ? "..." : totalParticipants}</strong>
-            </span>
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="flex items-center gap-1.5 px-3 py-1"
-          >
-            <UserCheck className="h-3.5 w-3.5 text-pink-400" />
-            <span>
-              Female:{" "}
-              <strong>
-                {isLoadingMetrics
-                  ? "..."
-                  : `${formatPercent(femalePercent)}% (${totalFemales})`}
-              </strong>
-            </span>
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="flex items-center gap-1.5 px-3 py-1"
-          >
-            <CircleUser className="h-3.5 w-3.5 text-blue-400" />
-            <span>
-              Male:{" "}
-              <strong>
-                {isLoadingMetrics
-                  ? "..."
-                  : `${formatPercent(malePercent)}% (${totalMales})`}
-              </strong>
-            </span>
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="flex items-center gap-1.5 px-3 py-1"
-          >
-            <Gauge className="h-3.5 w-3.5 text-purple-400" />
-            <span>
-              PWD:{" "}
-              <strong>
-                {isLoadingMetrics
-                  ? "..."
-                  : `${formatPercent(disabledPercent)}%`}
-              </strong>
-            </span>
-          </Badge>
+          <div className="mb-6">
+            <CompactParticipantMetrics
+              participants={metricsData}
+              isLoading={isLoadingMetrics}
+            />
+          </div>
         </div>
 
         <ParticipantsTable

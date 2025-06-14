@@ -21,6 +21,7 @@ export function CompactParticipantMetrics({
     totalMales,
     femalePercent,
     malePercent,
+    disabled,
     disabledPercent,
     formatPercent,
   } = metrics;
@@ -37,8 +38,8 @@ export function CompactParticipantMetrics({
 
       <CompactMetricCard
         title="Female"
-        value={formatPercent(femalePercent) + "%"}
-        subtitle={`(${totalFemales})`}
+        count={totalFemales}
+        percent={formatPercent(femalePercent)}
         isLoading={isLoading}
         icon={<UserCheck size={16} />}
         iconColor="text-pink-500"
@@ -46,8 +47,8 @@ export function CompactParticipantMetrics({
 
       <CompactMetricCard
         title="Male"
-        value={formatPercent(malePercent) + "%"}
-        subtitle={`(${totalMales})`}
+        count={totalMales}
+        percent={formatPercent(malePercent)}
         isLoading={isLoading}
         icon={<CircleUser size={16} />}
         iconColor="text-blue-500"
@@ -55,7 +56,8 @@ export function CompactParticipantMetrics({
 
       <CompactMetricCard
         title="PWD"
-        value={formatPercent(disabledPercent) + "%"}
+        count={disabled.length}
+        percent={formatPercent(disabledPercent)}
         isLoading={isLoading}
         icon={<Gauge size={16} />}
         iconColor="text-purple-500"
