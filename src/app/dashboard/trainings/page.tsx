@@ -1,62 +1,85 @@
-import { getTrainings } from "@/features/trainings/actions";
-import { TrainingsTable } from "@/features/trainings/components/trainings-table";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Plus } from "lucide-react";
-import { getUserClusterId } from "@/features/auth/actions";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { TrainingsClient } from "@/features/trainings/components/trainings-client";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProjects } from "@/features/projects/actions/projects";
+import { getOrganizationId, getUserClusterId } from "@/features/auth/actions";
+import { getClusters } from "@/features/clusters/actions/clusters";
 
-export default async function TrainingsPage() {
+function TrainingsTableSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-8 w-[250px]" />
+        <Skeleton className="h-8 w-[100px]" />
+      </div>
+      <div className="space-y-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-12 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default async function Page(props: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  // Need to await the searchParams promise to match Next.js 14+ types
+  const searchParams = await props.searchParams;
+
+  // Search params will be passed directly to the TrainingsClient component
+  const organizationId = await getOrganizationId();
   const clusterId = await getUserClusterId();
+  const projectsResult = await getProjects(organizationId ?? undefined);
+  const clustersResult = await getClusters();
 
   if (!clusterId) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <p className="text-muted-foreground">No cluster assigned</p>
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <p className="text-muted-foreground">No cluster assigned to user</p>
       </div>
     );
   }
 
-  const { data: trainings, error } = await getTrainings(clusterId);
-
-  if (error) {
+  if (!projectsResult.success || !clustersResult.success) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <p className="text-destructive">Error: {error}</p>
-      </div>
-    );
-  }
-
-  if (!trainings || trainings.length === 0) {
-    return (
-      <div className="space-y-4">
-        <div className="flex justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Trainings</h1>
-          <Button asChild>
-            <Link href="/dashboard/trainings/new">
-              <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
-              <span>Add Training</span>
-            </Link>
-          </Button>
-        </div>
-        <div className="flex justify-center items-center h-[40vh]">
-          <p className="text-muted-foreground">No trainings found</p>
-        </div>
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <p className="text-destructive">
+          {!projectsResult.success
+            ? projectsResult.error
+            : clustersResult.error}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Trainings</h1>
-        <Button asChild>
-          <Link href="/dashboard/trainings/new">
-            <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
-            <span>Add Training</span>
-          </Link>
-        </Button>
+    <>
+      <SiteHeader title="Trainings" />
+      <div className="flex flex-1 flex-col">
+        <div className="@container/main flex flex-1 flex-col gap-2 p-4 @xl/main:px-6">
+          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-0">
+            <Suspense fallback={<TrainingsTableSkeleton />}>
+              <TrainingsClient
+                clusterId={clusterId}
+                projects={projectsResult.data ?? []}
+                clusters={clustersResult.data ?? []}
+                searchParams={{
+                  page: searchParams["page"] ? Number(searchParams["page"]) : 1,
+                  per_page: searchParams["per_page"]
+                    ? Number(searchParams["per_page"])
+                    : 10,
+                  search: searchParams["search"] as string,
+                  project: searchParams["project"] as string,
+                  status: searchParams["status"] as string,
+                  organization: searchParams["organization"] as string,
+                }}
+              />
+            </Suspense>
+          </div>
+        </div>
       </div>
-      <TrainingsTable data={trainings} />
-    </div>
+    </>
   );
 }

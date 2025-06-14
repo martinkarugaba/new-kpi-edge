@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,30 +8,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { createProject, updateProject } from '../actions/projects';
-import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { createProject, updateProject } from "../actions/projects";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Project } from '../types';
-import { DatePicker } from '@/components/ui/date-picker';
+} from "@/components/ui/select";
+import { Project } from "../types";
+import { DatePicker } from "@/components/ui/date-picker";
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  acronym: z.string().min(1, 'Acronym is required'),
+  name: z.string().min(1, "Name is required"),
+  acronym: z.string().min(1, "Acronym is required"),
   description: z.string().nullable(),
-  status: z.enum(['active', 'completed', 'on-hold']),
+  status: z.enum(["active", "completed", "on-hold"]),
   startDate: z.date().nullable(),
   endDate: z.date().nullable(),
 });
@@ -56,10 +56,10 @@ export function ProjectForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name || '',
-      acronym: initialData?.acronym || '',
+      name: initialData?.name || "",
+      acronym: initialData?.acronym || "",
       description: initialData?.description || null,
-      status: initialData?.status || 'active',
+      status: initialData?.status || "active",
       startDate: initialData?.startDate
         ? new Date(initialData.startDate)
         : null,
@@ -74,17 +74,17 @@ export function ProjectForm({
       if (initialData) {
         const result = await updateProject(initialData.id, values);
         if (!result.success) throw new Error(result.error);
-        toast.success('Project updated successfully');
+        toast.success("Project updated successfully");
       } else {
         const result = await createProject(values);
         if (!result.success) throw new Error(result.error);
-        toast.success('Project created successfully');
+        toast.success("Project created successfully");
       }
 
       router.refresh();
       onSuccess?.();
     } catch (error) {
-      toast.error('Something went wrong. Please try again.');
+      toast.error("Something went wrong. Please try again.");
       console.error(error);
     } finally {
       if (setIsLoading) setIsLoading(false);
@@ -107,7 +107,7 @@ export function ProjectForm({
                     placeholder="Enter project name"
                     {...field}
                     disabled={isLoading}
-                    className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                    className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                   />
                 </FormControl>
                 <FormMessage className="text-sm text-red-500" />
@@ -126,7 +126,7 @@ export function ProjectForm({
                     placeholder="Enter project acronym"
                     {...field}
                     disabled={isLoading}
-                    className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                    className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                   />
                 </FormControl>
                 <FormMessage className="text-sm text-red-500" />
@@ -146,10 +146,10 @@ export function ProjectForm({
                   <Input
                     placeholder="Enter project description (optional)"
                     {...field}
-                    value={field.value || ''}
+                    value={field.value || ""}
                     onChange={e => field.onChange(e.target.value || null)}
                     disabled={isLoading}
-                    className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                    className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black"
                   />
                 </FormControl>
                 <FormMessage className="text-sm text-red-500" />
@@ -169,7 +169,7 @@ export function ProjectForm({
                   disabled={isLoading}
                 >
                   <FormControl>
-                    <SelectTrigger className="h-12 text-base rounded-lg border-gray-300 focus:border-black focus:ring-black">
+                    <SelectTrigger className="h-12 rounded-lg border-gray-300 text-base focus:border-black focus:ring-black">
                       <SelectValue placeholder="Select project status" />
                     </SelectTrigger>
                   </FormControl>
@@ -184,7 +184,7 @@ export function ProjectForm({
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
               name="startDate"
@@ -198,7 +198,7 @@ export function ProjectForm({
                       date={field.value}
                       setDate={date => {
                         field.onChange(date);
-                        form.setValue('startDate', date);
+                        form.setValue("startDate", date);
                       }}
                       disabled={isLoading}
                     />
@@ -221,7 +221,7 @@ export function ProjectForm({
                       date={field.value}
                       setDate={date => {
                         field.onChange(date);
-                        form.setValue('endDate', date);
+                        form.setValue("endDate", date);
                       }}
                       disabled={isLoading}
                     />
@@ -232,21 +232,21 @@ export function ProjectForm({
             />
           </div>
 
-          <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
+          <div className="flex justify-end gap-4 border-t border-gray-200 pt-4">
             <Button
               type="submit"
               disabled={isLoading}
-              className="h-12 flex-1 text-base font-medium bg-black text-white hover:bg-gray-800 rounded-lg"
+              className="h-12 flex-1 rounded-lg bg-black text-base font-medium text-white hover:bg-gray-800"
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {initialData ? 'Updating...' : 'Creating...'}
+                  {initialData ? "Updating..." : "Creating..."}
                 </>
               ) : initialData ? (
-                'Update Project'
+                "Update Project"
               ) : (
-                'Create Project'
+                "Create Project"
               )}
             </Button>
           </div>

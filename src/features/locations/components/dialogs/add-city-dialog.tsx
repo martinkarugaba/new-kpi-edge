@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,28 +7,28 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { db } from '@/lib/db';
+} from "@/components/ui/select";
+import { db } from "@/lib/db";
 import {
   districts,
   counties,
   subCounties,
   municipalities,
-} from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { City } from '../data-table/cities-columns';
-import { createCity, updateCity } from '../../actions/cities';
-import { toast } from 'sonner';
-import { useCallback, useEffect, useState } from 'react';
-import { eq } from 'drizzle-orm';
+} from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { City } from "../data-table/cities-columns";
+import { createCity, updateCity } from "../../actions/cities";
+import { toast } from "sonner";
+import { useCallback, useEffect, useState } from "react";
+import { eq } from "drizzle-orm";
 
 type District = InferSelectModel<typeof districts>;
 type County = InferSelectModel<typeof counties>;
@@ -41,9 +41,9 @@ type Props = {
 
 export function AddCityDialog({ editData }: Props) {
   const [open, setOpen] = useState(false);
-  const [selectedDistrict, setSelectedDistrict] = useState<string>('');
-  const [selectedCounty, setSelectedCounty] = useState<string>('');
-  const [selectedSubCounty, setSelectedSubCounty] = useState<string>('');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [selectedCounty, setSelectedCounty] = useState<string>("");
+  const [selectedSubCounty, setSelectedSubCounty] = useState<string>("");
   const [districtsList, setDistrictsList] = useState<District[]>([]);
   const [countiesList, setCountiesList] = useState<County[]>([]);
   const [subCountiesList, setSubCountiesList] = useState<SubCounty[]>([]);
@@ -66,16 +66,16 @@ export function AddCityDialog({ editData }: Props) {
       const city = event.detail;
       if (city) {
         setOpen(true);
-        setSelectedDistrict(city.district_id || '');
-        setSelectedCounty(city.county_id || '');
-        setSelectedSubCounty(city.sub_county_id || '');
+        setSelectedDistrict(city.district_id || "");
+        setSelectedCounty(city.county_id || "");
+        setSelectedSubCounty(city.sub_county_id || "");
       }
     };
 
-    window.addEventListener('editCity', handleEditEvent as EventListener);
+    window.addEventListener("editCity", handleEditEvent as EventListener);
 
     return () => {
-      window.removeEventListener('editCity', handleEditEvent as EventListener);
+      window.removeEventListener("editCity", handleEditEvent as EventListener);
     };
   }, []);
 
@@ -152,16 +152,16 @@ export function AddCityDialog({ editData }: Props) {
 
         if (result.success) {
           toast.success(
-            `City ${editData ? 'updated' : 'created'} successfully`
+            `City ${editData ? "updated" : "created"} successfully`
           );
           setOpen(false);
           form.reset();
         } else {
-          toast.error(`Failed to ${editData ? 'update' : 'create'} city`);
+          toast.error(`Failed to ${editData ? "update" : "create"} city`);
         }
       } catch (error) {
         console.error(error);
-        toast.error(`Failed to ${editData ? 'update' : 'create'} city`);
+        toast.error(`Failed to ${editData ? "update" : "create"} city`);
       }
     },
     [editData]
@@ -170,15 +170,15 @@ export function AddCityDialog({ editData }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">{editData ? 'Edit' : 'Add City'}</Button>
+        <Button variant="outline">{editData ? "Edit" : "Add City"}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>{editData ? 'Edit' : 'Add'} City</DialogTitle>
+          <DialogTitle>{editData ? "Edit" : "Add"} City</DialogTitle>
           <DialogDescription>
             {editData
-              ? 'Update the city details below.'
-              : 'Add a new city by filling out the form below.'}
+              ? "Update the city details below."
+              : "Add a new city by filling out the form below."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
@@ -197,15 +197,15 @@ export function AddCityDialog({ editData }: Props) {
           <input
             type="hidden"
             name="countryId"
-            value={editData?.country_id || ''}
+            value={editData?.country_id || ""}
           />
           <Select
             name="districtId"
             value={selectedDistrict}
             onValueChange={value => {
               setSelectedDistrict(value);
-              setSelectedCounty('');
-              setSelectedSubCounty('');
+              setSelectedCounty("");
+              setSelectedSubCounty("");
             }}
             required
           >
@@ -225,7 +225,7 @@ export function AddCityDialog({ editData }: Props) {
             value={selectedCounty}
             onValueChange={value => {
               setSelectedCounty(value);
-              setSelectedSubCounty('');
+              setSelectedSubCounty("");
             }}
             required
           >
@@ -270,7 +270,7 @@ export function AddCityDialog({ editData }: Props) {
             </SelectContent>
           </Select>
           <DialogFooter>
-            <Button type="submit">{editData ? 'Update' : 'Add'}</Button>
+            <Button type="submit">{editData ? "Update" : "Add"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

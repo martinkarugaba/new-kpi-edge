@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { ParishesTable } from '../parishes-table';
-import { useEffect, useState } from 'react';
+import { ParishesTable } from "../parishes-table";
+import { useEffect, useState } from "react";
 import {
   parishes,
   countries,
   counties,
   districts,
   subCounties,
-} from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { getParishes } from '@/features/locations/actions/locations';
+} from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { getParishes } from "@/features/locations/actions/parishes";
 
 type Parish = InferSelectModel<typeof parishes> & {
   subCounty?: InferSelectModel<typeof subCounties>;
@@ -19,23 +19,36 @@ type Parish = InferSelectModel<typeof parishes> & {
   country?: InferSelectModel<typeof countries>;
 };
 
-export function ParishesTab() {
+interface ParishesTabProps {
+  subCountyId?: string;
+  countyId?: string;
+  districtId?: string;
+  countryId?: string;
+}
+
+export function ParishesTab({
+  subCountyId,
+  countyId,
+  districtId,
+  countryId,
+}: ParishesTabProps) {
   const [data, setData] = useState<Parish[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getParishes();
-      if (result.success && result.data) {
-        setData(result.data);
+      const result = await getParishes({
+        subCountyId,
+        countyId,
+        districtId,
+        countryId,
+      });
+      if (result.success && result.data?.data) {
+        setData(result.data.data);
       }
     };
 
     fetchData();
-  }, []);
+  }, [subCountyId, countyId, districtId, countryId]);
 
-  return (
-    <div className="p-4">
-      <ParishesTable data={data} />
-    </div>
-  );
+  return <ParishesTable data={data} />;
 }

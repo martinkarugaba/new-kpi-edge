@@ -1,7 +1,7 @@
-import { db } from '../src/lib/db';
-import { sql } from 'drizzle-orm';
-import * as dotenv from 'dotenv';
-import path from 'path';
+import { db } from "../src/lib/db";
+import { sql } from "drizzle-orm";
+import * as dotenv from "dotenv";
+import path from "path";
 import {
   districts,
   cities as dbCities,
@@ -9,18 +9,18 @@ import {
   counties,
   subCounties,
   municipalities as dbMunicipalities,
-} from '../src/lib/db/schema';
+} from "../src/lib/db/schema";
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 // Allow passing database URL via command line argument
 const args = process.argv.slice(2);
-const dbUrlArg = args.find(arg => arg.startsWith('--database-url='));
+const dbUrlArg = args.find(arg => arg.startsWith("--database-url="));
 if (dbUrlArg) {
-  const dbUrl = dbUrlArg.split('=')[1];
+  const dbUrl = dbUrlArg.split("=")[1];
   process.env.DATABASE_URL = dbUrl;
-  console.log('Using database URL from command line argument');
+  console.log("Using database URL from command line argument");
 }
 
 // Uganda cities data
@@ -28,68 +28,68 @@ if (dbUrlArg) {
 const ugandaCities = [
   // Main Cities with their administrative details
   {
-    name: 'Kampala',
-    district: 'Kampala',
-    county: 'Kampala',
-    subcounty: 'Central Division',
+    name: "Kampala",
+    district: "Kampala",
+    county: "Kampala",
+    subcounty: "Central Division",
   },
-  { name: 'Gulu', district: 'Gulu', county: 'Gulu', subcounty: 'Gulu' },
-  { name: 'Lira', district: 'Lira', county: 'Lira', subcounty: 'Lira' },
+  { name: "Gulu", district: "Gulu", county: "Gulu", subcounty: "Gulu" },
+  { name: "Lira", district: "Lira", county: "Lira", subcounty: "Lira" },
   {
-    name: 'Mbarara',
-    district: 'Mbarara',
-    county: 'Mbarara',
-    subcounty: 'Mbarara',
+    name: "Mbarara",
+    district: "Mbarara",
+    county: "Mbarara",
+    subcounty: "Mbarara",
   },
-  { name: 'Jinja', district: 'Jinja', county: 'Jinja', subcounty: 'Jinja' },
+  { name: "Jinja", district: "Jinja", county: "Jinja", subcounty: "Jinja" },
   {
-    name: 'Mbale',
-    district: 'Mbale',
-    county: 'Bungokho',
-    subcounty: 'Industrial Division',
+    name: "Mbale",
+    district: "Mbale",
+    county: "Bungokho",
+    subcounty: "Industrial Division",
   },
   {
-    name: 'Fort Portal',
-    district: 'Kabarole',
-    county: 'Fort Portal',
-    subcounty: 'Fort Portal',
+    name: "Fort Portal",
+    district: "Kabarole",
+    county: "Fort Portal",
+    subcounty: "Fort Portal",
   },
-  { name: 'Masaka', district: 'Masaka', county: 'Masaka', subcounty: 'Masaka' },
-  { name: 'Soroti', district: 'Soroti', county: 'Soroti', subcounty: 'Soroti' },
-  { name: 'Arua', district: 'Arua', county: 'Arua', subcounty: 'Arua' },
+  { name: "Masaka", district: "Masaka", county: "Masaka", subcounty: "Masaka" },
+  { name: "Soroti", district: "Soroti", county: "Soroti", subcounty: "Soroti" },
+  { name: "Arua", district: "Arua", county: "Arua", subcounty: "Arua" },
 
   // New cities (added in 2020-2023)
-  { name: 'Hoima', district: 'Hoima', county: 'Hoima', subcounty: 'Hoima' },
-  { name: 'Kisoro', district: 'Kisoro', county: 'Kisoro', subcounty: 'Kisoro' },
+  { name: "Hoima", district: "Hoima", county: "Hoima", subcounty: "Hoima" },
+  { name: "Kisoro", district: "Kisoro", county: "Kisoro", subcounty: "Kisoro" },
 ];
 
 function normalizeDistrictName(name: string): string[] {
   // Clean the name by removing special characters and converting to lowercase
-  const base = name.toLowerCase().replace(/[^a-z]/g, '');
+  const base = name.toLowerCase().replace(/[^a-z]/g, "");
 
   // Create variations by removing common district suffixes/prefixes
   const variations = [
     base,
-    base.replace('district', ''),
-    base.replace('municipality', ''),
-    base.replace('city', ''),
-    base.replace('subcounty', ''),
-    base.replace('tc', ''),
-    base.replace('towncounty', ''),
+    base.replace("district", ""),
+    base.replace("municipality", ""),
+    base.replace("city", ""),
+    base.replace("subcounty", ""),
+    base.replace("tc", ""),
+    base.replace("towncounty", ""),
   ];
 
   // Special cases for district name variations
-  if (base.includes('kampala')) variations.push('kcca');
-  if (base.includes('fortportal')) variations.push('kabarole');
-  if (base.includes('fortportal')) variations.push('fortportalcity');
-  if (base.includes('arua')) variations.push('aruacity');
-  if (base.includes('gulu')) variations.push('gulucity');
-  if (base.includes('jinja')) variations.push('jinjacity');
-  if (base.includes('lira')) variations.push('liracity');
-  if (base.includes('masaka')) variations.push('masakacity');
-  if (base.includes('mbale')) variations.push('mbalecity');
-  if (base.includes('mbarara')) variations.push('mbararacity');
-  if (base.includes('soroti')) variations.push('soroticity');
+  if (base.includes("kampala")) variations.push("kcca");
+  if (base.includes("fortportal")) variations.push("kabarole");
+  if (base.includes("fortportal")) variations.push("fortportalcity");
+  if (base.includes("arua")) variations.push("aruacity");
+  if (base.includes("gulu")) variations.push("gulucity");
+  if (base.includes("jinja")) variations.push("jinjacity");
+  if (base.includes("lira")) variations.push("liracity");
+  if (base.includes("masaka")) variations.push("masakacity");
+  if (base.includes("mbale")) variations.push("mbalecity");
+  if (base.includes("mbarara")) variations.push("mbararacity");
+  if (base.includes("soroti")) variations.push("soroticity");
 
   // Filter out duplicates and empty strings
   return [...new Set(variations.filter(v => v))];
@@ -97,7 +97,7 @@ function normalizeDistrictName(name: string): string[] {
 
 async function seedCities() {
   try {
-    console.log('Starting cities seeding...');
+    console.log("Starting cities seeding...");
 
     // First, get the Uganda country ID
     const [uganda] = await db
@@ -107,11 +107,11 @@ async function seedCities() {
 
     if (!uganda) {
       throw new Error(
-        'Uganda country record not found. Please seed countries first.'
+        "Uganda country record not found. Please seed countries first."
       );
     }
 
-    console.log('Found Uganda country record');
+    console.log("Found Uganda country record");
 
     // Get all districts
     const districtRecords = await db.select().from(districts);
@@ -231,7 +231,7 @@ async function seedCities() {
 
       // Generate a unique code for the city
       // Clean name for code generation (remove spaces and special characters)
-      const cleanedName = city.name.replace(/[^a-zA-Z]/g, '');
+      const cleanedName = city.name.replace(/[^a-zA-Z]/g, "");
 
       // Get first, last, and middle letter for the code
       const firstLetter = cleanedName[0];
@@ -273,12 +273,12 @@ async function seedCities() {
     console.log(`Prepared ${citiesData.length} cities for insertion`);
 
     if (notFoundItems.length > 0) {
-      console.log('Some items could not be matched. Details:');
+      console.log("Some items could not be matched. Details:");
       notFoundItems.forEach(item => console.log(`- ${item}`));
     }
 
     if (citiesData.length === 0) {
-      console.log('No cities data to insert. Aborting.');
+      console.log("No cities data to insert. Aborting.");
       return;
     }
 
@@ -299,9 +299,9 @@ async function seedCities() {
       console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1}`);
     }
 
-    console.log('Cities seeding completed successfully');
+    console.log("Cities seeding completed successfully");
   } catch (error) {
-    console.error('Error seeding cities:', error);
+    console.error("Error seeding cities:", error);
     throw error;
   }
 }
@@ -309,10 +309,10 @@ async function seedCities() {
 // Run the seeding
 seedCities()
   .then(() => {
-    console.log('✅ Cities seeding completed');
+    console.log("✅ Cities seeding completed");
     process.exit(0);
   })
   .catch(error => {
-    console.error('❌ Cities seeding failed:', error);
+    console.error("❌ Cities seeding failed:", error);
     process.exit(1);
   });

@@ -1,8 +1,8 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { districts, counties, subCounties, parishes } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { districts, counties, subCounties, parishes } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
 
 // Define response types for better type safety
 type SuccessResponse<T> = {
@@ -27,13 +27,13 @@ export async function getDistrictById(
     });
 
     if (!district) {
-      return { success: false, error: 'District not found' };
+      return { success: false, error: "District not found" };
     }
 
     return { success: true, data: district };
   } catch (error) {
-    console.error('Error fetching district:', error);
-    return { success: false, error: 'Failed to fetch district' };
+    console.error("Error fetching district:", error);
+    return { success: false, error: "Failed to fetch district" };
   }
 }
 
@@ -47,13 +47,13 @@ export async function getCountyById(
     });
 
     if (!county) {
-      return { success: false, error: 'County not found' };
+      return { success: false, error: "County not found" };
     }
 
     return { success: true, data: county };
   } catch (error) {
-    console.error('Error fetching county:', error);
-    return { success: false, error: 'Failed to fetch county' };
+    console.error("Error fetching county:", error);
+    return { success: false, error: "Failed to fetch county" };
   }
 }
 
@@ -67,13 +67,13 @@ export async function getSubCountyById(
     });
 
     if (!subCounty) {
-      return { success: false, error: 'Sub-county not found' };
+      return { success: false, error: "Sub-county not found" };
     }
 
     return { success: true, data: subCounty };
   } catch (error) {
-    console.error('Error fetching sub-county:', error);
-    return { success: false, error: 'Failed to fetch sub-county' };
+    console.error("Error fetching sub-county:", error);
+    return { success: false, error: "Failed to fetch sub-county" };
   }
 }
 
@@ -87,13 +87,13 @@ export async function getParishById(
     });
 
     if (!parish) {
-      return { success: false, error: 'Parish not found' };
+      return { success: false, error: "Parish not found" };
     }
 
     return { success: true, data: parish };
   } catch (error) {
-    console.error('Error fetching parish:', error);
-    return { success: false, error: 'Failed to fetch parish' };
+    console.error("Error fetching parish:", error);
+    return { success: false, error: "Failed to fetch parish" };
   }
 }
 
@@ -114,7 +114,7 @@ export async function findDefaultCountyForDistrict(
     if (!districtResult.data) {
       return {
         success: false,
-        error: 'District data not found',
+        error: "District data not found",
       };
     }
 
@@ -125,12 +125,12 @@ export async function findDefaultCountyForDistrict(
     });
 
     if (!county) {
-      return { success: false, error: 'No county found for this district' };
+      return { success: false, error: "No county found for this district" };
     }
 
     return { success: true, data: county };
   } catch (error) {
-    console.error('Error finding default county:', error);
-    return { success: false, error: 'Failed to find default county' };
+    console.error("Error finding default county:", error);
+    return { success: false, error: "Failed to find default county" };
   }
 }

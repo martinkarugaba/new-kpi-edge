@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { ChevronsUpDown, Plus, Building2, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { setCurrentOrganization } from '@/features/auth/actions/set-organization';
+import * as React from "react";
+import { ChevronsUpDown, Plus, Building2, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { setCurrentOrganization } from "@/features/auth/actions/set-organization";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,19 +15,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { getOrganizationId } from '@/features/auth/actions';
+} from "@/components/ui/sidebar";
+import { getOrganizationId } from "@/features/auth/actions";
 import {
   getCurrentOrganizationWithCluster,
   getOrganizationsByCluster,
-} from '@/features/organizations/actions/organizations';
-import { getCurrentUserClusterOrganizations } from '@/features/clusters/actions/cluster-users';
+} from "@/features/organizations/actions/organizations";
+import { getCurrentUserClusterOrganizations } from "@/features/clusters/actions/cluster-users";
 
 interface Organization {
   id: string;
@@ -67,42 +68,42 @@ export function TeamSwitcher() {
   const { isMobile } = useSidebar();
 
   const { data: organizationId, isLoading: isLoadingOrgId } = useQuery({
-    queryKey: ['organizationId'],
+    queryKey: ["organizationId"],
     queryFn: async () => {
-      console.log('Fetching organization ID...');
+      console.log("Fetching organization ID...");
       const result = await getOrganizationId();
-      console.log('Got organization ID result:', result);
+      console.log("Got organization ID result:", result);
       return result;
     },
   });
 
   const { data: organizationsData, isLoading: isLoadingOrgs } =
     useQuery<OrganizationsData | null>({
-      queryKey: ['organizations', organizationId],
+      queryKey: ["organizations", organizationId],
       queryFn: async (): Promise<OrganizationsData | null> => {
-        console.log(
-          'Starting organizations query with organization ID:',
-          organizationId
-        );
+        // console.log(
+        //   "Starting organizations query with organization ID:",
+        //   organizationId
+        // );
         if (!organizationId) {
-          console.log('No organization ID available, returning null');
+          // console.log("No organization ID available, returning null");
           return null;
         }
 
-        console.log('Fetching current organization with cluster...');
+        // console.log("Fetching current organization with cluster...");
         const currentOrgResult =
           await getCurrentOrganizationWithCluster(organizationId);
-        console.log('Current org result:', currentOrgResult);
+        // console.log("Current org result:", currentOrgResult);
         if (!currentOrgResult.success || !currentOrgResult.data) {
-          console.log(
-            'Failed to get current organization:',
-            currentOrgResult.error
-          );
+          // console.log(
+          //   "Failed to get current organization:",
+          //   currentOrgResult.error
+          // );
           return null;
         }
 
         const currentOrg = currentOrgResult.data;
-        console.log('Current organization:', currentOrg);
+        // console.log("Current organization:", currentOrg);
 
         // Fetch organizations from the cluster members table
         let clusterOrgs: Organization[] = [];
@@ -111,29 +112,29 @@ export function TeamSwitcher() {
 
         // Get organizations from the current org's cluster if it belongs to one
         if (currentOrg.cluster_id) {
-          console.log(
-            'Organization belongs to cluster:',
-            currentOrg.cluster_id
-          );
+          // console.log(
+          //   "Organization belongs to cluster:",
+          //   currentOrg.cluster_id
+          // );
           const orgsResult = await getOrganizationsByCluster(
             currentOrg.cluster_id
           );
-          console.log('Cluster organizations result:', orgsResult);
+          // console.log("Cluster organizations result:", orgsResult);
           if (orgsResult.success && orgsResult.data) {
             clusterOrgs = orgsResult.data;
             isClustered = true;
           }
         } else {
-          console.log('Organization does not belong to any cluster');
+          // console.log("Organization does not belong to any cluster");
         }
 
         // Get organizations from clusters the user belongs to
-        console.log('Fetching user cluster organizations...');
+        // console.log("Fetching user cluster organizations...");
         const userOrgsResult = await getCurrentUserClusterOrganizations();
-        console.log('User cluster organizations result:', userOrgsResult);
+        // console.log("User cluster organizations result:", userOrgsResult);
         if (
           userOrgsResult.success === true &&
-          'data' in userOrgsResult &&
+          "data" in userOrgsResult &&
           userOrgsResult.data
         ) {
           userClusterOrgs = userOrgsResult.data;
@@ -161,7 +162,7 @@ export function TeamSwitcher() {
           isClustered,
         };
 
-        console.log('Final organizations data:', result);
+        console.log("Final organizations data:", result);
         return result;
       },
       enabled: !!organizationId,
@@ -189,80 +190,82 @@ export function TeamSwitcher() {
   const { currentOrg, organizations } = organizationsData;
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu open={open} onOpenChange={setOpen}>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Building2 className="size-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {currentOrg.acronym}
-                </span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {currentOrg.cluster?.name
-                    ? `${currentOrg.cluster.name} | `
-                    : ''}
-                  {currentOrg.district}, {currentOrg.country}
-                </span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            align="start"
-            side={isMobile ? 'bottom' : 'right'}
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Organizations
-            </DropdownMenuLabel>
-            {organizations.map((org, index) => (
-              <DropdownMenuItem
-                key={org.id}
-                onClick={async () => {
-                  try {
-                    const result = await setCurrentOrganization(org.id);
-                    if (result.success) {
-                      router.refresh();
-                      setOpen(false);
-                    } else {
-                      toast.error(
-                        result.error || 'Failed to switch organization'
-                      );
-                    }
-                  } catch (error) {
-                    toast.error('Failed to switch organization');
-                    console.error(error);
-                  }
-                }}
-                className="gap-2 p-2"
+    <SidebarHeader>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu open={open} onOpenChange={setOpen}>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <Building2 className="size-4 shrink-0" />
+                <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <Building2 className="size-4" />
                 </div>
-                {org.acronym}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">
+                    {currentOrg.acronym}
+                  </span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {currentOrg.cluster?.name
+                      ? `${currentOrg.cluster.name} | `
+                      : ""}
+                    {currentOrg.district}, {currentOrg.country}
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-auto size-4" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              align="start"
+              side={isMobile ? "bottom" : "right"}
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="text-muted-foreground text-xs">
+                Organizations
+              </DropdownMenuLabel>
+              {organizations.map((org, index) => (
+                <DropdownMenuItem
+                  key={org.id}
+                  onClick={async () => {
+                    try {
+                      const result = await setCurrentOrganization(org.id);
+                      if (result.success) {
+                        router.refresh();
+                        setOpen(false);
+                      } else {
+                        toast.error(
+                          result.error || "Failed to switch organization"
+                        );
+                      }
+                    } catch (error) {
+                      toast.error("Failed to switch organization");
+                      console.error(error);
+                    }
+                  }}
+                  className="gap-2 p-2"
+                >
+                  <div className="flex size-6 items-center justify-center rounded-sm border">
+                    <Building2 className="size-4 shrink-0" />
+                  </div>
+                  {org.acronym}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="gap-2 p-2">
+                <div className="bg-background flex size-6 items-center justify-center rounded-md border">
+                  <Plus className="size-4" />
+                </div>
+                <div className="text-muted-foreground font-medium">
+                  Add organization
+                </div>
               </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">
-                Add organization
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarHeader>
   );
 }

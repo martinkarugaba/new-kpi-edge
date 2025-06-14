@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { CountriesTable } from '../countries-table';
-import { useEffect, useState } from 'react';
-import { countries } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { getCountries } from '@/features/locations/actions/locations';
+import { CountriesTable } from "../countries-table";
+import { useEffect, useState } from "react";
+import { countries } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { getCountries } from "@/features/locations/actions/countries";
 
 type Country = InferSelectModel<typeof countries>;
 
@@ -13,18 +13,20 @@ export function CountriesTab() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getCountries();
-      if (result.success && result.data) {
-        setData(result.data);
+      try {
+        const result = await getCountries();
+        if (result && result.success) {
+          setData(result.data.data);
+        } else {
+          console.error("Invalid response from getCountries:", result);
+        }
+      } catch (error) {
+        console.error("Error fetching countries:", error);
       }
     };
 
     fetchData();
   }, []);
 
-  return (
-    <div className="p-4">
-      <CountriesTable data={data} />
-    </div>
-  );
+  return <CountriesTable initialData={data} />;
 }

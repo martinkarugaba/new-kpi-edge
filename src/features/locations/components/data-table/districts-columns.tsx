@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { ColumnDef } from '@tanstack/react-table';
-import { countries, districts } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { ColumnDef } from "@tanstack/react-table";
+import { countries, districts } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +13,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { deleteDistrict } from '../../actions/districts';
-import { toast } from 'sonner';
+} from "@/components/ui/dropdown-menu";
+import { deleteDistrict } from "../../actions/districts";
+import { toast } from "sonner";
 
 type Country = InferSelectModel<typeof countries>;
 
@@ -25,13 +25,13 @@ type District = InferSelectModel<typeof districts> & {
 
 export const columns: ColumnDef<District>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -51,25 +51,25 @@ export const columns: ColumnDef<District>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: 'code',
-    header: 'Code',
+    accessorKey: "code",
+    header: "Code",
   },
   {
-    id: 'country',
-    header: 'Country',
+    id: "country",
+    header: "Country",
     cell: ({ row }) => {
-      return row.original.country?.name || '-';
+      return row.original.country?.name || "-";
     },
   },
   {
-    accessorKey: 'region',
-    header: 'Region',
+    accessorKey: "region",
+    header: "Region",
     cell: ({ row }) => {
-      return row.original.region || '-';
+      return row.original.region || "-";
     },
   },
   // {
@@ -91,8 +91,8 @@ export const columns: ColumnDef<District>[] = [
   //   },
   // },
   {
-    id: 'actions',
-    header: 'Actions',
+    id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const district = row.original;
 
@@ -109,7 +109,7 @@ export const columns: ColumnDef<District>[] = [
             <DropdownMenuItem
               onClick={() => {
                 // TODO: Implement edit functionality
-                toast.info('Edit functionality coming soon');
+                toast.info("Edit functionality coming soon");
               }}
             >
               <Pencil className="mr-2 h-4 w-4" />
@@ -121,9 +121,9 @@ export const columns: ColumnDef<District>[] = [
               onClick={async () => {
                 try {
                   await deleteDistrict(district.id);
-                  toast.success('District deleted successfully');
+                  toast.success("District deleted successfully");
                 } catch {
-                  toast.error('Failed to delete district');
+                  toast.error("Failed to delete district");
                 }
               }}
             >

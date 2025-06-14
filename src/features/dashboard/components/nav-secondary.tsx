@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { type Icon } from '@tabler/icons-react';
+import * as React from "react";
+import { type Icon } from "@tabler/icons-react";
 
 import {
   SidebarGroup,
@@ -9,8 +9,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import Link from 'next/link';
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavSecondary({
   items,
@@ -29,7 +29,7 @@ export function NavSecondary({
           {items.map(item => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <Link href={item.url}>
+                <Link href={item.url} className="text-lg" title={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

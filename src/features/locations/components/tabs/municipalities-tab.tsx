@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { MunicipalitiesTable } from '../municipalities-table';
-import { useEffect, useState } from 'react';
-import { municipalities } from '@/lib/db/schema';
-import type { InferSelectModel } from 'drizzle-orm';
-import { getMunicipalities } from '@/features/locations/actions/municipalities';
+import { MunicipalitiesTable } from "../municipalities-table";
+import { useEffect, useState } from "react";
+import { municipalities } from "@/lib/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import { getMunicipalities } from "@/features/locations/actions/municipalities";
 
 type Municipality = InferSelectModel<typeof municipalities> & {
   country: { name: string };
@@ -13,19 +13,23 @@ type Municipality = InferSelectModel<typeof municipalities> & {
   subCounty: { name: string };
 };
 
-export function MunicipalitiesTab() {
+interface MunicipalitiesTabProps {
+  countryId: string;
+}
+
+export function MunicipalitiesTab({ countryId }: MunicipalitiesTabProps) {
   const [data, setData] = useState<Municipality[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getMunicipalities();
-      if (result.success && result.data) {
-        setData(result.data);
+      const result = await getMunicipalities({ countryId });
+      if (result.success && result.data?.data) {
+        setData(result.data.data);
       }
     };
 
     fetchData();
-  }, []);
+  }, [countryId]);
 
   return (
     <div className="p-4">

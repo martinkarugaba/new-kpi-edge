@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 const NotFound = () => {
   return (
-    <div className="flex flex-col text-xl font-normal justify-center items-center min-h-screen gap-6">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 text-xl font-normal">
       <h1 className="text-6xl font-semibold">404 Page not found!</h1>
       <p className="">Below are some helpful links;</p>
-      <div className="flex justify-between items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
         <Link href="/dashboard">Dashboard</Link>
         <Link href="/">Home page</Link>
         <Link href="/dashboard/participants">Participants</Link>

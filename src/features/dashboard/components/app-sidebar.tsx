@@ -1,19 +1,24 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-} from '@/components/ui/sidebar';
-import { TeamSwitcher } from './team-switcher';
-import { NavUser } from './nav-user';
-import { SidebarMainNav } from './sidebar-main-nav';
+} from "@/components/ui/sidebar";
+import { TeamSwitcher } from "./team-switcher";
+import { NavUser } from "./nav-user";
+import { SidebarMainNav } from "./sidebar-main-nav";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="border-none" collapsible="icon" {...props}>
+    <Sidebar
+      className="border-none py-2"
+      variant="floating"
+      collapsible="icon"
+      {...props}
+    >
       <SidebarHeader>
         <TeamSwitcher />
       </SidebarHeader>

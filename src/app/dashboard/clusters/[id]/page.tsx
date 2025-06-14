@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation';
-import { SiteHeader } from '@/features/dashboard/components/site-header';
-import { ClusterDetails } from '@/features/clusters/components/cluster-details';
-import { getClusterById } from '@/features/clusters/actions/clusters';
+import { notFound } from "next/navigation";
+import { SiteHeader } from "@/features/dashboard/components/site-header";
+import { ClusterDetails } from "@/features/clusters/components/cluster-details";
+import { getClusterById } from "@/features/clusters/actions/clusters";
 
 export default async function ClusterDetailsPage({
   params,

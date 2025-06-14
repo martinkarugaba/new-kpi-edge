@@ -42,6 +42,7 @@ interface TrainingFormProps {
   organizationId: string;
   projectId: string;
   initialData?: Training;
+  onSubmit?: (values: TrainingFormValues) => Promise<void>;
 }
 
 export function TrainingForm({
@@ -49,6 +50,7 @@ export function TrainingForm({
   organizationId,
   projectId,
   initialData,
+  onSubmit: externalOnSubmit,
 }: TrainingFormProps) {
   const router = useRouter();
 
@@ -73,6 +75,13 @@ export function TrainingForm({
   });
 
   async function onSubmit(values: TrainingFormValues) {
+    if (externalOnSubmit) {
+      // Use the external submit handler if provided
+      await externalOnSubmit(values);
+      return;
+    }
+
+    // Otherwise use the default implementation
     try {
       const formData: NewTraining = {
         name: values.name,
@@ -224,7 +233,7 @@ export function TrainingForm({
           )}
         />
 
-        <Button type="submit">
+        <Button type="submit" className="w-full cursor-pointer">
           {initialData ? "Update Training" : "Create Training"}
         </Button>
       </form>

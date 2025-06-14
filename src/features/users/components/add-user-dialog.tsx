@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -16,35 +16,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import { PlusCircle } from 'lucide-react';
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { createUser } from '../actions/users';
-import { PasswordInput } from '@/components/ui/password-input';
+} from "@/components/ui/select";
+import { createUser } from "../actions/users";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
   role: z.enum([
-    'super_admin',
-    'cluster_manager',
-    'organization_admin',
-    'organization_member',
-    'user',
+    "super_admin",
+    "cluster_manager",
+    "organization_admin",
+    "organization_member",
+    "user",
   ]),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export function AddUserDialog({ onUserAdded }: { onUserAdded: () => void }) {
@@ -54,10 +54,10 @@ export function AddUserDialog({ onUserAdded }: { onUserAdded: () => void }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      role: 'user',
-      password: '',
+      name: "",
+      email: "",
+      role: "user",
+      password: "",
     },
   });
 
@@ -66,17 +66,17 @@ export function AddUserDialog({ onUserAdded }: { onUserAdded: () => void }) {
     try {
       const result = await createUser(values);
       if (result) {
-        toast.success('User created successfully');
+        toast.success("User created successfully");
         form.reset();
         setOpen(false);
         onUserAdded();
       } else {
-        toast.error('Failed to create user');
+        toast.error("Failed to create user");
       }
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error("Error creating user:", error);
       toast.error(
-        error instanceof Error ? error.message : 'Failed to create user'
+        error instanceof Error ? error.message : "Failed to create user"
       );
     } finally {
       setIsSubmitting(false);
@@ -172,7 +172,7 @@ export function AddUserDialog({ onUserAdded }: { onUserAdded: () => void }) {
 
             <DialogFooter>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Creating...' : 'Create User'}
+                {isSubmitting ? "Creating..." : "Create User"}
               </Button>
             </DialogFooter>
           </form>

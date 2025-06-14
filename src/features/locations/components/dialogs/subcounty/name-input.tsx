@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   FormControl,
@@ -6,10 +6,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { UseFormReturn } from 'react-hook-form';
-import { FormValues } from './schema';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { UseFormReturn } from "react-hook-form";
+import { FormValues } from "./schema";
 
 interface NameInputProps {
   form: UseFormReturn<FormValues>;
