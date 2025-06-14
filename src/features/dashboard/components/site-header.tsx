@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/features/themes/components/mode-toggle";
 import { ThemeSelector } from "@/features/themes/components/theme-selector";
-// import { DashboardBreadcrumbs } from "./dashboard-breadcrumbs";
 
 interface SiteHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   heading?: string;
@@ -36,7 +35,7 @@ export function SiteHeader({
         <div className="flex flex-1 flex-col justify-center md:flex-row md:items-center md:justify-between">
           <div className="container py-2 md:py-4">
             {/* <DashboardBreadcrumbs /> */}
-            <h1 className="text-2xl font-bold">{title}</h1>
+            <h1 className="text-lg font-medium">{title}</h1>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <ThemeSelector />
