@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { type Participant } from "../../types/types";
 import { ParticipantsTable } from "../participants-table";
-import { ParticipantMetrics } from "../metrics/participant-metrics";
+import { CompactParticipantMetrics } from "../metrics/compact-participant-metrics";
 import { useParticipantData } from "./participant-data-provider";
 import { useParticipantFormHandlers } from "./participant-form-handlers";
 import { extractClusterOrganizations } from "./participant-transformer";
 import { type ParticipantContainerProps } from "./types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   ChevronDown,
   ChevronUp,
@@ -110,12 +111,29 @@ export function ParticipantContainer({
 
           {metricsVisible && (
             <div className="animate-in slide-in-from-top duration-300">
-              <ParticipantMetrics
-                participants={metricsData}
-                isLoading={isLoadingMetrics}
-                isFiltered={applyFiltersToMetrics}
-                onToggleFiltered={toggleMetricsFilters}
-              />
+              <div className="mb-5">
+                <CompactParticipantMetrics
+                  participants={metricsData}
+                  isLoading={isLoadingMetrics}
+                />
+              </div>
+              {toggleMetricsFilters && (
+                <div className="mb-4 flex items-center justify-end">
+                  <div className="flex items-center gap-2">
+                    <label
+                      className="text-muted-foreground text-sm"
+                      htmlFor="filter-toggle"
+                    >
+                      Apply filters to metrics
+                    </label>
+                    <Switch
+                      id="filter-toggle"
+                      checked={applyFiltersToMetrics}
+                      onCheckedChange={toggleMetricsFilters}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

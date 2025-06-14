@@ -117,8 +117,8 @@ export function ParticipantsTable({
   return (
     <div className="flex flex-col gap-6">
       {/* Filters Card */}
-      <div className="bg-card text-card-foreground rounded-lg border shadow-sm">
-        <div className="p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow-sm">
+        <div className="">
           <ParticipantTableFilters
             organizations={organizations}
             projects={projects}
