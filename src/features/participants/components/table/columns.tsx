@@ -4,6 +4,11 @@ import { type ColumnDef, type Table, type Row } from "@tanstack/react-table";
 import { type Participant } from "../../types/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ActionCell } from "./action-cell";
+import {
+  DistrictNameCell,
+  SubcountyNameCell,
+  CountyNameCell,
+} from "./location-name-cell";
 
 interface GetColumnsProps {
   onEdit: (participant: Participant) => void;
@@ -61,9 +66,16 @@ export function getColumns({
       accessorFn: row => row.sex,
       cell: ({ row }) => {
         const sex = row.original.sex;
-        return sex
-          ? sex.charAt(0).toUpperCase() + sex.slice(1).toLowerCase()
-          : "";
+        if (!sex) return "";
+
+        const firstLetter = sex.charAt(0).toUpperCase();
+        return firstLetter === "M" || firstLetter === "F"
+          ? firstLetter
+          : sex.toLowerCase() === "male"
+            ? "M"
+            : sex.toLowerCase() === "female"
+              ? "F"
+              : firstLetter;
       },
     },
     {
@@ -76,44 +88,21 @@ export function getColumns({
       header: "District",
       enableHiding: true,
       accessorFn: row => row.districtName || row.district,
-      cell: ({ row }) => {
-        const displayValue = row.original.districtName || row.original.district;
-        return (
-          <div className="max-w-[200px] truncate" title={displayValue}>
-            {displayValue}
-          </div>
-        );
-      },
+      cell: ({ row }) => <DistrictNameCell value={row.original.district} />,
     },
     {
       id: "subCounty",
       header: "Sub County",
       enableHiding: true,
       accessorFn: row => row.subCountyName || row.subCounty,
-      cell: ({ row }) => {
-        const displayValue =
-          row.original.subCountyName || row.original.subCounty;
-        return (
-          <div className="max-w-[200px] truncate" title={displayValue}>
-            {displayValue}
-          </div>
-        );
-      },
+      cell: ({ row }) => <SubcountyNameCell value={row.original.subCounty} />,
     },
     {
       id: "country",
       header: "Country",
       enableHiding: true,
       accessorFn: row => row.countyName || row.country || "",
-      cell: ({ row }) => {
-        const displayValue =
-          row.original.countyName || row.original.country || "—";
-        return (
-          <div className="max-w-[200px] truncate" title={displayValue}>
-            {displayValue}
-          </div>
-        );
-      },
+      cell: ({ row }) => <CountyNameCell value={row.original.country} />,
     },
     {
       id: "organization",
